@@ -1,0 +1,137 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Menu {
+  id                String @default(uuid()) @id
+  title             String @db.VarChar(100) @unique
+  subtitle          String @db.VarChar(100)
+  button            Json @db.Json
+  type              String? @db.VarChar(100)
+  hidden            Boolean?
+  active            Boolean? @default(true)
+  disabled          Boolean? @default(false)
+  tooltip           String?
+  link              String?
+  fragment          String?
+  preserveFragment  Boolean?
+  queryParams       Json
+  classes           Json
+  icon              String?
+  badge             Json
+  meta              Json
+  parentId          String?
+  parent            Menu? @relation(name: "children", fields: [parentId], references: [id]) 
+  children          Menu[] @relation(name: "children")    
+  menuRole          MenoRole[] @relation(name: "menurolemenu")    
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+}
+
+model MenoRole {
+  id            String @default(uuid()) @id
+  menuId        String @db.VarChar(255)
+  menu          Menu? @relation(name: "menurolemenu", fields: [menuId], references: [id]) 
+  role          EnumRoles
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+}
+
+model User {
+  id            String @default(uuid()) @id
+  userName      String @db.VarChar(100) @unique
+  firstName     String @db.VarChar(100)
+  lastName      String @db.VarChar(100)
+  email         String? @db.VarChar(100)
+  phone         String? @db.VarChar(15)
+  photo         String?
+  role          EnumRoles
+  active        Boolean? @default(true)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+}
+
+enum EnumRoles { 
+  SUPERADMINISTRADOR
+  LIDER_COMERCIAL
+  VENDEDOR
+  CAJA
+  COORDINADOR_DE_LOGISTICA
+  CONDUCTOR
+}
+
+model Customer {
+  id                  String @default(uuid()) @id
+  type                EnumCustomerType
+  identificationType  String @db.VarChar(100)
+  identification      String @db.VarChar(20) @unique
+  source              String @db.VarChar(100)
+  email               String @db.VarChar(100)
+  firstName           String @db.VarChar(100)
+  lastName            String? @db.VarChar(100)
+  address             String? @db.VarChar(255)
+  phone               String  @unique @db.VarChar(30)
+  orders              Order[] @relation(name: "ordercustomer")
+  createdAt           DateTime @default(now())
+  updatedAt           DateTime @updatedAt
+}
+
+enum EnumCustomerType { 
+  NATURAL
+  JURIDICA
+}
+
+
+model Order {
+  id                  String @default(uuid()) @id
+  customerId          String @db.VarChar(100)
+  customer            Customer @relation(name: "ordercustomer", fields: [customerId], references: [id])
+  date                DateTime
+  vatTotal            Float
+  subTotal            Float
+  total               Float
+  orderDetails        OrderDetail[] @relation(name: "orderdetailorder")
+  createdAt           DateTime @default(now())
+  updatedAt           DateTime @updatedAt
+}
+
+model OrderDetail {
+  id                  String @default(uuid()) @id
+  orderId             String @db.VarChar(100)
+  order               Order @relation(name: "orderdetailorder", fields: [orderId], references: [id])
+  description         String
+  aditionalInfo       String
+  discount            Float
+  amount              Int
+  value               Float
+  vat                 Float
+  project             String
+  createdAt           DateTime @default(now())
+  updatedAt           DateTime @updatedAt
+}
+
+model Integration {
+  id                  String @default(uuid()) @id
+  module              String @db.VarChar(255) @unique
+  integrationDetails  IntegrationDetail[] @relation(name: "integrationdetailIntegration")
+  createdAt           DateTime @default(now())
+  updatedAt           DateTime @updatedAt
+}
+
+model IntegrationDetail {
+  id                  String @default(uuid()) @id
+  fieldApp            String @db.VarChar(255) 
+  fieldIntegration    String @db.VarChar(255) 
+  integrationId       String @db.VarChar(100)
+  integration         Integration @relation(name: "integrationdetailIntegration", fields: [integrationId], references: [id])
+  createdAt           DateTime @default(now())
+  updatedAt           DateTime @updatedAt
+}
