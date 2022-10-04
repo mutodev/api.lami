@@ -48,6 +48,7 @@ model MenoRole {
 model User {
   id            String @default(uuid()) @id
   userName      String @db.VarChar(100) @unique
+  password      String
   firstName     String @db.VarChar(100)
   lastName      String @db.VarChar(100)
   email         String? @db.VarChar(100)
