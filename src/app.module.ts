@@ -9,11 +9,12 @@ import { OrderModule } from './order/order.module';
 import { FinanceModule } from './finance/finance.module';
 import { EasyconfigModule } from 'nestjs-easyconfig';
 import { PrismaService } from './commons/services/prisma.service';
+import { SettingModule } from './setting/setting.module';
 
 @Module({
   imports: [
     EasyconfigModule.register({ path: './.env' }),
-     UserModule, AuthModule, CustomerModule, OrderModule, FinanceModule],
+     UserModule, AuthModule, CustomerModule, OrderModule, FinanceModule, SettingModule],
   controllers: [AppController],
   providers: [AppService],
   exports: []
