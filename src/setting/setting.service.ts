@@ -1,26 +1,81 @@
 import { Injectable } from '@nestjs/common';
+import { Setting as Model, Prisma } from '@prisma/client';
+import { PaginationService } from 'src/commons/services/pagination/pagination.service';
+import { PrismaService } from 'src/commons/services/prisma.service';
 import { CreateSettingDto } from './dto/create-setting.dto';
 import { UpdateSettingDto } from './dto/update-setting.dto';
 
 @Injectable()
 export class SettingService {
-  create(createSettingDto: CreateSettingDto) {
-    return 'This action adds a new setting';
+
+  constructor(public prisma: PrismaService,
+              private paginationService: PaginationService) {}
+
+  async create(data: Prisma.SettingCreateInput): Promise<Model> {
+    return this.prisma.setting.create({
+      data
+    });
   }
 
-  findAll() {
-    return `This action returns all setting`;
+  findAll(params: {
+    skip?: number;
+    take?: number;
+    cursor?: Prisma.SettingWhereUniqueInput;
+    where?: Prisma.SettingWhereInput;
+    orderBy?: Prisma.SettingOrderByWithRelationInput;
+    page?: number,
+    perPage?: number
+  }): Promise<Model[] | any> {
+    const { skip, take, cursor, where, orderBy } = params;
+    if (params.page > 0) {
+      const paginate = this.paginationService.createPaginator({page: params.page, perPage: params.perPage });
+      return paginate<Model, Prisma.SettingFindManyArgs>(
+        this.prisma.setting, {
+            cursor,
+            where,
+            orderBy,
+            include: {
+              settingDetail: true
+            }
+          });
+    } else {
+      return this.prisma.setting.findMany({
+        skip,
+        take,
+        cursor,
+        where,
+        orderBy,
+        include: {
+          settingDetail: true
+        }
+      });
+    }
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} setting`;
+  findOne(userWhereUniqueInput: Prisma.SettingWhereUniqueInput): Promise<Model | null> {
+    return this.prisma.setting.findUnique({
+      where: userWhereUniqueInput,
+      include: {
+        settingDetail: true
+      }
+    });
   }
 
-  update(id: number, updateSettingDto: UpdateSettingDto) {
-    return `This action updates a #${id} setting`;
+  update(params: {
+    where: Prisma.SettingWhereUniqueInput;
+    data: Prisma.SettingUpdateInput;
+  }): Promise<Model> {
+    const { where, data } = params;
+    return this.prisma.setting.update({
+      data,
+      where,
+    });
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} setting`;
+  remove(where: Prisma.SettingWhereUniqueInput): Promise<Model> {
+    return this.prisma.setting.delete({
+      where
+    });
   }
+
 }

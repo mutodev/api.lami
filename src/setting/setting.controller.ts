@@ -1,34 +1,40 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, Request } from '@nestjs/common';
 import { SettingService } from './setting.service';
 import { CreateSettingDto } from './dto/create-setting.dto';
 import { UpdateSettingDto } from './dto/update-setting.dto';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import { JwtAuthGuard } from 'src/commons/guards';
 
+@ApiTags('SETTING')
+@ApiBearerAuth()
+@UseGuards(JwtAuthGuard)
 @Controller('setting')
 export class SettingController {
+
   constructor(private readonly settingService: SettingService) {}
 
   @Post()
   create(@Body() createSettingDto: CreateSettingDto) {
-    return this.settingService.create(createSettingDto);
+    return this.settingService.create({...createSettingDto});
   }
 
   @Get()
-  findAll() {
-    return this.settingService.findAll();
+  findAll(@Request() req) {
+    return this.settingService.findAll({where: req.query.name});
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.settingService.findOne(+id);
+  @Get(':name')
+  findOne(@Param('name') name: string) {
+    return this.settingService.findOne({name});
   }
 
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateSettingDto: UpdateSettingDto) {
-    return this.settingService.update(+id, updateSettingDto);
+    return this.settingService.update({where: {id}, data: {...updateSettingDto}});
   }
 
   @Delete(':id')
   remove(@Param('id') id: string) {
-    return this.settingService.remove(+id);
+    return this.settingService.remove({id});
   }
 }

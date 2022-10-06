@@ -139,7 +139,7 @@ model IntegrationDetail {
 
 model Setting {
   id                  String @default(uuid()) @id
-  name                String
+  name                String @unique
   settingDetail       SettingDetail[] @relation(name: "settingdetailsetting")
   createdAt           DateTime @default(now())
   updatedAt           DateTime @updatedAt
