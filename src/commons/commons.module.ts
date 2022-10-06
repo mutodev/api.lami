@@ -3,9 +3,8 @@ https://docs.nestjs.com/modules
 */
 
 import { Module } from '@nestjs/common';
-import { JwtModule } from '@nestjs/jwt';
-import { PassportModule } from '@nestjs/passport';
-import { EasyconfigModule, EasyconfigService } from 'nestjs-easyconfig';
+import { EasyconfigModule } from 'nestjs-easyconfig';
+import { PaginationService } from './services/pagination/pagination.service';
 import { PrismaService } from './services/prisma.service';
 
 @Module({
@@ -15,8 +14,8 @@ import { PrismaService } from './services/prisma.service';
        
     ],
     controllers: [],
-    providers: [PrismaService],
+    providers: [PrismaService, PaginationService],
     // providers: [PrismaService],
-    exports: [PrismaService],
+    exports: [PrismaService, PaginationService],
 })
 export class CommonsModule {}

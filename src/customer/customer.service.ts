@@ -1,13 +1,13 @@
 import { Injectable } from '@nestjs/common';
 import { Customer as Model , Prisma } from '@prisma/client';
+import { PaginationService } from 'src/commons/services/pagination/pagination.service';
 import { PrismaService } from 'src/commons/services/prisma.service';
-import { CreateCustomerDto } from './dto/create-customer.dto';
-import { UpdateCustomerDto } from './dto/update-customer.dto';
 
 @Injectable()
 export class CustomerService {
   
-  constructor(public prisma: PrismaService) {}
+  constructor(public prisma: PrismaService,
+    private paginationService: PaginationService) {}
   
   async create(data: Prisma.CustomerCreateInput): Promise<Model> {
     return this.prisma.customer.create({
@@ -21,15 +21,27 @@ export class CustomerService {
     cursor?: Prisma.CustomerWhereUniqueInput;
     where?: Prisma.CustomerWhereInput;
     orderBy?: Prisma.CustomerOrderByWithRelationInput;
-  }): Promise<Model[]> {
+    page?: number,
+    perPage?: number
+  }): Promise<Model[] | any> {
     const { skip, take, cursor, where, orderBy } = params;
-    return this.prisma.customer.findMany({
-      skip,
-      take,
-      cursor,
-      where,
-      orderBy,
-    });
+    if (params.page > 0) {
+      const paginate = this.paginationService.createPaginator({page: params.page, perPage: params.perPage });
+      return paginate<Model, Prisma.CustomerFindManyArgs>(
+        this.prisma.customer, {
+            cursor,
+            where,
+            orderBy
+          });
+    } else {
+      return this.prisma.customer.findMany({
+        skip,
+        take,
+        cursor,
+        where,
+        orderBy,
+      });
+    }
   }
 
   findOne(userWhereUniqueInput: Prisma.CustomerWhereUniqueInput): Promise<Model | null> {

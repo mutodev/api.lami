@@ -5,12 +5,14 @@ import {
   Prisma
 } from '@prisma/client';
 import * as bcrypt from 'bcrypt';
+import { PaginationService } from 'src/commons/services/pagination/pagination.service';
 
 @Global()
 @Injectable()
 export class UserService {
   
-  constructor(public prisma: PrismaService) {}
+  constructor(public prisma: PrismaService,
+              private paginationService: PaginationService) {}
   
   async create(data: Prisma.UserCreateInput): Promise<Model> {
     const salt = await bcrypt.genSalt(10);
@@ -27,15 +29,27 @@ export class UserService {
     cursor?: Prisma.UserWhereUniqueInput;
     where?: Prisma.UserWhereInput;
     orderBy?: Prisma.UserOrderByWithRelationInput;
-  }): Promise<Model[]> {
+    page?: number,
+    perPage?: number
+  }): Promise<Model[] | any> {
     const { skip, take, cursor, where, orderBy } = params;
-    return this.prisma.user.findMany({
-      skip,
-      take,
-      cursor,
-      where,
-      orderBy,
-    });
+    if (params.page > 0) {
+      const paginate = this.paginationService.createPaginator({page: params.page, perPage: params.perPage });
+      return paginate<Model, Prisma.UserFindManyArgs>(
+        this.prisma.user, {
+            cursor,
+            where,
+            orderBy
+          });
+    } else {
+      return this.prisma.user.findMany({
+        skip,
+        take,
+        cursor,
+        where,
+        orderBy,
+      });
+    }
   }
 
   findOne(userWhereUniqueInput: Prisma.UserWhereUniqueInput): Promise<Model | null> {

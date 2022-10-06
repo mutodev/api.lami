@@ -1,3 +1,4 @@
+import { PaginationService } from './commons/services/pagination/pagination.service';
 import { CommonsModule } from './commons/commons.module';
 import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
@@ -14,7 +15,7 @@ import { SettingModule } from './setting/setting.module';
 @Module({
   imports: [
     EasyconfigModule.register({ path: './.env' }),
-     UserModule, AuthModule, CustomerModule, OrderModule, FinanceModule, SettingModule],
+    UserModule, AuthModule, CustomerModule, OrderModule, FinanceModule, SettingModule],
   controllers: [AppController],
   providers: [AppService],
   exports: []

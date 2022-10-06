@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, Request } from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { successResponse } from 'src/commons/functions';
 import { JwtAuthGuard } from 'src/commons/guards';
@@ -20,8 +20,8 @@ export class CustomerController {
   }
 
   @Get()
-  async findAll() {
-    const result = await this.customerService.findAll({});
+  async findAll(@Request() req: Request) {
+    const result = await this.customerService.findAll({page: req['query'].page, perPage: req['query'].perPage});
     return successResponse('', result);
   }
 

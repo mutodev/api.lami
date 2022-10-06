@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, Request } from '@nestjs/common';
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
@@ -20,8 +20,8 @@ export class UserController {
   }
 
   @Get()
-  async findAll() {
-    const result = await this.userService.findAll({});
+  async findAll(@Request() req: Request) {
+    const result = await this.userService.findAll({page: req['query'].page, perPage: req['query'].perPage});
     return successResponse('', result);
   }
 
