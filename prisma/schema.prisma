@@ -79,15 +79,17 @@ model Customer {
   firstName           String @db.VarChar(100)
   lastName            String? @db.VarChar(100)
   address             String? @db.VarChar(255)
-  phone               String  @unique @db.VarChar(30)
+  phone               String? @db.VarChar(30)
+  sendToSap           Boolean? @default(false)
+  messageError        String? @db.Text() @default("")
   orders              Order[] @relation(name: "ordercustomer")
   createdAt           DateTime @default(now())
   updatedAt           DateTime @updatedAt
 }
 
 enum EnumCustomerType { 
-  NATURAL
-  JURIDICA
+  PERSONA_NATURAL
+  PERSONA_JURIDICA
 }
 
 
@@ -100,6 +102,8 @@ model Order {
   subTotal            Float
   total               Float
   orderDetails        OrderDetail[] @relation(name: "orderdetailorder")
+  sendToSap           Boolean? @default(false)
+  messageError        String? @db.Text() @default("")
   createdAt           DateTime @default(now())
   updatedAt           DateTime @updatedAt
 }

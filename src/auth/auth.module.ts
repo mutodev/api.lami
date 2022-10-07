@@ -34,6 +34,6 @@ import { JwtStrategy, LocalStrategy } from './strategies';
 })
 export class AuthModule {
   constructor(_env: EasyconfigService) {
-    console.log('EXPIRES_IN', _env.get('EXPIRES_IN'))
+    // console.log('EXPIRES_IN', _env.get('EXPIRES_IN'))
   }
 }
