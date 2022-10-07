@@ -3,7 +3,7 @@ import { FinanceService } from './finance.service';
 import { CreateFinanceDto } from './dto/create-finance.dto';
 import { UpdateFinanceDto } from './dto/update-finance.dto';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
-import { JwtAuthGuard } from 'src/commons/guards';
+import { JwtAuthGuard } from './../commons/guards';
 
 @ApiTags('FINANCE')
 @ApiBearerAuth()

@@ -1,7 +1,7 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, HttpStatus, HttpCode } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
-import { successResponse } from 'src/commons/functions';
-import { LocalAuthGuard } from 'src/commons/guards';
+import { successResponse } from './../commons/functions';
+import { LocalAuthGuard } from './../commons/guards';
 import { AuthService } from './auth.service';
 import { LoginDTO } from './dto/login.dto';
 

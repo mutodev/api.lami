@@ -5,7 +5,7 @@ import {
   Prisma
 } from '@prisma/client';
 import * as bcrypt from 'bcrypt';
-import { PaginationService } from 'src/commons/services/pagination/pagination.service';
+import { PaginationService } from './../commons/services/pagination/pagination.service';
 
 @Global()
 @Injectable()

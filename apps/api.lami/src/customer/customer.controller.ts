@@ -1,7 +1,7 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, Request } from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
-import { successResponse } from 'src/commons/functions';
-import { JwtAuthGuard } from 'src/commons/guards';
+import { successResponse } from './../commons/functions';
+import { JwtAuthGuard } from './../commons/guards';
 import { CustomerService } from './customer.service';
 import { CreateCustomerDto } from './dto/create-customer.dto';
 import { UpdateCustomerDto } from './dto/update-customer.dto';

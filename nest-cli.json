@@ -1,5 +1,31 @@
 {
   "$schema": "https://json.schemastore.org/nest-cli",
   "collection": "@nestjs/schematics",
-  "sourceRoot": "src"
+  "sourceRoot": "apps/api.lami/src",
+  "monorepo": true,
+  "root": "apps/api.lami",
+  "compilerOptions": {
+    "webpack": true,
+    "tsConfigPath": "apps/api.lami/tsconfig.app.json"
+  },
+  "projects": {
+    "api.lami": {
+      "type": "application",
+      "root": "apps/api.lami",
+      "entryFile": "main",
+      "sourceRoot": "apps/api.lami/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/api.lami/tsconfig.app.json"
+      }
+    },
+    "integration": {
+      "type": "application",
+      "root": "apps/integration",
+      "entryFile": "main",
+      "sourceRoot": "apps/integration/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/integration/tsconfig.app.json"
+      }
+    }
+  }
 }

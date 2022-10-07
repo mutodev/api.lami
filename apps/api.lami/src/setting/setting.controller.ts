@@ -3,7 +3,7 @@ import { SettingService } from './setting.service';
 import { CreateSettingDto } from './dto/create-setting.dto';
 import { UpdateSettingDto } from './dto/update-setting.dto';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
-import { JwtAuthGuard } from 'src/commons/guards';
+import { JwtAuthGuard } from './../commons/guards';
 
 @ApiTags('SETTING')
 @ApiBearerAuth()

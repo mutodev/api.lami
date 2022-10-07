@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { Customer as Model , Prisma } from '@prisma/client';
-import { PaginationService } from 'src/commons/services/pagination/pagination.service';
-import { PrismaService } from 'src/commons/services/prisma.service';
+import { PaginationService } from './../commons/services/pagination/pagination.service';
+import { PrismaService } from './../commons/services/prisma.service';
 
 @Injectable()
 export class CustomerService {

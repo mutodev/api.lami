@@ -1,7 +1,7 @@
 import { Global, Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { EasyconfigService } from 'nestjs-easyconfig';
-import { UserService } from 'src/user/user.service';
+import { UserService } from './../user/user.service';
 import * as bcrypt from 'bcrypt';
 
 // @Global()

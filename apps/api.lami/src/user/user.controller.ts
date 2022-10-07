@@ -4,7 +4,7 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { JwtAuthGuard } from './../commons/guards';
-import { successResponse } from 'src/commons/functions';
+import { successResponse } from './../commons/functions';
 
 @ApiTags('USER')
 @ApiBearerAuth()
