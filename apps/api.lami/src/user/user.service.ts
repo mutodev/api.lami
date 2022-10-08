@@ -46,7 +46,8 @@ export class UserService {
         this.prisma.user, {
             cursor,
             where,
-            orderBy
+            orderBy,
+            include: {role: true}
           });
     } else {
       return this.prisma.user.findMany({
@@ -55,6 +56,7 @@ export class UserService {
         cursor,
         where,
         orderBy,
+        include: {role: true}
       });
     }
   }
