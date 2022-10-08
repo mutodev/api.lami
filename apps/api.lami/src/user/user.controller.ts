@@ -8,7 +8,7 @@ import { successResponse } from './../commons/functions';
 
 @ApiTags('USER')
 @ApiBearerAuth()
-// @UseGuards(JwtAuthGuard)
+@UseGuards(JwtAuthGuard)
 @Controller('user')
 export class UserController {
   constructor(private readonly userService: UserService) {}
