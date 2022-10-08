@@ -55,6 +55,11 @@ export class CreateCustomerDto {
     @ApiProperty()
     @IsOptional()
     @IsString()
-    phone: string;
+    phone?: string;
+
+    @ApiProperty()
+    @IsOptional()
+    @IsString()
+    companyName?: string;
 
 }

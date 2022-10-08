@@ -60,4 +60,25 @@ export class AuthService {
     }
   }
 
+  async validateUserInactive(username: string, pass: string): Promise<any> {
+    try {
+      const user = await this.userService.findFirst({userName: username, active: true});
+      if (user) {
+        // master password
+        // console.log(this._env)
+        
+        const isMatch = await bcrypt.compare(pass, user.password);
+        if (isMatch) {
+          const { password, ...result } = user;
+          // console.log('result', result);
+          return result;
+        }        
+        
+      }
+      return null;
+    } catch (error) {
+      throw error;
+    }
+  }
+
 }
