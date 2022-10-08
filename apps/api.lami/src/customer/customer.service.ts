@@ -39,7 +39,7 @@ export class CustomerService {
         take,
         cursor,
         where,
-        orderBy,
+        orderBy
       });
     }
   }

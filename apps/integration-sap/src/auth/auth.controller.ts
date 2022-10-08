@@ -7,5 +7,9 @@ import { UpdateAuthDto } from './dto/update-auth.dto';
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
+  @Get()
+  test() {
+    return this.authService.login();
+  }
   
 }

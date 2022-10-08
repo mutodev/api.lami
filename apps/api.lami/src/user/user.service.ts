@@ -14,7 +14,7 @@ export class UserService {
   constructor(public prisma: PrismaService,
               private paginationService: PaginationService) {}
   
-  async create(data: Prisma.UserCreateInput): Promise<Model> {
+  async create(data: Prisma.UserUncheckedCreateInput): Promise<Model> {
     try {
       const user = await this.prisma.user.findUnique({where: {userName: data.userName}});
       if (user) 

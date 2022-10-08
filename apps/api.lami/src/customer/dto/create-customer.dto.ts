@@ -1,5 +1,4 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { EnumCustomerType, EnumRoles } from '@prisma/client';
 import {
     IsAlphanumeric,
     IsEmail,
@@ -16,12 +15,12 @@ export class CreateCustomerDto {
     @ApiProperty()
     @IsNotEmpty()
     @IsString()
-    type: EnumCustomerType;
+    typeId: string;
 
     @ApiProperty()
     @IsNotEmpty()
     @IsString()
-    identificationType: string;
+    identificationTypeId: string;
 
     @ApiProperty()
     @IsNotEmpty()
