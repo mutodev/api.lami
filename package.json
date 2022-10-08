@@ -6,7 +6,7 @@
   "private": true,
   "license": "UNLICENSED",
   "scripts": {
-    "dev": "nest start api.lami --watch & nest start integration --watch",
+    "dev": "nest start api.lami --watch & nest start integration-sap --watch",
     "prisma": "prisma",
     "prebuild": "rimraf dist",
     "build": "nest build",

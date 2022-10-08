@@ -18,13 +18,13 @@
         "tsConfigPath": "apps/api.lami/tsconfig.app.json"
       }
     },
-    "integration": {
+    "integration-sap": {
       "type": "application",
-      "root": "apps/integration",
+      "root": "apps/integration-sap",
       "entryFile": "main",
-      "sourceRoot": "apps/integration/src",
+      "sourceRoot": "apps/integration-sap/src",
       "compilerOptions": {
-        "tsConfigPath": "apps/integration/tsconfig.app.json"
+        "tsConfigPath": "apps/integration-sap/tsconfig.app.json"
       }
     }
   }

@@ -80,6 +80,7 @@ model Customer {
   lastName            String? @db.VarChar(100)
   address             String? @db.VarChar(255)
   phone               String? @db.VarChar(30)
+  companyName         String?
   sendToSap           Boolean? @default(false)
   messageError        String? @db.Text() @default("")
   orders              Order[] @relation(name: "ordercustomer")

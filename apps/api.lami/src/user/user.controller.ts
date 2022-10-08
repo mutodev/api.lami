@@ -33,7 +33,15 @@ export class UserController {
 
   @Patch(':id')
   async update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
-    const result = await this.userService.update({ where: {id}, data: {...updateUserDto}});
+    const {password, ...user} = updateUserDto;
+    const result = await this.userService.update({ where: {id}, data: {...user}});
+    return successResponse('', result);
+  }
+
+  @Patch(':id')
+  async updatePassword(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
+    const {password, ...user} = updateUserDto;
+    const result = await this.userService.update({ where: {id}, data: {...user}});
     return successResponse('', result);
   }
 

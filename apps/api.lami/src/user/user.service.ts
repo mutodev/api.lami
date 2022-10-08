@@ -15,12 +15,19 @@ export class UserService {
               private paginationService: PaginationService) {}
   
   async create(data: Prisma.UserCreateInput): Promise<Model> {
-    const salt = await bcrypt.genSalt(10);
-    const passwordCrypt = bcrypt.hashSync(data.password, salt);
-    data.password = passwordCrypt;
-    return this.prisma.user.create({
-      data
-    });
+    try {
+      const user = await this.prisma.user.findUnique({where: {userName: data.userName}});
+      if (user) 
+        throw "El usuario ya existe.";
+      const salt = await bcrypt.genSalt(10);
+      const passwordCrypt = bcrypt.hashSync(data.password, salt);
+      data.password = passwordCrypt;
+      return this.prisma.user.create({
+        data
+      });
+    } catch (error) {
+      throw error;
+    }
   }
 
   findAll(params: {
@@ -73,6 +80,10 @@ export class UserService {
     return this.prisma.user.delete({
       where
     });
+  }
+
+  findFirst(userWhereInput: Prisma.UserWhereInput): Promise<Model | null> {
+    return this.prisma.user.findFirst({where: userWhereInput});
   }
 
 }
