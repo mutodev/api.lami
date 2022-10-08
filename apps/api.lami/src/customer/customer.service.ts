@@ -9,7 +9,7 @@ export class CustomerService {
   constructor(public prisma: PrismaService,
     private paginationService: PaginationService) {}
   
-  async create(data: Prisma.CustomerCreateInput): Promise<Model> {
+  async create(data: Prisma.CustomerUncheckedCreateInput): Promise<Model> {
     return this.prisma.customer.create({
       data
     });
