@@ -12,7 +12,7 @@
     "build": "nest build",
     "format": "prettier --write \"apps/**/*.ts\" \"libs/**/*.ts\"",
     "api": "nest start api.lami --watch",
-    "integration": "nest start integration --watch",
+    "sap": "nest start integration-sap --watch",
     "start": "nest start --watch",
     "start:dev": "nest start --watch",
     "start:debug": "nest start --debug --watch",

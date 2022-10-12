@@ -40,3 +40,5 @@ lerna-debug.log*
 .env
 ./ssh/*
 ssh/Ubuntu-LAMI.pem
+ssh/Ubuntu-LAMI2.pem
+ssh/Ubuntu-LAMI3.pem

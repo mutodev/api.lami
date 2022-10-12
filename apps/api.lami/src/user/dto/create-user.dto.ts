@@ -20,6 +20,7 @@ export class CreateUserDto {
     @ApiProperty()
     @IsNotEmpty()
     @IsString()
+    @MinLength(5)
     password: string;
 
     @ApiProperty()
@@ -34,7 +35,7 @@ export class CreateUserDto {
 
     @ApiProperty()
     @IsOptional()
-    @IsString()
+    @IsEmail()
     email?: string;
 
     @ApiProperty()
