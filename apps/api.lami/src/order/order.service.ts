@@ -1,26 +1,70 @@
 import { Injectable } from '@nestjs/common';
-import { CreateOrderDto } from './dto/create-order.dto';
-import { UpdateOrderDto } from './dto/update-order.dto';
+import { Order as Model , Prisma } from '@prisma/client';
+import { PaginationService } from './../commons/services/pagination/pagination.service';
+import { PrismaService } from './../commons/services/prisma.service';
 
 @Injectable()
 export class OrderService {
-  create(createOrderDto: CreateOrderDto) {
-    return 'This action adds a new order';
+  constructor(public prisma: PrismaService,
+    private paginationService: PaginationService) {}
+  
+  async create(data: Prisma.OrderUncheckedCreateInput): Promise<Model> {
+    return this.prisma.order.create({
+      data
+    });
   }
 
-  findAll() {
-    return `This action returns all order`;
+  findAll(params: {
+    skip?: number;
+    take?: number;
+    cursor?: Prisma.OrderWhereUniqueInput;
+    where?: Prisma.OrderWhereInput;
+    orderBy?: Prisma.OrderOrderByWithRelationInput;
+    page?: number,
+    perPage?: number
+  }): Promise<Model[] | any> {
+    const { skip, take, cursor, where, orderBy } = params;
+    if (params.page > 0) {
+      const paginate = this.paginationService.createPaginator({page: params.page, perPage: params.perPage });
+      return paginate<Model, Prisma.OrderFindManyArgs>(
+        this.prisma.order, {
+            cursor,
+            where,
+            orderBy,
+            include: {customer: true}
+          });
+    } else {
+      return this.prisma.order.findMany({
+        skip,
+        take,
+        cursor,
+        where,
+        orderBy,
+        include: {customer: true}
+      });
+    }
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} order`;
+  findOne(userWhereUniqueInput: Prisma.OrderWhereUniqueInput): Promise<Model | null> {
+    return this.prisma.order.findUnique({
+      where: userWhereUniqueInput,
+    });
   }
 
-  update(id: number, updateOrderDto: UpdateOrderDto) {
-    return `This action updates a #${id} order`;
+  update(params: {
+    where: Prisma.OrderWhereUniqueInput;
+    data: Prisma.OrderUpdateInput;
+  }): Promise<Model> {
+    const { where, data } = params;
+    return this.prisma.order.update({
+      data,
+      where,
+    });
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} order`;
+  remove(where: Prisma.OrderWhereUniqueInput): Promise<Model> {
+    return this.prisma.order.delete({
+      where
+    });
   }
 }
