@@ -23,7 +23,7 @@ export class ErrorsInterceptor implements NestInterceptor {
         
         console.log('Enter error', { err });
 
-        const message = err?.message?.toString() || err?.toString();
+        const message = err?.response?.message || err?.message || err?.toString();
         
         return throwError(() =>
           new HttpException(
