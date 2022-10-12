@@ -8,7 +8,7 @@ import { EasyconfigModule } from 'nestjs-easyconfig';
   imports: [
     EasyconfigModule.register({ path: './.env' }),
     HttpModule.register({
-      timeout: 10000,
+      timeout: 50000,
       maxRedirects: 5
     }),
   ],
