@@ -1,4 +1,5 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Ctx, MessagePattern, Payload, RedisContext } from '@nestjs/microservices';
 import { CustomerService } from './customer.service';
 import { CreateCustomerDto } from './dto/create-customer.dto';
 import { UpdateCustomerDto } from './dto/update-customer.dto';
@@ -7,28 +8,30 @@ import { UpdateCustomerDto } from './dto/update-customer.dto';
 export class CustomerController {
   constructor(private readonly customerService: CustomerService) {}
 
-  @Post()
-  create(@Body() createCustomerDto: CreateCustomerDto) {
+  @MessagePattern('customer/create')
+  create(@Payload() createCustomerDto: CreateCustomerDto, @Ctx() context: RedisContext) {
     return this.customerService.create(createCustomerDto);
   }
 
-  @Get()
-  findAll() {
+  @MessagePattern('customer/findall')
+  findAll(@Ctx() context: RedisContext) {
     return this.customerService.findAll();
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.customerService.findOne(+id);
+  @MessagePattern('customer/findone')
+  findOne(@Payload() cardCode: string, @Ctx() context: RedisContext) {
+    return this.customerService.findOne(cardCode);
   }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateCustomerDto: UpdateCustomerDto) {
-    return this.customerService.update(+id, updateCustomerDto);
+  @MessagePattern('customer/update')
+  update(@Payload() updateCustomerDto: UpdateCustomerDto, @Ctx() context: RedisContext) {
+    const {CardCode, ...customer} = updateCustomerDto;
+    return this.customerService.update(CardCode, customer);
   }
 
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.customerService.remove(+id);
+  @MessagePattern('customer/remove')
+  remove(@Payload() cardCode: string, @Ctx() context: RedisContext) {
+    return this.customerService.remove(cardCode);
   }
+
 }

@@ -5,8 +5,8 @@ import { IntegrationSapService } from './integration-sap.service';
 export class IntegrationSapController {
   constructor(private readonly integrationSapService: IntegrationSapService) {}
 
-  @Get()
-  getHello(): string {
-    return this.integrationSapService.getHello();
-  }
+  // @Get()
+  // getHello(): string {
+  //   return this.integrationSapService.getHello();
+  // }
 }

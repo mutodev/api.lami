@@ -1,29 +1,48 @@
 import { Injectable } from '@nestjs/common';
+import { ApiHttp } from '../commons/api-http.service';
+import { EnumApis } from '../commons/enum-apis';
 import { CreateCustomerDto } from './dto/create-customer.dto';
 import { UpdateCustomerDto } from './dto/update-customer.dto';
 
 @Injectable()
 export class CustomerService {
-  create(createCustomerDto: CreateCustomerDto) {
-    const subscription = await this.httpService.post(`${this._env.get('URL_BASE_SAP')}${EnumApis.LOGIN}`, data);
-      const result = await firstValueFrom(subscription);
-      console.log({result})
-      return result.data;
+
+  constructor(private apiHttp: ApiHttp) {}
+
+  async create(createCustomerDto: CreateCustomerDto) {
+    try {
+      const result = await this.apiHttp.post<any>(EnumApis.CUSTOMER, {...createCustomerDto, CardType: 'cCustomer'});
+      return result;
+    } catch (error) {
+      throw error;
+    }
   }
 
-  findAll() {
-    return `This action returns all customer`;
+  async findAll() {
+    const result = await this.apiHttp.get<any>(`${EnumApis.CUSTOMER}?$select=CardCode,CardName,CardType,Address,Phone1,MailAddress`);
+    return result;
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} customer`;
+  async findOne(cardCode: string) {
+    try {
+      const result = await this.apiHttp.get<any>(`${EnumApis.CUSTOMER}(CL-${cardCode})?$select=CardCode,CardName,CardType,Address,Phone1,MailAddress`);
+      return result;
+    } catch (error) {
+      throw error;
+    }
   }
 
-  update(id: number, updateCustomerDto: UpdateCustomerDto) {
-    return `This action updates a #${id} customer`;
+  async update(cardCode: string, updateCustomerDto: UpdateCustomerDto) {
+    try {
+      const result = await this.apiHttp.patch<any>(`${EnumApis.CUSTOMER}(CL-${cardCode})`, {...updateCustomerDto});
+      return result;
+    } catch (error) {
+      throw error;
+    }
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} customer`;
+  async remove(cardCode: string) {
+    const result = await this.apiHttp.delete<any>(`${EnumApis.CUSTOMER}(CL-${cardCode})`);
+    return result;
   }
 }

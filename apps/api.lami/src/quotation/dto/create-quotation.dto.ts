@@ -84,7 +84,7 @@ export class CreateQuotationDto {
     @IsOptional()
     discount?: number;
 
-    @ApiProperty({ type: QutationDetail, isArray: true })
+    @ApiProperty({ type: QuotationDetail, isArray: true })
     @IsArray({each: true})
-    orderDetails: QutationDetail[]
+    orderDetails: QuotationDetail[]
 }
