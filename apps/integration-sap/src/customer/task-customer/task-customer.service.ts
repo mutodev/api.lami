@@ -61,7 +61,7 @@ export class TaskCustomerService {
                                 Phone1: customer.phone,
                                 MailAddress: customer.email
                             });
-                            console.log('respuesta crear cliente'{result})
+                            console.log('respuesta crear cliente', {result})
                             if (result.status === 201) {
                                 customer.sendToSap = true;
                                 await this.prismaService.customer.update({where: {id: customer.id}, data: { sendToSap: true }});
