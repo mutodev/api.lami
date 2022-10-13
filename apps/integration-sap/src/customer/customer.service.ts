@@ -25,7 +25,7 @@ export class CustomerService {
 
   async findOne(cardCode: string) {
     try {
-      const result = await this.apiHttp.get<any>(`${EnumApis.CUSTOMER}('CL-${cardCode}')?$select=CardCode,CardName,Address,Phone1,MailAddress`);
+      const result = await this.apiHttp.get<any>(`${EnumApis.CUSTOMER}(CardCode='CL-${cardCode}')?$select=CardCode,CardName,Address,Phone1,MailAddress`);
       return result;
     } catch (error) {
       throw error;
