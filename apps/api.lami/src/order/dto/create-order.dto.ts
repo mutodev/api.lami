@@ -1,4 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { Type } from 'class-transformer';
 import {
     IsNotEmpty,
     IsString,
@@ -7,59 +8,83 @@ import {
     IsArray
 } from 'class-validator';
 
-export class CreateOrderDto {
-
-    @IsString()
-    @IsNotEmpty()
-    customerId: string;
-
-    @IsString()
-    @IsNotEmpty()
-    date: string;
-
-    @IsNumber()
-    @IsNotEmpty()
-    vatTotal: number;
-
-    @IsNumber()
-    @IsNotEmpty()
-    subTotal: number;
-
-    @IsNumber()
-    @IsNotEmpty()
-    total: number;
-
-    @IsArray()
-    orderDetails: OrderDetail[]
-}
 
 export class OrderDetail {
 
+    @ApiProperty()
     @IsNotEmpty()
     @IsString()
     description: string;
 
+    @ApiProperty()
     @IsOptional()
     @IsString()
     aditionalInfo: string;
 
+    @ApiProperty()
     @IsOptional()
     @IsNumber()
     discount?: number
 
+    @ApiProperty()
     @IsNotEmpty()
     @IsNumber()
     amount: number;
 
+    @ApiProperty()
     @IsNotEmpty()
     @IsNumber()
     value: number;
 
+    @ApiProperty()
     @IsOptional()
     @IsNumber()
     vat?: number;
 
+    @ApiProperty()
     @IsNotEmpty()
     @IsString()
     project: string;
+}
+
+export class CreateOrderDto {
+
+    @ApiProperty()
+    @IsString()
+    @IsNotEmpty()
+    customerId: string;
+
+    @ApiProperty()
+    @IsString()
+    @IsNotEmpty()
+    date: string;
+
+    @ApiProperty()
+    @IsString()
+    @IsOptional()
+    dueDate?: string;
+
+    @ApiProperty()
+    @IsNumber()
+    @IsNotEmpty()
+    vatTotal: number;
+
+    @ApiProperty()
+    @IsNumber()
+    @IsNotEmpty()
+    subTotal: number;
+
+    @ApiProperty()
+    @IsNumber()
+    @IsNotEmpty()
+    total: number;
+
+    @ApiProperty()
+    @IsNumber()
+    @IsOptional()
+    discount?: number;
+
+    @ApiProperty({ type: OrderDetail, isArray: true })
+    @IsArray({each: true})
+    orderDetails: OrderDetail[]
 }

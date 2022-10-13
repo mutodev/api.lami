@@ -103,9 +103,11 @@ model Order {
   customerId          String @db.VarChar(100)
   customer            Customer? @relation(name: "ordercustomer", fields: [customerId], references: [id])
   date                DateTime
-  vatTotal            Float
+  dueDate             DateTime?
+  vatTotal            Float?
   subTotal            Float
   total               Float
+  discount            Float?
   orderDetails        OrderDetail[] @relation(name: "orderdetailorder")
   sendToSap           Boolean? @default(false)
   messageError        String? @db.Text() @default("")
