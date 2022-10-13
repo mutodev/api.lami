@@ -81,11 +81,11 @@ export class TaskCustomerService {
                                 await this.prismaService.customer.update({where: {id: customer.id}, data: { sendToSap: true }});
                             }
                         } else {
-                            await this.prismaService.customer.update({where: {id: customer.id}, data: { sendToSap: false, messageError: message }});
+                            await this.prismaService.customer.update({where: {id: customer.id}, data: { sendToSap: false, messageError: customerSap.message }});
                         }
                        
                     } catch (error) {
-                        const message = (error?.response?.message && JSON.stringify(error?.response?.message)) || error?.message || error?.toString();
+                        const message = (error?.response?.message && JSON.stringify(error?.response?.message)) || error?.message || error?.response?.statusText || error?.toString();
                         await this.prismaService.customer.update({where: {id: customer.id}, data: { sendToSap: false, messageError: message }});
                         console.log('cron crear cliente', {error})
                     }
