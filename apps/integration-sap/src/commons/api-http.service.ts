@@ -52,7 +52,7 @@ export class ApiHttp {
             return {data: result.data, status: result.status};
         } catch (error) {
             let result = error?.response;
-            console.log(endPoint, {error})
+            console.log(endPoint, {error, data: error.response.data})
             return {message: result.message || result?.statusText, status: result.status};
         }
     }
