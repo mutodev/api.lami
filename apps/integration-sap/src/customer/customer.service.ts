@@ -19,13 +19,13 @@ export class CustomerService {
   }
 
   async findAll() {
-    const result = await this.apiHttp.get<any>(`${EnumApis.CUSTOMER}?$select=CardCode,CardName,CardType,Address,Phone1,MailAddress`);
+    const result = await this.apiHttp.get<any>(`${EnumApis.CUSTOMER}?$select=CardCode,CardName,Address,Phone1,MailAddress`);
     return result;
   }
 
   async findOne(cardCode: string) {
     try {
-      const result = await this.apiHttp.get<any>(`${EnumApis.CUSTOMER}(CL-${cardCode})?$select=CardCode,CardName,CardType,Address,Phone1,MailAddress`);
+      const result = await this.apiHttp.get<any>(`${EnumApis.CUSTOMER}(CL-${cardCode})?$select=CardCode,CardName,Address,Phone1,MailAddress`);
       return result;
     } catch (error) {
       throw error;

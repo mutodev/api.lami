@@ -2,6 +2,7 @@ import { INestMicroservice, Logger, ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { Transport } from '@nestjs/microservices';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import { ErrorsInterceptor, ResponseInterceptor } from './commons/interceptors';
 import { IntegrationSapModule } from './integration-sap.module';
 
 const logger = new Logger('Integration sap');
@@ -35,6 +36,8 @@ async function bootstrap() {
       }
     }),
   );
+
+  app.useGlobalInterceptors(new ErrorsInterceptor(), new ResponseInterceptor());
 
   await app.listen(1201);
 
