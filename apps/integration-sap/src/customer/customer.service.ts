@@ -5,7 +5,10 @@ import { UpdateCustomerDto } from './dto/update-customer.dto';
 @Injectable()
 export class CustomerService {
   create(createCustomerDto: CreateCustomerDto) {
-    return 'This action adds a new customer';
+    const subscription = await this.httpService.post(`${this._env.get('URL_BASE_SAP')}${EnumApis.LOGIN}`, data);
+      const result = await firstValueFrom(subscription);
+      console.log({result})
+      return result.data;
   }
 
   findAll() {
