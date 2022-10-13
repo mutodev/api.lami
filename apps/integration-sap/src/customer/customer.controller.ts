@@ -11,7 +11,7 @@ export class CustomerController {
               private authService: AuthService) {}
 
   @Get(':id')
-  async test(@Param() id: string) {
+  async test(@Param('id') id: string) {
     await this.authService.login();
     return await this.customerService.findOne(id);
   }
