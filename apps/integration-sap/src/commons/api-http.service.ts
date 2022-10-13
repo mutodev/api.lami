@@ -17,7 +17,7 @@ export class ApiHttp {
         console.log()
         const subscription = await this.httpService.post<any>(`${this._env.get('URL_BASE_SAP')}${EnumApis.LOGIN}`, data);
         const result = await firstValueFrom(subscription);
-        console.log({result});
+        // console.log({result});
         this.SessionId = result.data.SessionId;
         return result.data;
     }  
@@ -31,7 +31,7 @@ export class ApiHttp {
                 }
             });
             const result = await firstValueFrom(subscription);
-            console.log({result})
+            console.log(endPoint, {result})
             return result.data;
         } catch (error) {
             let result = error?.response;
@@ -47,7 +47,7 @@ export class ApiHttp {
                 }
             });
             const result = await firstValueFrom(subscription);
-            console.log({result})
+            console.log(endPoint, {result})
             return {data: result.data, status: result.status};
         } catch (error) {
             let result = error?.response;
