@@ -8,30 +8,35 @@ import { UpdateCustomerDto } from './dto/update-customer.dto';
 export class CustomerController {
   constructor(private readonly customerService: CustomerService) {}
 
+  @Get('/id')
+  async test(@Param() id: string) {
+    return await this.customerService.findOne(id);
+  }
+
   @MessagePattern('customer/create')
   create(@Payload() createCustomerDto: CreateCustomerDto, @Ctx() context: RedisContext) {
     return this.customerService.create(createCustomerDto);
   }
 
   @MessagePattern('customer/findall')
-  findAll(@Ctx() context: RedisContext) {
-    return this.customerService.findAll();
+  async findAll(@Ctx() context: RedisContext) {
+    return await this.customerService.findAll();
   }
 
   @MessagePattern('customer/findone')
-  findOne(@Payload() cardCode: string, @Ctx() context: RedisContext) {
-    return this.customerService.findOne(cardCode);
+  async findOne(@Payload() cardCode: string, @Ctx() context: RedisContext) {
+    return await this.customerService.findOne(cardCode);
   }
 
   @MessagePattern('customer/update')
-  update(@Payload() updateCustomerDto: UpdateCustomerDto, @Ctx() context: RedisContext) {
+  async update(@Payload() updateCustomerDto: UpdateCustomerDto, @Ctx() context: RedisContext) {
     const {CardCode, ...customer} = updateCustomerDto;
-    return this.customerService.update(CardCode, customer);
+    return await this.customerService.update(CardCode, customer);
   }
 
   @MessagePattern('customer/remove')
-  remove(@Payload() cardCode: string, @Ctx() context: RedisContext) {
-    return this.customerService.remove(cardCode);
+  async remove(@Payload() cardCode: string, @Ctx() context: RedisContext) {
+    return await this.customerService.remove(cardCode);
   }
 
 }
