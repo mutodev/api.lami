@@ -25,7 +25,7 @@ export class CustomerService {
 
   async findOne(cardCode: string) {
     try {
-      const result = await this.apiHttp.get<any>(`${EnumApis.CUSTOMER}(CL-${cardCode})?$select=CardCode,CardName,Address,Phone1,MailAddress`);
+      const result = await this.apiHttp.get<any>(`${EnumApis.CUSTOMER}('CL-${cardCode}')?$select=CardCode,CardName,Address,Phone1,MailAddress`);
       return result;
     } catch (error) {
       throw error;
@@ -34,7 +34,7 @@ export class CustomerService {
 
   async update(cardCode: string, updateCustomerDto: UpdateCustomerDto) {
     try {
-      const result = await this.apiHttp.patch<any>(`${EnumApis.CUSTOMER}(CL-${cardCode})`, {...updateCustomerDto});
+      const result = await this.apiHttp.patch<any>(`${EnumApis.CUSTOMER}('CL-${cardCode}')`, {...updateCustomerDto});
       return result;
     } catch (error) {
       throw error;
@@ -42,7 +42,7 @@ export class CustomerService {
   }
 
   async remove(cardCode: string) {
-    const result = await this.apiHttp.delete<any>(`${EnumApis.CUSTOMER}(CL-${cardCode})`);
+    const result = await this.apiHttp.delete<any>(`${EnumApis.CUSTOMER}('CL-${cardCode}')`);
     return result;
   }
 }
