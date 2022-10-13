@@ -35,7 +35,7 @@ export class ApiHttp {
             return result.data;
         } catch (error) {
             let result = error?.response;
-            return {message: result.message, status: result.status};
+            return {message: result.message || result?.statusText, status: result.status};
         }
     }
 
@@ -51,7 +51,7 @@ export class ApiHttp {
             return {data: result.data, status: result.status};
         } catch (error) {
             let result = error?.response;
-            return {message: result.message, status: result.status};
+            return {message: result.message || result?.statusText, status: result.status};
         }
     }
 
@@ -67,7 +67,7 @@ export class ApiHttp {
             return {data: result.data, status: result.status};
         } catch (error) {
             let result = error?.response;
-            return {message: result.message, status: result.status};
+            return {message: result.message || result?.statusText, status: result.status};
         }
     }
 
@@ -83,7 +83,7 @@ export class ApiHttp {
             return {data: result.data, status: result.status};
         } catch (error) {
             let result = error?.response;
-            return {message: result.message, status: result.status};
+            return {message: result.message || result?.statusText, status: result.status};
         }       
     }
 
@@ -99,7 +99,7 @@ export class ApiHttp {
             return {data: result.data, status: result.status};
         } catch (error) {
             let result = error?.response;
-            return {message: result.message, status: result.status};
+            return {message: result.message || result?.statusText, status: result.status};
         }
     }
 }

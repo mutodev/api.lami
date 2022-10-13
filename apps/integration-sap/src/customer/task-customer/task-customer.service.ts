@@ -53,7 +53,7 @@ export class TaskCustomerService {
                         await this.authService.login();
                         const customerSap = await this.customerService.findOne(customer.identification);
                         console.log({customerSap})
-                        if (!customerSap && !customerSap?.CardCode || customerSap.status === 404) {                            
+                        if (customerSap.status === 404) {                            
                             const result = await this.customerService.create({
                                 CardCode: customer.identification,
                                 CardName: `${customer.firstName} ${customer.lastName}`,
@@ -61,12 +61,12 @@ export class TaskCustomerService {
                                 Phone1: customer.phone,
                                 MailAddress: customer.email
                             });
-
+                            console.log('respuesta crear cliente'{result})
                             if (result.status === 201) {
                                 customer.sendToSap = true;
                                 await this.prismaService.customer.update({where: {id: customer.id}, data: { sendToSap: true }});
                             }
-                        } else if (!customerSap && !customerSap?.CardCode) {
+                        } else if (customerSap.status === 200) {
                             const result = await this.customerService.update(
                                 customer.identification,
                                 {  
@@ -80,6 +80,8 @@ export class TaskCustomerService {
                                 customer.sendToSap = true;
                                 await this.prismaService.customer.update({where: {id: customer.id}, data: { sendToSap: true }});
                             }
+                        } else {
+                            await this.prismaService.customer.update({where: {id: customer.id}, data: { sendToSap: false, messageError: message }});
                         }
                        
                     } catch (error) {
