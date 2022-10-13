@@ -34,6 +34,7 @@ export class ApiHttp {
             console.log(endPoint, {result})
             return result.data;
         } catch (error) {
+            console.log(endPoint, {error})
             let result = error?.response;
             return {message: result.message || result?.statusText, status: result.status};
         }
@@ -51,6 +52,7 @@ export class ApiHttp {
             return {data: result.data, status: result.status};
         } catch (error) {
             let result = error?.response;
+            console.log(endPoint, {error})
             return {message: result.message || result?.statusText, status: result.status};
         }
     }
@@ -82,6 +84,7 @@ export class ApiHttp {
             console.log({result})
             return {data: result.data, status: result.status};
         } catch (error) {
+            console.log(endPoint, {error})
             let result = error?.response;
             return {message: result.message || result?.statusText, status: result.status};
         }       
@@ -98,6 +101,7 @@ export class ApiHttp {
             console.log({result})
             return {data: result.data, status: result.status};
         } catch (error) {
+            console.log(endPoint, {error})
             let result = error?.response;
             return {message: result.message || result?.statusText, status: result.status};
         }
