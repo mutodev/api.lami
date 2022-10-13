@@ -9,7 +9,6 @@ import { CustomerModule } from './customer/customer.module';
 import { OrderModule } from './order/order.module';
 import { FinanceModule } from './finance/finance.module';
 import { EasyconfigModule } from 'nestjs-easyconfig';
-import { PrismaService } from './commons/services/prisma.service';
 import { SettingModule } from './setting/setting.module';
 
 @Module({

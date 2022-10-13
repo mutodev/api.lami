@@ -1,7 +1,6 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Ctx, MessagePattern, Payload, RedisContext } from '@nestjs/microservices';
 import { AuthService } from './auth.service';
-import { CreateAuthDto } from './dto/create-auth.dto';
-import { UpdateAuthDto } from './dto/update-auth.dto';
 
 @Controller('auth')
 export class AuthController {
@@ -10,6 +9,11 @@ export class AuthController {
   @Get()
   test() {
     return this.authService.login();
+  }
+
+  @MessagePattern('auth/login')
+  async findById(@Ctx() context: RedisContext) {
+    return await this.authService.login();
   }
   
 }

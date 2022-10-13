@@ -2,20 +2,21 @@ import { HttpService } from '@nestjs/axios';
 import { Injectable } from '@nestjs/common';
 import { EasyconfigService } from 'nestjs-easyconfig';
 import { firstValueFrom } from 'rxjs';
+import { ApiHttp } from '../commons/api-http.service';
 import { EnumApis } from '../commons/enum-apis';
 
 @Injectable()
 export class AuthService {
 
-  constructor(private httpService: HttpService,
+  constructor(private apiHttp: ApiHttp,
               private _env: EasyconfigService) {}
+
   async login() {
     try {
       const data = JSON.parse(this._env.get('CREDENTIALS_SAP'));
-      const subscription = await this.httpService.post(`${this._env.get('URL_BASE_SAP')}${EnumApis.LOGIN}`, data);
-      const result = await firstValueFrom(subscription);
+      const result = await this.apiHttp.post<any>(EnumApis.LOGIN, data);
       console.log({result})
-      return result.data;
+      return result;
     } catch (error) {
       console.log(error)
       throw error;
