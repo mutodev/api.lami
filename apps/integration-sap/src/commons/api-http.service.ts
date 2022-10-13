@@ -14,7 +14,8 @@ export class ApiHttp {
 
     async login() {
         const data = JSON.parse(this._env.get('CREDENTIALS_SAP'));
-        const subscription = await this.httpService.post<any>(EnumApis.LOGIN, data);
+        console.log()
+        const subscription = await this.httpService.post<any>(`${this._env.get('URL_BASE_SAP')}${EnumApis.LOGIN}`, data);
         const result = await firstValueFrom(subscription);
         console.log({result});
         this.SessionId = result.data.SessionId;
