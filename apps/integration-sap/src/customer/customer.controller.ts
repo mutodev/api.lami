@@ -8,7 +8,7 @@ import { UpdateCustomerDto } from './dto/update-customer.dto';
 export class CustomerController {
   constructor(private readonly customerService: CustomerService) {}
 
-  @Get('/id')
+  @Get(':id')
   async test(@Param() id: string) {
     return await this.customerService.findOne(id);
   }
