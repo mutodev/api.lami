@@ -15,7 +15,7 @@ export class AuthService {
       const subscription = await this.httpService.post(`${this._env.get('URL_BASE_SAP')}${EnumApis.LOGIN}`, data);
       const result = await firstValueFrom(subscription);
       console.log({result})
-      return result;
+      return result.data;
     } catch (error) {
       console.log(error)
       throw error;
