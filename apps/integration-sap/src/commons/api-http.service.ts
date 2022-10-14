@@ -32,7 +32,7 @@ export class ApiHttp {
             });
             const result = await firstValueFrom(subscription);
             console.log(endPoint, {result})
-            return result.data;
+            return {data: result.data, status: result.status};
         } catch (error) {
             console.log(endPoint, {error})
             let result = error?.response;
