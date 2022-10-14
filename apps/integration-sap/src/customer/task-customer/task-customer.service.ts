@@ -67,6 +67,7 @@ export class TaskCustomerService {
                                 await this.prismaService.customer.update({where: {id: customer.id}, data: { sendToSap: true }});
                             }
                         } else if (customerSap.status === 200) {
+                            console.log('entro a update customer')
                             const result = await this.customerService.update(
                                 customer.identification,
                                 {  
@@ -75,7 +76,7 @@ export class TaskCustomerService {
                                     Phone1: customer.phone,
                                     MailAddress: customer.email
                                 });
-
+                                console.log('update customer', result)
                             if (result.status === 204) {
                                 customer.sendToSap = true;
                                 await this.prismaService.customer.update({where: {id: customer.id}, data: { sendToSap: true }});
