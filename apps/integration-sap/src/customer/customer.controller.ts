@@ -13,7 +13,7 @@ export class CustomerController {
   @Get(':id')
   async test(@Param('id') id: string) {
     await this.authService.login();
-    return await this.customerService.findOne(id);
+    return await this.customerService.findAll();
   }
 
   @MessagePattern('customer/create')
