@@ -2,5 +2,6 @@ export enum EnumApis {
     LOGIN = '/Login',
     CUSTOMER = '/BusinessPartners',
     ORDER = '/Orders',
-    ITEM = '/Items'
+    ITEM = '/Items',
+    WHEREHOUSE = '/Warehouses'
 }
