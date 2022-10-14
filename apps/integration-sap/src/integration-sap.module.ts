@@ -5,12 +5,16 @@ import { CustomerModule } from './customer/customer.module';
 import { ScheduleModule } from '@nestjs/schedule';
 import { AuthModule } from './auth/auth.module';
 import { PrismaService } from './commons/prisma.service';
+import { OrderModule } from './order/order.module';
+import { ProductModule } from './product/product.module';
 
 @Module({
   imports: [
     AuthModule,
     CustomerModule,
-    ScheduleModule.forRoot()
+    ScheduleModule.forRoot(),
+    OrderModule,
+    ProductModule
   ],
   controllers: [IntegrationSapController],
   providers: [IntegrationSapService],

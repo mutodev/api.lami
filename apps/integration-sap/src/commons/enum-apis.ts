@@ -1,4 +1,6 @@
 export enum EnumApis {
-    LOGIN = '/b1s/v1/Login',
-    CUSTOMER = '/b1s/v1/BusinessPartners'
+    LOGIN = '/Login',
+    CUSTOMER = '/BusinessPartners',
+    ORDER = '/Orders',
+    ITEM = '/Items'
 }
