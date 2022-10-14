@@ -8,6 +8,7 @@ import { PrismaService } from './commons/prisma.service';
 import { OrderModule } from './order/order.module';
 import { ProductModule } from './product/product.module';
 import { WarehoureModule } from './warehoure/warehoure.module';
+import { SerieModule } from './serie/serie.module';
 
 @Module({
   imports: [
@@ -16,7 +17,8 @@ import { WarehoureModule } from './warehoure/warehoure.module';
     ScheduleModule.forRoot(),
     OrderModule,
     ProductModule,
-    WarehoureModule
+    WarehoureModule,
+    SerieModule
   ],
   controllers: [IntegrationSapController],
   providers: [IntegrationSapService],
