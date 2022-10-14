@@ -10,11 +10,11 @@ export class CustomerController {
   constructor(private readonly customerService: CustomerService,
               private authService: AuthService) {}
 
-  // @Get(':id')
-  // async test(@Param('id') id: string) {
-  //   await this.authService.login();
-  //   return await this.customerService.findOne(id);
-  // }
+  @Get(':id')
+  async test(@Param('id') id: string) {
+    await this.authService.login();
+    return await this.customerService.findOne(id);
+  }
 
   @MessagePattern('customer/create')
   create(@Payload() createCustomerDto: CreateCustomerDto, @Ctx() context: RedisContext) {

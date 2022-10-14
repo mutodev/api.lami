@@ -10,8 +10,9 @@ export class CustomerService {
     private paginationService: PaginationService) {}
   
   async create(data: Prisma.CustomerUncheckedCreateInput): Promise<Model> {
+    const {identification, ...customer} = data;
     return this.prisma.customer.create({
-      data
+      data: {...customer, identification: `CL-${identification}`}
     });
   }
 
@@ -57,8 +58,9 @@ export class CustomerService {
     data: Prisma.CustomerUpdateInput;
   }): Promise<Model> {
     const { where, data } = params;
+    const {identification, ...customer} = data;
     return this.prisma.customer.update({
-      data,
+      data: {...customer, sendToSap: false},
       where,
     });
   }
