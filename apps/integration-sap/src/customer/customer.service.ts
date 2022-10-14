@@ -11,7 +11,7 @@ export class CustomerService {
 
   async create(createCustomerDto: CreateCustomerDto) {
     try {
-      const result = await this.apiHttp.post<any>(EnumApis.CUSTOMER, {...createCustomerDto, CardType: 'cCustomer'});
+      const result = await this.apiHttp.post<any>(EnumApis.CUSTOMER, {...createCustomerDto, CardType: 'cLid', GroupCode: '107'});
       return result;
     } catch (error) {
       throw error;
