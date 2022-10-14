@@ -1,4 +1,5 @@
 import { Injectable } from '@nestjs/common';
+import { AuthService } from '../auth/auth.service';
 import { ApiHttp } from '../commons/api-http.service';
 import { EnumApis } from '../commons/enum-apis';
 import { CreateProductDto } from './dto/create-product.dto';
@@ -6,7 +7,8 @@ import { UpdateProductDto } from './dto/update-product.dto';
 
 @Injectable()
 export class ProductService {
-  constructor(private apiHttp: ApiHttp) {}
+  constructor(private apiHttp: ApiHttp,
+              private authService: AuthService) {}
 
   async create(createProductDto: CreateProductDto) {
     try {
@@ -18,12 +20,14 @@ export class ProductService {
   }
 
   async findAll() {
+    await this.authService.login();
     const result = await this.apiHttp.get<any>(`${EnumApis.ITEM}?$select=*`);
     return result;
   }
 
   async findOne(itemCode: string) {
     try {
+      await this.authService.login();
       const result = await this.apiHttp.get<any>(`${EnumApis.ITEM}('${itemCode}')?$select=*`);
       return result;
     } catch (error) {
