@@ -18,6 +18,14 @@ export class CustomerController {
     return await this.customerService.findOne(id);
   }
 
+
+  @Get()
+  async all(@Param('id') id: string) {
+    await this.authService.login();
+    return await this.customerService.findAll();
+  }
+
+
   @Get('migrate/:id')
   async migrate(@Param('id') id: string) {
     await this.authService.login();
