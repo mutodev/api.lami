@@ -102,8 +102,8 @@ model Order {
   id                  String @default(uuid()) @id
   customerId          String @db.VarChar(100)
   customer            Customer? @relation(name: "ordercustomer", fields: [customerId], references: [id])
-  date                DateTime
-  dueDate             DateTime?
+  date                DateTime @db.Date
+  dueDate             DateTime? @db.Date
   vatTotal            Float?
   subTotal            Float
   total               Float
@@ -119,6 +119,7 @@ model OrderDetail {
   id                  String @default(uuid()) @id
   orderId             String @db.VarChar(100)
   order               Order? @relation(name: "orderdetailorder", fields: [orderId], references: [id])
+  itemCode            String
   description         String
   aditionalInfo       String
   discount            Float

@@ -14,10 +14,11 @@ export class OrderController {
 
   @Post()
   create(@Body() createOrderDto: CreateOrderDto) {
+    console.log({createOrderDto})
     const {orderDetails, ...order} = createOrderDto
     return this.orderService.create({...order, orderDetails: {
       create: [
-        ...orderDetails as any[]
+        ...(orderDetails as any[])
       ]
     }});
   }
@@ -37,7 +38,7 @@ export class OrderController {
     const {orderDetails, ...order} = updateOrderDto
     return this.orderService.update({where: {id}, data: {...updateOrderDto, orderDetails: {
       create: [
-        ...orderDetails as any[]
+        ...(orderDetails as any[])
       ]
     }}});
   }

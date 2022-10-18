@@ -5,12 +5,19 @@ import {
     IsString,
     IsOptional,
     IsNumber,
-    IsArray
+    IsArray,
+    IsDateString,
+    IsDate
 } from 'class-validator';
 
 
 export class OrderDetail {
 
+    @ApiProperty()
+    @IsNotEmpty()
+    @IsString()
+    itemCode: string;
+    
     @ApiProperty()
     @IsNotEmpty()
     @IsString()
@@ -55,19 +62,19 @@ export class CreateOrderDto {
     customerId: string;
 
     @ApiProperty()
-    @IsString()
+    @IsDate()
     @IsNotEmpty()
-    date: string;
+    date: Date;
 
     @ApiProperty()
-    @IsString()
+    @IsDate()
     @IsOptional()
-    dueDate?: string;
+    dueDate?: Date;
 
     @ApiProperty()
     @IsNumber()
-    @IsNotEmpty()
-    vatTotal: number;
+    @IsOptional()
+    vatTotal?: number;
 
     @ApiProperty()
     @IsNumber()
@@ -86,5 +93,6 @@ export class CreateOrderDto {
 
     @ApiProperty({ type: OrderDetail, isArray: true })
     @IsArray({each: true})
+    @Type(() => OrderDetail)
     orderDetails: OrderDetail[]
 }

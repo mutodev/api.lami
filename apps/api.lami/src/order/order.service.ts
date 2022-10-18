@@ -9,6 +9,7 @@ export class OrderService {
     private paginationService: PaginationService) {}
   
   async create(data: Prisma.OrderUncheckedCreateInput): Promise<Model> {
+    console.log({data: JSON.stringify(data)})
     return this.prisma.order.create({
       data
     });
