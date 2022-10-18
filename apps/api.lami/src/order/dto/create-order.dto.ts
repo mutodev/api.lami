@@ -92,7 +92,7 @@ export class CreateOrderDto {
     discount?: number;
 
     @ApiProperty({ type: OrderDetail, isArray: true })
-    @IsArray({each: true})
+    @IsArray()
     @Type(() => OrderDetail)
     orderDetails: OrderDetail[]
 }
