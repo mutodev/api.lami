@@ -34,7 +34,7 @@ export class CustomerController {
   @Patch(':id')
   async update(@Param('id') id: string, @Body() updateCustomerDto: UpdateCustomerDto) {
     const result = await this.customerService.update({where: {id}, data: {...updateCustomerDto}});
-    return successResponse('', result);
+    return successResponse('Registro actualizado satisfactoriamente.', result);
   }
 
   @Delete(':id')
