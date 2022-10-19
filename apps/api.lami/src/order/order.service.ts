@@ -50,7 +50,8 @@ export class OrderService {
     return this.prisma.order.findUnique({
       where: userWhereUniqueInput,
       include: {
-        customer: true
+        customer: true,
+        orderDetails: true
       }
     });
   }
