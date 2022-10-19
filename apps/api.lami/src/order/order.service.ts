@@ -49,6 +49,9 @@ export class OrderService {
   findOne(userWhereUniqueInput: Prisma.OrderWhereUniqueInput): Promise<Model | null> {
     return this.prisma.order.findUnique({
       where: userWhereUniqueInput,
+      include: {
+        customer: true
+      }
     });
   }
 
