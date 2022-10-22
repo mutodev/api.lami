@@ -82,6 +82,7 @@ model Customer {
   email               String @db.VarChar(100)
   firstName           String @db.VarChar(100)
   lastName            String? @db.VarChar(100)
+  lastName2           String? @db.VarChar(100)
   address             String? @db.VarChar(255)
   phone               String? @db.VarChar(30)
   companyName         String?

@@ -43,7 +43,7 @@ export class TaskCustomerService {
     async createCustomer() {
         try {
 
-            const customers = await this.prismaService.customer.findMany({where: { sendToSap: false }});
+            const customers = await this.prismaService.customer.findMany({where: { sendToSap: false }, include: {type: true}});
 
             if (customers.length > 0) {
                 await Promise.all(customers.map(async (customer) => {
@@ -59,7 +59,37 @@ export class TaskCustomerService {
                                 CardName: `${customer.firstName} ${customer.lastName}`,
                                 Address: customer.address,
                                 Phone1: customer.phone,
-                                MailAddress: customer.email
+                                MailAddress: customer.address,
+                                CardType: customer.cardType,
+                                FederalTaxID: customer.identification,
+                                GroupCode: customer.groupCode,
+                                PayTermsGrpCode: customer.payTermsGrpCode,
+                                SalesPersonCode: customer.salesPersonCode,
+                                EmailAddress: customer.email,
+                                U_HBT_RegTrib: customer.U_HBT_RegTrib,
+                                U_HBT_TipDoc: customer.U_HBT_TipDoc,
+                                U_HBT_MunMed:  customer.U_HBT_MunMed,
+                                U_HBT_TipEnt: customer.type.code,
+                                U_HBT_Nombres: customer.firstName,
+                                U_HBT_Apellido1: customer.lastName,
+                                U_HBT_Apellido2: customer.lastName2,
+                                U_HBT_Nacional: customer.U_HBT_Nacional,
+                                U_HBT_RegFis: customer.U_HBT_RegFis,
+                                U_HBT_ResFis: customer.U_HBT_ResFis,
+                                U_HBT_MedPag: customer.U_HBT_MedPag,
+                                BPAddresses: {
+                                    AddressName: customer.AddressName,
+                                    Street: null,
+                                    Block: null,
+                                    ZipCode: null,
+                                    City: null,
+                                    County: null,
+                                    Country: null,
+                                    State: null,
+                                    U_HBT_MunMed: customer.U_HBT_MunMed,
+                                    U_HBT_DirMM: customer.U_HBT_DirMM
+                                }
+
                             });
                             console.log('respuesta crear cliente', {result})
                             if (result.status === 201) {

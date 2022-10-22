@@ -12,7 +12,7 @@ export class CustomerService {
   async create(data: Prisma.CustomerUncheckedCreateInput): Promise<Model> {
     const {identification, ...customer} = data;
     return this.prisma.customer.create({
-      data: {...customer, identification: `CL-${identification}`}
+      data: {...customer, identification: `CL-${identification}`, cardType: customer.source}
     });
   }
 

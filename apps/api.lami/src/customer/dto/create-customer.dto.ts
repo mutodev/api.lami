@@ -48,6 +48,11 @@ export class CreateCustomerDto {
     lastName: string;
 
     @ApiProperty()
+    @IsNotEmpty()
+    @IsString()
+    lastName2: string;
+
+    @ApiProperty()
     @IsOptional()
     @IsString()
     address?: string;
