@@ -87,6 +87,33 @@ model Customer {
   companyName         String?
   sendToSap           Boolean? @default(false)
   messageError        String? @db.Text() @default("")
+  cardType            String? // es igual source
+  groupCode           String?
+  payTermsGrpCode     String?
+  salesPersonCode     String?
+  U_HBT_RegTrib       String?
+  U_HBT_TipDoc        String?
+  U_HBT_MunMed        String? 
+  U_HBT_TipEnt        String? // es igual a type
+  U_HBT_Nombres       String?
+  U_HBT_Apellido1     String?
+  U_HBT_Apellido2     String?
+  U_HBT_Nacional      String?
+  U_HBT_RegFis        String?
+  U_HBT_ResFis        String?
+  U_HBT_MedPag        String?
+  AddressName         String?
+  Street              String?
+  Block               String?
+  ZipCode             String? @default("0")
+  City                String?
+  County              String?
+  Country             String? @default("CO")
+  State               String?
+  AddressType         String? @default("bo_BillTo")
+  BPCode              String?
+  U_HBT_DirMM         String?
+
   orders              Order[] @relation(name: "ordercustomer")
   createdAt           DateTime @default(now())
   updatedAt           DateTime @updatedAt

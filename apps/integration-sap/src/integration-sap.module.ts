@@ -9,9 +9,11 @@ import { OrderModule } from './order/order.module';
 import { ProductModule } from './product/product.module';
 import { WarehoureModule } from './warehoure/warehoure.module';
 import { SerieModule } from './serie/serie.module';
+import { CommonsModule } from './commons/commons.module';
 
 @Module({
   imports: [
+    CommonsModule,
     AuthModule,
     CustomerModule,
     ScheduleModule.forRoot(),
