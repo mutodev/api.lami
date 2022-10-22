@@ -62,4 +62,49 @@ export class CreateCustomerDto {
     @IsString()
     companyName?: string;
 
+    @ApiProperty()
+    @IsOptional()
+    @IsString()
+    U_HBT_RegTrib?: string; 
+
+    @ApiProperty()
+    @IsOptional()
+    @IsString()
+    groupCode?: string; 
+
+    @ApiProperty()
+    @IsOptional()
+    @IsString()
+    payTermsGrpCode?: string; 
+
+    @ApiProperty()
+    @IsOptional()
+    @IsString()
+    salesPersonCode?: string; 
+
+    @ApiProperty()
+    @IsOptional()
+    @IsString()
+    U_HBT_TipDoc?: string; 
+
+    @ApiProperty()
+    @IsOptional()
+    @IsString()
+    U_HBT_MunMed?: string; 
+
+    @ApiProperty()
+    @IsOptional()
+    @IsString()
+    U_HBT_Nacional?: string; 
+
+    @ApiProperty()
+    @IsOptional()
+    @IsString()
+    U_HBT_RegFis?: string; 
+
+    @ApiProperty()
+    @IsOptional()
+    @IsString()
+    U_HBT_MedPag?: string; 
+
 }
