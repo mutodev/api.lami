@@ -78,6 +78,7 @@ model Customer {
   identificationTypeId  String @db.VarChar(100)
   identificationType  SettingDetail? @relation(name: "identificationtypesetting", fields: [identificationTypeId], references: [id])
   identification      String @db.VarChar(20) @unique
+  name                String?
   source              String @db.VarChar(100)
   email               String @db.VarChar(100)
   firstName           String @db.VarChar(100)

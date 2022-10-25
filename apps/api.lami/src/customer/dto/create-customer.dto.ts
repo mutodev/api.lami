@@ -7,7 +7,9 @@ import {
     MinLength,
     IsMongoId,
     IsOptional,
-    IsBoolean
+    IsBoolean,
+    Validate,
+    ValidateIf
 } from 'class-validator';
 
 export class CreateCustomerDto {
@@ -25,6 +27,11 @@ export class CreateCustomerDto {
     @ApiProperty()
     @IsNotEmpty()
     @IsString()
+    name: string;
+
+    @ApiProperty()
+    @IsNotEmpty()
+    @IsString()
     identification: string
 
     @ApiProperty()
@@ -38,18 +45,21 @@ export class CreateCustomerDto {
     email: string;
 
     @ApiProperty()
-    @IsNotEmpty()
     @IsString()
+    @ValidateIf((item) => item.source === 'C')
+    @IsNotEmpty()
     firstName: string;
 
     @ApiProperty()
-    @IsNotEmpty()
     @IsString()
+    @ValidateIf((item) => item.source === 'C')
+    @IsNotEmpty()
     lastName: string;
 
     @ApiProperty()
-    @IsNotEmpty()
     @IsString()
+    @ValidateIf((item) => item.source === 'C')
+    @IsNotEmpty()
     lastName2: string;
 
     @ApiProperty()
@@ -93,8 +103,9 @@ export class CreateCustomerDto {
     U_HBT_TipDoc?: string; 
 
     @ApiProperty()
-    @IsOptional()
     @IsString()
+    @ValidateIf((item) => item.source === 'C')
+    @IsNotEmpty()
     U_HBT_MunMed?: string; 
 
     @ApiProperty()
