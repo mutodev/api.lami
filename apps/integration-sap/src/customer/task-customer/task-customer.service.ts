@@ -43,7 +43,7 @@ export class TaskCustomerService {
     async createCustomer() {
         try {
 
-            const customers = await this.prismaService.customer.findMany({where: { sendToSap: false }, include: {type: true}});
+            const customers = await this.prismaService.customer.findMany({where: { sendToSap: false }, include: {type: true, identificationType: true}});
 
             if (customers.length > 0) {
                 await Promise.all(customers.map(async (customer) => {
@@ -67,7 +67,7 @@ export class TaskCustomerService {
                                 SalesPersonCode: customer.salesPersonCode,
                                 EmailAddress: customer.email,
                                 U_HBT_RegTrib: customer.U_HBT_RegTrib,
-                                U_HBT_TipDoc: customer.U_HBT_TipDoc,
+                                U_HBT_TipDoc: customer.identificationType.code,
                                 U_HBT_MunMed:  customer.U_HBT_MunMed,
                                 U_HBT_TipEnt: customer.type.code,
                                 U_HBT_Nombres: customer.firstName,
