@@ -75,11 +75,6 @@ export class CreateCustomerDto {
     @ApiProperty()
     @IsOptional()
     @IsString()
-    companyName?: string;
-
-    @ApiProperty()
-    @IsOptional()
-    @IsString()
     U_HBT_RegTrib?: string; 
 
     @ApiProperty()
@@ -96,11 +91,6 @@ export class CreateCustomerDto {
     @IsOptional()
     @IsString()
     salesPersonCode?: string; 
-
-    @ApiProperty()
-    @IsOptional()
-    @IsString()
-    U_HBT_TipDoc?: string; 
 
     @ApiProperty()
     @IsString()

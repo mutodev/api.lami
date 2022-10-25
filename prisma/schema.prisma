@@ -86,7 +86,7 @@ model Customer {
   lastName2           String? @db.VarChar(100)
   address             String? @db.VarChar(255)
   phone               String? @db.VarChar(30)
-  companyName         String?
+  // companyName         String?
   sendToSap           Boolean? @default(false)
   messageError        String? @db.Text() @default("")
   cardType            String? // es igual source
@@ -94,7 +94,7 @@ model Customer {
   payTermsGrpCode     String?
   salesPersonCode     String?
   U_HBT_RegTrib       String?
-  U_HBT_TipDoc        String?
+  U_HBT_TipDoc        String? // es igual identification type
   U_HBT_MunMed        String? 
   U_HBT_TipEnt        String? // es igual a type
   U_HBT_Nombres       String?
