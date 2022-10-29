@@ -12,6 +12,7 @@ export class CustomerService {
   async create(createCustomerDto: CreateCustomerDto) {
     try {
       const {BPAddresses, ...customer} = createCustomerDto;
+      console.log('json customer', JSON.stringify(createCustomerDto))
       const result = await this.apiHttp.post<any>(EnumApis.CUSTOMER, {...customer, BPAddresses: [BPAddresses]});
       return result;
     } catch (error) {
@@ -26,7 +27,7 @@ export class CustomerService {
 
   async findOne(cardCode: string) {
     try {
-      const result = await this.apiHttp.get<any>(`${EnumApis.CUSTOMER}('${cardCode}')?$select=CardCode,CardName,Address,Phone1,MailAddress`);
+      const result = await this.apiHttp.get<any>(`${EnumApis.CUSTOMER}('${cardCode}')?$select=CardCode,CardName,Address,Phone1,MailAddress,BPAddresses`);
       return result;
     } catch (error) {
       throw error;

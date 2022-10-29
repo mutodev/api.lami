@@ -1472,3 +1472,7 @@ insert into public."SettingDetail"(id, "createdAt", "updatedAt", "settingId", co
 insert into public."SettingDetail"(id, "createdAt", "updatedAt", "settingId", code, "name")values(uuid_generate_v1(), now(), now(),'f16eb27a-5191-11ed-b8b2-93cfa5187c2a','R-99-PN','No aplica - Otros');
 
 
+-- County
+
+insert into public."Setting"(id, "name", "createdAt", "updatedAt")values('43de025a-578b-11ed-b8b2-93cfa5187c2a', 'County', now(), now());
+

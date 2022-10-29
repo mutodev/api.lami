@@ -97,15 +97,55 @@ export class TaskCustomerService {
                                 await this.prismaService.customer.update({where: {id: customer.id}, data: { sendToSap: true }});
                             }
                         } else if (customerSap.status === 200) {
-                            console.log('entro a update customer')
+                            console.log('entro a update customer');
+                            const {BPAddresses} = customerSap.data
+                            const BPAddressesListString = JSON.stringify(BPAddresses);
+                            const bPAddresses = {
+                                AddressName: customer.AddressName,
+                                Street: customer.Street,
+                                Block: customer.Block,
+                                ZipCode: customer.ZipCode,
+                                City: customer.City,
+                                County: customer.County,
+                                Country: customer.Country,
+                                State: customer.State,
+                                U_HBT_MunMed: customer.U_HBT_MunMed,
+                                U_HBT_DirMM: customer.U_HBT_DirMM
+                            };
+                            const bPAddressesString = JSON.stringify(bPAddresses);
+                            const exists = BPAddressesListString.includes(bPAddressesString);
+
+                            const body = {
+                                CardCode: customer.identification,
+                                CardName: `${customer.firstName} ${customer.lastName}`,
+                                Address: customer.address,
+                                Phone1: customer.phone,
+                                MailAddress: customer.address || customerSap.data?.MailAddress,
+                                CardType: customer.cardType,
+                                FederalTaxID: customer.identification,
+                                GroupCode: customer.groupCode,
+                                PayTermsGrpCode: customer.payTermsGrpCode || customerSap.data?.PayTermsGrpCode,
+                                SalesPersonCode: customer.salesPersonCode || customerSap.data?.SalesPersonCode,
+                                EmailAddress: customer.email,
+                                U_HBT_RegTrib: customer.U_HBT_RegTrib || customerSap.data?.U_HBT_RegTrib,
+                                U_HBT_TipDoc: customer.identificationType.code || customerSap.data?.U_HBT_TipDoc,
+                                U_HBT_MunMed:  customer.U_HBT_MunMed || customerSap.data?.U_HBT_MunMed,
+                                U_HBT_TipEnt: customer.type.code,
+                                U_HBT_Nombres: customer.firstName,
+                                U_HBT_Apellido1: customer.lastName,
+                                U_HBT_Apellido2: customer.lastName2,
+                                U_HBT_Nacional: customer.U_HBT_Nacional,
+                                U_HBT_RegFis: customer.U_HBT_RegFis || customerSap.data?.U_HBT_RegFis,
+                                U_HBT_ResFis: customer.U_HBT_ResFis || customerSap.data?.U_HBT_ResFis,
+                                U_HBT_MedPag: customer.U_HBT_MedPag || customerSap.data?.U_HBT_MedPag                                
+                            };
+                            if (!exists) {
+                                body['BPAddresses'] = bPAddresses;
+                            }
                             const result = await this.customerService.update(
-                                customer.identification,
-                                {  
-                                    CardName: `${customer.firstName} ${customer.lastName}`,
-                                    Address: customer.address,
-                                    Phone1: customer.phone,
-                                    MailAddress: customer.email
-                                });
+                                customer.identification, 
+                                body
+                                );
                                 console.log('update customer', result)
                             if (result.status === 204) {
                                 customer.sendToSap = true;
