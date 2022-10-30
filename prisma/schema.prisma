@@ -105,7 +105,7 @@ model Customer {
   U_HBT_ResFis        String?
   U_HBT_MedPag        String?
   AddressName         String?
-  Street              String?
+  Street              String? @default("GENERAL")
   Block               String?
   ZipCode             String? @default("0")
   City                String?
