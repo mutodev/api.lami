@@ -61,7 +61,7 @@ export class TaskCustomerService {
                                 Phone1: customer.phone,
                                 MailAddress: customer.address,
                                 CardType: customer.cardType,
-                                FederalTaxID: customer.identification,
+                                FederalTaxID: customer.FederalTaxID,
                                 GroupCode: customer.groupCode,
                                 PayTermsGrpCode: customer.payTermsGrpCode,
                                 SalesPersonCode: customer.salesPersonCode,

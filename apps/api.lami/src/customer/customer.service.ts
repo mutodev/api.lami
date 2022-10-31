@@ -14,7 +14,8 @@ export class CustomerService {
     return this.prisma.customer.create({
       data: {...customer, 
       identification: `CL-${identification}`, 
-      cardType: customer.source
+      cardType: customer.source,
+      FederalTaxID: identification
       }
     });
   }

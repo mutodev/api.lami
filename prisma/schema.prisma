@@ -115,7 +115,7 @@ model Customer {
   AddressType         String? @default("bo_BillTo")
   BPCode              String?
   U_HBT_DirMM         String?
-
+  FederalTaxID        String?
   orders              Order[] @relation(name: "ordercustomer")
   createdAt           DateTime @default(now())
   updatedAt           DateTime @updatedAt
