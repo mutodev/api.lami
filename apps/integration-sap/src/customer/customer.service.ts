@@ -36,8 +36,9 @@ export class CustomerService {
 
   async update(cardCode: string, updateCustomerDto: UpdateCustomerDto) {
     try {
-      const {CardCode,CardName,Address,Phone1,MailAddress} = updateCustomerDto;
-      const result = await this.apiHttp.patch<any>(`${EnumApis.CUSTOMER}('${cardCode}')`, {CardName,Address,Phone1,MailAddress});
+      // const {CardCode,CardName,Address,Phone1,MailAddress} = updateCustomerDto;
+      const {BPAddresses, ...customer} = updateCustomerDto;
+      const result = await this.apiHttp.patch<any>(`${EnumApis.CUSTOMER}('${cardCode}')`, {...customer, BPAddresses: [BPAddresses]});
       return result;
     } catch (error) {
       throw error;
