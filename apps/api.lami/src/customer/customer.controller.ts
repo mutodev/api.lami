@@ -24,7 +24,7 @@ export class CustomerController {
     const result = await this.customerService.findAll({
       page: req['query'].page, 
       perPage: req['query'].perPage,
-      where: {OR: [{identification: {contains: req['query'].search, mode: 'insensitive'}}, {name: {contains: req['query'].search, mode: 'insensitive'}}]}
+      where: {OR: [{identification: {contains: req['query'].search || '', mode: 'insensitive'}}, {name: {contains: req['query'].search || '', mode: 'insensitive'}}]}
     });
     return successResponse('', result);
   }
