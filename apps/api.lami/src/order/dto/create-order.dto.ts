@@ -91,6 +91,11 @@ export class CreateOrderDto {
     @IsOptional()
     discount?: number;
 
+    @ApiProperty()
+    @IsString()
+    @IsOptional()
+    comment?: number;
+
     @ApiProperty({ type: OrderDetail, isArray: true })
     @IsArray()
     @Type(() => OrderDetail)

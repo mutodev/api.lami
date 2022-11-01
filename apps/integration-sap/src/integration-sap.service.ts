@@ -14,10 +14,11 @@ export class IntegrationSapService {
   async migrateGrupos() {
     await this.authService.login();
     const result = await this.apiHttp.get<any>('/BusinessPartnerGroups');
+    await this.prismaService.setting.deleteMany({where: {name: 'CUSTOMER_GROUP'}});
     const setting = await this.prismaService.setting.create({
-      data: {name: 'CUSTOMER_GROUP'}
+      data: { name: 'CUSTOMER_GROUP' }
     });
-    console.log({result})
+    console.log({ result })
     await Promise.all(result.data.value.map(async (item) => {
       if (item.Type === 'bbpgt_CustomerGroup')
         await this.prismaService.settingDetail.create({
@@ -34,19 +35,20 @@ export class IntegrationSapService {
   async migratePayTermsGrpCodes() {
     await this.authService.login();
     const result = await this.apiHttp.get<any>('/PaymentTermsTypes');
+    await this.prismaService.setting.deleteMany({where: {name: 'PayTermsGrpCode'}});
     const setting = await this.prismaService.setting.create({
-      data: {name: 'PayTermsGrpCode'}
+      data: { name: 'PayTermsGrpCode' }
     });
-    console.log({result})
+    console.log({ result })
     await Promise.all(result.data.value.map(async (item) => {
       // if (item.Type === 'bbpgt_CustomerGroup')
-        await this.prismaService.settingDetail.create({
-          data: {
-            name: item.PaymentTermsGroupName,
-            code: item.GroupNumber + "",
-            settingId: setting.id
-          }
-        })
+      await this.prismaService.settingDetail.create({
+        data: {
+          name: item.PaymentTermsGroupName,
+          code: item.GroupNumber + "",
+          settingId: setting.id
+        }
+      })
     }));
     return 'Migrado';
   }
@@ -54,41 +56,76 @@ export class IntegrationSapService {
   async migrateSalesPersonCode() {
     await this.authService.login();
     const result = await this.apiHttp.get<any>('/SalesPersons');
+    await this.prismaService.setting.deleteMany({where: {name: 'SalesPersonCode'}});
     const setting = await this.prismaService.setting.create({
-      data: {name: 'SalesPersonCode'}
+      data: { name: 'SalesPersonCode' }
     });
-    console.log({result})
+    console.log({ result })
     await Promise.all(result.data.value.map(async (item) => {
       // if (item.Type === 'bbpgt_CustomerGroup')
-        await this.prismaService.settingDetail.create({
-          data: {
-            name: item.SalesEmployeeName,
-            code: item.SalesEmployeeCode + "",
-            settingId: setting.id
-          }
-        })
+      await this.prismaService.settingDetail.create({
+        data: {
+          name: item.SalesEmployeeName,
+          code: item.SalesEmployeeCode + "",
+          settingId: setting.id
+        }
+      })
     }));
     return 'Migrado';
   }
 
   async migrateItems() {
     await this.authService.login();
-    const result = await this.apiHttp.get<any>(`${EnumApis.ITEM}?$select=ItemCode,ItemName,QuantityOnStock,QuantityOrderedFromVendors,QuantityOrderedByCustomers,ItemPrices`);
-    
-    console.log({result});
-    await this.prismaService.items.deleteMany();
+    const result = await this.apiHttp.get<any>(`${EnumApis.ITEM}?$select=ItemCode,ItemName,QuantityOnStock,QuantityOrderedFromVendors,QuantityOrderedByCustomers,ItemPrices,ItemWarehouseInfoCollection`);
+    const resultWareHouses = await this.apiHttp.get<any>(`${EnumApis.WAREHOUSE}`);
+    const wareHouses: any[] = resultWareHouses.data.value;
+    console.log({ result });
+    await this.prismaService.items.deleteMany({});
     await Promise.all(result.data.value.map(async (item) => {
-        let price = item.ItemPrices.find((a) => a.PriceList == 1)
-        await this.prismaService.items.create({
-          data: {
-            name: item.ItemName,
-            code: item.ItemCode,
-            price: price ? price.Price : 0,
-            quantityOnStock: item.QuantityOnStock,
-            quantityOrderedFromVendors: item.QuantityOrderedFromVendors,
-            quantityOrderedByCustomers: item.QuantityOrderedByCustomers,
+      let price = item.ItemPrices.find((a) => a.PriceList == 1);
+      await this.prismaService.items.create({
+        data: {
+          name: item.ItemName,
+          code: item.ItemCode,
+          price: price ? price.Price : 0,
+          quantityOnStock: item.QuantityOnStock,
+          quantityOrderedFromVendors: item.QuantityOrderedFromVendors,
+          quantityOrderedByCustomers: item.QuantityOrderedByCustomers,
+          itemsWareHouses: {
+            create: item.ItemWarehouseInfoCollection.map((w) => {
+              const { WarehouseCode, InStock, ItemCode} = w;
+              let wareHouse = wareHouses.find((a) => a.WarehouseCode == w.WarehouseCode);
+              return {
+                warehouseCode: WarehouseCode,
+                warehouseName: wareHouse.WarehouseName,
+                inStock: InStock,
+                itemCode: ItemCode
+              }
+            })
           }
-        })
+        }
+      })
+    }));
+    return 'Migrado';
+  }
+
+  async migrateProject() {
+    await this.authService.login();
+    const result = await this.apiHttp.get<any>('/Projects');
+    await this.prismaService.setting.deleteMany({where: {name: 'Project'}});
+    const setting = await this.prismaService.setting.create({
+      data: { name: 'Project' }
+    });
+    console.log({ result })
+    await Promise.all(result.data.value.map(async (item) => {
+      // if (item.Type === 'bbpgt_CustomerGroup')
+      await this.prismaService.settingDetail.create({
+        data: {
+          name: item.Code,
+          code: item.Name,
+          settingId: setting.id
+        }
+      })
     }));
     return 'Migrado';
   }

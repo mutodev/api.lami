@@ -22,30 +22,30 @@ export class OrderService {
   }
 
   async findAll() {
-    const result = await this.apiHttp.get<any>(`${EnumApis.ORDER}?$select=CardCode,CardName,Address,Phone1,MailAddress`);
+    const result = await this.apiHttp.get<any>(`${EnumApis.ORDER}?$select=*`);
     return result;
   }
 
-  async findOne(cardCode: string) {
+  async findOne(orderCode: string) {
     try {
-      const result = await this.apiHttp.get<any>(`${EnumApis.ORDER}('${cardCode}')?$select=CardCode,CardName,Address,Phone1,MailAddress,BPAddresses`);
+      const result = await this.apiHttp.get<any>(`${EnumApis.ORDER}('${orderCode}')?$select=*`);
       return result;
     } catch (error) {
       throw error;
     }
   }
 
-  async update(cardCode: string, updateOrderDto: UpdateOrderDto) {
+  async update(orderCode: string, updateOrderDto: UpdateOrderDto) {
     try {      
-      const result = await this.apiHttp.patch<any>(`${EnumApis.ORDER}('${cardCode}')`, {...updateOrderDto});
+      const result = await this.apiHttp.patch<any>(`${EnumApis.ORDER}('${orderCode}')`, {...updateOrderDto});
       return result;
     } catch (error) {
       throw error;
     }
   }
 
-  async remove(cardCode: string) {
-    const result = await this.apiHttp.delete<any>(`${EnumApis.ORDER}('${cardCode}')`);
+  async remove(orderCode: string) {
+    const result = await this.apiHttp.delete<any>(`${EnumApis.ORDER}('${orderCode}')`);
     return result;
   }
   

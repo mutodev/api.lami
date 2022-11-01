@@ -3,6 +3,6 @@ export enum EnumApis {
     CUSTOMER = '/BusinessPartners',
     ORDER = '/Orders',
     ITEM = '/Items',
-    WHEREHOUSE = '/Warehouses',
+    WAREHOUSE = '/Warehouses',
     SERIES = '/CertificateSeries'
 }

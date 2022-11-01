@@ -25,4 +25,9 @@ export class IntegrationSapController {
     return await this.integrationSapService.migrateItems();
   }
 
+  @Get('migrateProject')
+  async migrateProject() {
+    return await this.integrationSapService.migrateProject();
+  }
+
 }

@@ -24,16 +24,20 @@ export class ItemsService {
     where?: Prisma.ItemsWhereInput;
     orderBy?: Prisma.ItemsOrderByWithRelationInput;
     page?: number,
-    perPage?: number
+    perPage?: number,
+    wareHouseCode?: string
   }): Promise<Model[] | any> {
-    const { skip, take, cursor, where, orderBy } = params;
+    const { skip, take, cursor, where, orderBy, wareHouseCode } = params;
     if (params.page > 0) {
       const paginate = this.paginationService.createPaginator({page: params.page, perPage: params.perPage });
       return paginate<Model, Prisma.ItemsFindManyArgs>(
         this.prisma.customer, {
             cursor,
             where,
-            orderBy
+            orderBy,
+            include: {
+              itemsWareHouses: {where: {warehouseCode: wareHouseCode}}
+            },
           });
     } else {
       return this.prisma.items.findMany({
@@ -41,7 +45,10 @@ export class ItemsService {
         take,
         cursor,
         where,
-        orderBy
+        orderBy,
+        include: {
+          itemsWareHouses: {where: {warehouseCode: wareHouseCode}}
+        },
       });
     }
   }

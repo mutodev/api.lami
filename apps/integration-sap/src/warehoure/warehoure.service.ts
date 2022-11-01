@@ -12,7 +12,7 @@ export class WarehoureService {
 
   async create(createProductDto: CreateWarehoureDto) {
     try {
-      const result = await this.apiHttp.post<any>(EnumApis.WHEREHOUSE, createProductDto);
+      const result = await this.apiHttp.post<any>(EnumApis.WAREHOUSE, createProductDto);
       return result;
     } catch (error) {
       throw error;
@@ -21,14 +21,14 @@ export class WarehoureService {
 
   async findAll() {
     await this.authService.login();
-    const result = await this.apiHttp.get<any>(`${EnumApis.WHEREHOUSE}?$select=*`);
+    const result = await this.apiHttp.get<any>(`${EnumApis.WAREHOUSE}?$select=*`);
     return result;
   }
 
   async findOne(warehouseCode: string) {
     try {
       await this.authService.login();
-      const result = await this.apiHttp.get<any>(`${EnumApis.WHEREHOUSE}('${warehouseCode}')?$select=*`);
+      const result = await this.apiHttp.get<any>(`${EnumApis.WAREHOUSE}('${warehouseCode}')?$select=*`);
       return result;
     } catch (error) {
       throw error;
@@ -37,7 +37,7 @@ export class WarehoureService {
 
   async update(warehouseCode: string, updateProductDto: UpdateWarehoureDto) {
     try {
-      const result = await this.apiHttp.patch<any>(`${EnumApis.WHEREHOUSE}('${warehouseCode}')`, updateProductDto);
+      const result = await this.apiHttp.patch<any>(`${EnumApis.WAREHOUSE}('${warehouseCode}')`, updateProductDto);
       return result;
     } catch (error) {
       throw error;
@@ -45,7 +45,7 @@ export class WarehoureService {
   }
 
   async remove(warehouseCode: string) {
-    const result = await this.apiHttp.delete<any>(`${EnumApis.WHEREHOUSE}('${warehouseCode}')`);
+    const result = await this.apiHttp.delete<any>(`${EnumApis.WAREHOUSE}('${warehouseCode}')`);
     return result;
   }
 }

@@ -137,11 +137,14 @@ model Order {
   subTotal            Float
   total               Float
   discount            Float?
-  orderDetails        OrderDetail[] @relation(name: "orderdetailorder")
-  sendToSap           Boolean? @default(false)
+  sendToSap           Boolean? @default(false)  
+  integrationId       Int?
+  docNumber           Int?
+  comments            String? @db.Text
   messageError        String? @db.Text() @default("")
   createdAt           DateTime @default(now())
   updatedAt           DateTime @updatedAt
+  orderDetails        OrderDetail[] @relation(name: "orderdetailorder")
 }
 
 model OrderDetail {
@@ -156,6 +159,7 @@ model OrderDetail {
   value               Float
   vat                 Float
   project             String
+  wareHouseCode       String?
   createdAt           DateTime @default(now())
   updatedAt           DateTime @updatedAt
 }
@@ -191,7 +195,7 @@ model SettingDetail {
   code                        String
   name                        String
   settingId                   String
-  setting                     Setting? @relation(name: "settingdetailsetting", fields: [settingId], references: [id])
+  setting                     Setting? @relation(name: "settingdetailsetting", fields: [settingId], references: [id], onDelete: Cascade)
   users                       User[] @relation(name: "usersrolessetting")
   menuRoles                   MenuRole[] @relation(name: "menurolessetting")
   customers                   Customer[] @relation(name: "typecustomersetting")
@@ -208,6 +212,19 @@ model Items {
   quantityOnStock             Int
   quantityOrderedFromVendors  Int
   quantityOrderedByCustomers  Int
+  itemsWareHouses             ItemsWareHouse[] @relation(name: "itemitemwarehouse")
+  createdAt                   DateTime @default(now())
+  updatedAt                   DateTime @updatedAt
+}
+
+model ItemsWareHouse {
+  id                          String @default(uuid()) @id
+  itemId                      String
+  item                        Items? @relation(name: "itemitemwarehouse", fields: [itemId], references: [id], onDelete: Cascade)
+  warehouseCode               String
+  warehouseName               String
+  inStock                     Int
+  itemCode                    String?
   createdAt                   DateTime @default(now())
   updatedAt                   DateTime @updatedAt
 }

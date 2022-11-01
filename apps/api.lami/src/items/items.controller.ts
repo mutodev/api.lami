@@ -25,7 +25,8 @@ export class ItemsController {
     const result = await this.itemsService.findAll({
       page: req['query'].page, 
       perPage: req['query'].perPage,
-      where: {OR: [{code: {contains: req['query'].search || '', mode: 'insensitive'}}, {name: {contains: req['query'].search || '', mode: 'insensitive'}}]}
+      where: {OR: [{code: {contains: req['query'].search || '', mode: 'insensitive'}}, {name: {contains: req['query'].search || '', mode: 'insensitive'}}]},
+      wareHouseCode: req['query'].wareHouseCode
     });
     return successResponse('', result);
   }
