@@ -3,6 +3,7 @@ import { ProductService } from './product.service';
 import { ProductController } from './product.controller';
 import { CommonsModule } from '../commons/commons.module';
 import { AuthModule } from '../auth/auth.module';
+import { TaskProductService } from './task-product/task-product.service';
 
 @Module({
   imports: [
@@ -10,6 +11,6 @@ import { AuthModule } from '../auth/auth.module';
     AuthModule
   ],
   controllers: [ProductController],
-  providers: [ProductService]
+  providers: [ProductService, TaskProductService]
 })
 export class ProductModule {}

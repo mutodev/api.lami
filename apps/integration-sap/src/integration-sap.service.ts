@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { AuthService } from './auth/auth.service';
 import { ApiHttp } from './commons/api-http.service';
+import { EnumApis } from './commons/enum-apis';
 import { PrismaService } from './commons/prisma.service';
 
 @Injectable()
@@ -64,6 +65,28 @@ export class IntegrationSapService {
             name: item.SalesEmployeeName,
             code: item.SalesEmployeeCode + "",
             settingId: setting.id
+          }
+        })
+    }));
+    return 'Migrado';
+  }
+
+  async migrateItems() {
+    await this.authService.login();
+    const result = await this.apiHttp.get<any>(`${EnumApis.ITEM}?$select=ItemCode,ItemName,QuantityOnStock,QuantityOrderedFromVendors,QuantityOrderedByCustomers,ItemPrices`);
+    
+    console.log({result});
+    await this.prismaService.items.deleteMany();
+    await Promise.all(result.data.value.map(async (item) => {
+        let price = item.ItemPrices.find((a) => a.PriceList == 1)
+        await this.prismaService.items.create({
+          data: {
+            name: item.ItemName,
+            code: item.ItemCode,
+            price: price ? price.Price : 0,
+            quantityOnStock: item.QuantityOnStock,
+            quantityOrderedFromVendors: item.QuantityOrderedFromVendors,
+            quantityOrderedByCustomers: item.QuantityOrderedByCustomers,
           }
         })
     }));
