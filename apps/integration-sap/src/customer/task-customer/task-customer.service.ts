@@ -8,42 +8,42 @@ var isRunning = false;
 
 @Injectable()
 export class TaskCustomerService {
-    
+
     private readonly logger = new Logger(TaskCustomerService.name);
 
     constructor(private prismaService: PrismaService,
-                private customerService: CustomerService,
-                private authService: AuthService) {}
+        private customerService: CustomerService,
+        private authService: AuthService) { }
 
     @Cron(CronExpression.EVERY_10_SECONDS)
     async handleCron() {
         try {
-        if (!isRunning) {
-            // await this.cacheManager.set('isRunning', 'yes');
-            isRunning = true;
-            console.log({ isRunning });
-            console.log('Start Date posting', new Date());
-            await this.createCustomer();
-    
+            if (!isRunning) {
+                // await this.cacheManager.set('isRunning', 'yes');
+                isRunning = true;
+                console.log({ isRunning });
+                console.log('Start Date posting', new Date());
+                await this.createCustomer();
+
+                this.logger.debug('End posting queue yet.');
+                console.log('End Date posting', new Date());
+                isRunning = false;
+                // await this.cacheManager.set('isRunning', 'no');
+            } else {
+                this.logger.debug('Processing queue yet.');
+            }
+        } catch (error) {
+            // await this.cacheManager.set('isRunning', 'no');
+            isRunning = false;
             this.logger.debug('End posting queue yet.');
             console.log('End Date posting', new Date());
-            isRunning = false;
-            // await this.cacheManager.set('isRunning', 'no');
-          } else {
-            this.logger.debug('Processing queue yet.');
-          }
-        } catch (error) {
-          // await this.cacheManager.set('isRunning', 'no');
-          isRunning = false;
-          this.logger.debug('End posting queue yet.');
-          console.log('End Date posting', new Date());
         }
-    }            
-    
+    }
+
     async createCustomer() {
         try {
 
-            const customers = await this.prismaService.customer.findMany({where: { sendToSap: false }, include: {type: true, identificationType: true}});
+            const customers = await this.prismaService.customer.findMany({ where: { sendToSap: false }, include: { type: true, identificationType: true } });
 
             if (customers.length > 0) {
                 await Promise.all(customers.map(async (customer) => {
@@ -52,8 +52,8 @@ export class TaskCustomerService {
 
                         await this.authService.login();
                         const customerSap = await this.customerService.findOne(customer.identification);
-                        console.log({customerSap})
-                        if (customerSap.status === 404) {                            
+                        console.log({ customerSap })
+                        if (customerSap.status === 404) {
                             const result = await this.customerService.create({
                                 CardCode: customer.identification,
                                 CardName: `${customer.firstName} ${customer.lastName}`,
@@ -68,7 +68,7 @@ export class TaskCustomerService {
                                 EmailAddress: customer.email,
                                 U_HBT_RegTrib: customer.U_HBT_RegTrib,
                                 U_HBT_TipDoc: customer.identificationType.code,
-                                U_HBT_MunMed:  customer.U_HBT_MunMed,
+                                U_HBT_MunMed: customer.U_HBT_MunMed,
                                 U_HBT_TipEnt: customer.type.code,
                                 U_HBT_Nombres: customer.firstName,
                                 U_HBT_Apellido1: customer.lastName,
@@ -91,14 +91,14 @@ export class TaskCustomerService {
                                 }
 
                             });
-                            console.log('respuesta crear cliente', {result})
+                            console.log('respuesta crear cliente', { result })
                             if (result.status === 201) {
                                 customer.sendToSap = true;
-                                await this.prismaService.customer.update({where: {id: customer.id}, data: { sendToSap: true }});
+                                await this.prismaService.customer.update({ where: { id: customer.id }, data: { sendToSap: true } });
                             }
                         } else if (customerSap.status === 200) {
                             console.log('entro a update customer');
-                            const {BPAddresses} = customerSap.data
+                            const { BPAddresses } = customerSap.data
                             const BPAddressesListString = JSON.stringify(BPAddresses);
                             const bPAddresses = {
                                 AddressName: customer.AddressName,
@@ -129,7 +129,7 @@ export class TaskCustomerService {
                                 EmailAddress: customer.email,
                                 U_HBT_RegTrib: customer.U_HBT_RegTrib || customerSap.data?.U_HBT_RegTrib,
                                 U_HBT_TipDoc: customer.identificationType.code || customerSap.data?.U_HBT_TipDoc,
-                                U_HBT_MunMed:  customer.U_HBT_MunMed || customerSap.data?.U_HBT_MunMed,
+                                U_HBT_MunMed: customer.U_HBT_MunMed || customerSap.data?.U_HBT_MunMed,
                                 U_HBT_TipEnt: customer.type.code,
                                 U_HBT_Nombres: customer.firstName,
                                 U_HBT_Apellido1: customer.lastName,
@@ -137,28 +137,28 @@ export class TaskCustomerService {
                                 U_HBT_Nacional: customer.U_HBT_Nacional,
                                 U_HBT_RegFis: customer.U_HBT_RegFis || customerSap.data?.U_HBT_RegFis,
                                 U_HBT_ResFis: customer.U_HBT_ResFis || customerSap.data?.U_HBT_ResFis,
-                                U_HBT_MedPag: customer.U_HBT_MedPag || customerSap.data?.U_HBT_MedPag                                
+                                U_HBT_MedPag: customer.U_HBT_MedPag || customerSap.data?.U_HBT_MedPag
                             };
                             if (!exists) {
                                 body['BPAddresses'] = bPAddresses;
                             }
                             const result = await this.customerService.update(
-                                customer.identification, 
+                                customer.identification,
                                 body
-                                );
-                                console.log('update customer', result)
+                            );
+                            console.log('update customer', result)
                             if (result.status === 204) {
                                 customer.sendToSap = true;
-                                await this.prismaService.customer.update({where: {id: customer.id}, data: { sendToSap: true }});
+                                await this.prismaService.customer.update({ where: { id: customer.id }, data: { sendToSap: true } });
                             }
                         } else {
-                            await this.prismaService.customer.update({where: {id: customer.id}, data: { sendToSap: false, messageError: customerSap.message }});
+                            await this.prismaService.customer.update({ where: { id: customer.id }, data: { sendToSap: false, messageError: customerSap.message } });
                         }
-                       
+
                     } catch (error) {
                         const message = (error?.response?.message && JSON.stringify(error?.response?.message)) || error?.message || error?.response?.statusText || error?.toString();
-                        await this.prismaService.customer.update({where: {id: customer.id}, data: { sendToSap: false, messageError: message }});
-                        console.log('cron crear cliente', {error})
+                        await this.prismaService.customer.update({ where: { id: customer.id }, data: { sendToSap: false, messageError: message } });
+                        console.log('cron crear cliente', { error })
                     }
 
                 }));
@@ -169,6 +169,6 @@ export class TaskCustomerService {
             this.logger.error(error);
         }
     }
-    
+
 
 }

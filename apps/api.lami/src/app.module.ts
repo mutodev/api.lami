@@ -9,11 +9,12 @@ import { FinanceModule } from './finance/finance.module';
 import { EasyconfigModule } from 'nestjs-easyconfig';
 import { SettingModule } from './setting/setting.module';
 import { AuthModule } from './auth/auth.module';
+import { ItemsModule } from './items/items.module';
 
 @Module({
   imports: [
     EasyconfigModule.register({ path: './.env' }),
-    UserModule, AuthModule, CustomerModule, OrderModule, FinanceModule, SettingModule],
+    UserModule, AuthModule, CustomerModule, OrderModule, FinanceModule, SettingModule, ItemsModule],
   controllers: [AppController],
   providers: [AppService],
   exports: []
