@@ -49,11 +49,6 @@ export class OrderDetail {
     vat?: number;
 
     @ApiProperty()
-    @IsOptional()
-    @IsString()
-    serie?: string;
-
-    @ApiProperty()
     @IsNotEmpty()
     @IsString()
     project: string;
@@ -100,6 +95,11 @@ export class CreateOrderDto {
     @IsString()
     @IsOptional()
     comments?: string;
+
+    @ApiProperty()
+    @IsOptional()
+    @IsString()
+    serie?: string;
 
     @ApiProperty({ type: OrderDetail, isArray: true })
     @IsArray()
