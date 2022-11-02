@@ -143,6 +143,7 @@ model Order {
   comments            String? @db.Text
   serie               String?
   messageError        String? @db.Text() @default("")
+  status              String?
   createdAt           DateTime @default(now())
   updatedAt           DateTime @updatedAt
   orderDetails        OrderDetail[] @relation(name: "orderdetailorder")
