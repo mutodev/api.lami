@@ -94,7 +94,7 @@ export class CreateOrderDto {
     @ApiProperty()
     @IsString()
     @IsOptional()
-    comment?: number;
+    comments?: string;
 
     @ApiProperty({ type: OrderDetail, isArray: true })
     @IsArray()
