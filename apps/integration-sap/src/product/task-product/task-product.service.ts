@@ -17,7 +17,7 @@ export class TaskProductService {
         private wareHouseService: WarehoureService) { }
 
 
-    @Cron(CronExpression.EVERY_10_SECONDS)
+    @Cron(CronExpression.EVERY_DAY_AT_6AM)
     async handleCron6AM() {
         try {
             if (!isRunning) {
@@ -42,7 +42,7 @@ export class TaskProductService {
         }
     }
 
-    @Cron(CronExpression.EVERY_10_SECONDS)
+    @Cron(CronExpression.EVERY_DAY_AT_NOON)
     async handleCronNoon() {
         try {
             if (!isRunning) {
@@ -67,7 +67,7 @@ export class TaskProductService {
         }
     }
 
-    @Cron(CronExpression.EVERY_10_SECONDS)
+    @Cron(CronExpression.EVERY_DAY_AT_4PM)
     async handleCron4PM() {
         try {
             if (!isRunning) {
