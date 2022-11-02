@@ -52,6 +52,11 @@ export class OrderDetail {
     @IsNotEmpty()
     @IsString()
     project: string;
+
+    @ApiProperty()
+    @IsNotEmpty()
+    @IsString()
+    wareHouseCode?: string;
 }
 
 export class CreateOrderDto {
