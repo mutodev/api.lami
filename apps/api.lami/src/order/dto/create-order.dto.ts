@@ -49,6 +49,11 @@ export class OrderDetail {
     vat?: number;
 
     @ApiProperty()
+    @IsOptional()
+    @IsString()
+    serie?: string;
+
+    @ApiProperty()
     @IsNotEmpty()
     @IsString()
     project: string;

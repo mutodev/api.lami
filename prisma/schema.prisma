@@ -141,6 +141,7 @@ model Order {
   integrationId       Int?
   docNumber           Int?
   comments            String? @db.Text
+  serie               String?
   messageError        String? @db.Text() @default("")
   createdAt           DateTime @default(now())
   updatedAt           DateTime @updatedAt
