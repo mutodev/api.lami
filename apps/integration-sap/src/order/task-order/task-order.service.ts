@@ -54,8 +54,8 @@ export class TaskOrderService {
                         const result = await this.orderService.create({
                             CardCode: order.customer.identification,
                             Series: order.serie,
-                            DocDate: order.date.toDateString(),
-                            DocDueDate: order.dueDate.toDateString(),
+                            DocDate: order.date.toISOString().replace('T', ' ').substring(0, 10),
+                            DocDueDate: order.dueDate.toISOString().replace('T', ' ').substring(0, 10),
                             SalesPersonCode: order.salesPersonCode || '',
                             Comments: order.comments,
                             DiscountPercent: order.discount || 0,    

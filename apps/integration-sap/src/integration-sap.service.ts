@@ -76,7 +76,7 @@ export class IntegrationSapService {
 
   async migrateItems() {
     await this.authService.login();
-    const result = await this.apiHttp.get<any>(`${EnumApis.ITEM}?$select=ItemCode,ItemName,QuantityOnStock,QuantityOrderedFromVendors,QuantityOrderedByCustomers,ItemPrices,ItemWarehouseInfoCollection`);
+    const result = await this.apiHttp.get<any>(`${EnumApis.ITEM}?$select=ItemCode,ItemName,QuantityOnStock,QuantityOrderedFromVendors,QuantityOrderedByCustomers,ItemPrices,ItemWarehouseInfoCollection,SalesItem,Valid`);
     const resultWareHouses = await this.apiHttp.get<any>(`${EnumApis.WAREHOUSE}`);
     const wareHouses: any[] = resultWareHouses.data.value;
     console.log({ result });
