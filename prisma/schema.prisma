@@ -142,6 +142,7 @@ model Order {
   docNumber           Int?
   comments            String? @db.Text
   serie               String?
+  salesPersonCode     String?
   messageError        String? @db.Text() @default("")
   status              String?
   createdAt           DateTime @default(now())

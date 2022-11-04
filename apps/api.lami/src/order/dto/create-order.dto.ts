@@ -106,6 +106,11 @@ export class CreateOrderDto {
     @IsString()
     serie?: string;
 
+    @ApiProperty()
+    @IsOptional()
+    @IsString()
+    salesPersonCode?: string;
+
     @ApiProperty({ type: OrderDetail, isArray: true })
     @IsArray()
     @Type(() => OrderDetail)
