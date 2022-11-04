@@ -152,7 +152,7 @@ model Order {
 model OrderDetail {
   id                  String @default(uuid()) @id
   orderId             String @db.VarChar(100)
-  order               Order? @relation(name: "orderdetailorder", fields: [orderId], references: [id])
+  order               Order? @relation(name: "orderdetailorder", fields: [orderId], references: [id], onDelete: Cascade)
   itemCode            String
   description         String
   aditionalInfo       String
