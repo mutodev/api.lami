@@ -158,7 +158,7 @@ model OrderDetail {
   description         String
   aditionalInfo       String
   discount            Float
-  amount              Int
+  amount              Float
   value               Float
   vat                 Float
   project             String
@@ -212,9 +212,9 @@ model Items {
   code                        String
   name                        String
   price                       Float
-  quantityOnStock             Int
-  quantityOrderedFromVendors  Int
-  quantityOrderedByCustomers  Int
+  quantityOnStock             Float
+  quantityOrderedFromVendors  Float
+  quantityOrderedByCustomers  Float
   itemsWareHouses             ItemsWareHouse[] @relation(name: "itemitemwarehouse")
   createdAt                   DateTime @default(now())
   updatedAt                   DateTime @updatedAt
@@ -226,7 +226,7 @@ model ItemsWareHouse {
   item                        Items? @relation(name: "itemitemwarehouse", fields: [itemId], references: [id], onDelete: Cascade)
   warehouseCode               String
   warehouseName               String
-  inStock                     Int
+  inStock                     Float
   itemCode                    String?
   createdAt                   DateTime @default(now())
   updatedAt                   DateTime @updatedAt

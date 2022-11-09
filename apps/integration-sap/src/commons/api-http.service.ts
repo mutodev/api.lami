@@ -22,34 +22,61 @@ export class ApiHttp {
         return result.data;
     }  
 
-    async get<T>(endPoint: string, data?: any) {
+    async get<T>(endPoint: string, data?: any): Promise<any>  {
         try {
-            const subscription = await this.httpService.get<T>(`${this._env.get('URL_BASE_SAP')}${endPoint}`, {
-                params: data,
-                headers: {
+            // const subscription = await this.httpService.get<T>(`${this._env.get('URL_BASE_SAP')}${endPoint}`, {
+            //     params: data,
+            //     headers: {
+            //         'Cookie': `B1SESSION=${this.SessionId}`
+            //     }
+            // });
+            // const result = await firstValueFrom(subscription);
+            // console.log(endPoint, {result})
+            // return {data: result.data, status: result?.status};
+            return await new Promise((resolve, reject) => {
+                this.httpService
+                  .get(`${this._env.get('URL_BASE_SAP')}${endPoint}`, 
+                  {params: data, headers:{
                     'Cookie': `B1SESSION=${this.SessionId}`
-                }
-            });
-            const result = await firstValueFrom(subscription);
-            console.log(endPoint, {result})
-            return {data: result.data, status: result.status};
+                  }}).subscribe(
+                    (resp) => {
+                      resolve({data: resp.data, status: resp?.status});
+                    },
+                    async (error) => {
+                      reject(error);
+                    })
+              });
         } catch (error) {
             console.log(endPoint, {error})
             let result = error?.response;
-            return {message: result?.message || result?.statusText, status: result.status};
+            return {message: result?.message || result?.statusText, status: result?.status};
         }
     }
 
-    async post<T>(endPoint: string, data?: any) {
+    async post<T>(endPoint: string, data?: any): Promise<any>  {
         try {
-            const subscription = await this.httpService.post<T>(`${this._env.get('URL_BASE_SAP')}${endPoint}`, data, {
-                headers: {
-                    'Cookie': `B1SESSION=${this.SessionId}`
-                }
-            });
-            const result = await firstValueFrom(subscription);
-            console.log(endPoint, {result})
-            return {data: result.data, status: result.status};
+            // const subscription = await this.httpService.post<T>(`${this._env.get('URL_BASE_SAP')}${endPoint}`, data, {
+            //     headers: {
+            //         'Cookie': `B1SESSION=${this.SessionId}`
+            //     }
+            // });
+            // const result = await firstValueFrom(subscription);
+            // console.log(endPoint, {result})
+            // return {data: result.data, status: result.status};
+            return await new Promise((resolve, reject) => {
+                this.httpService
+                  .post(endPoint, data, {
+                    headers: {
+                        'Cookie': `B1SESSION=${this.SessionId}`
+                    },
+                  }).subscribe(
+                    (resp) => {
+                      resolve({data: resp.data, status: resp.status});
+                    },
+                    async (error) => {
+                      reject(error);
+                    })
+              });
         } catch (error) {
             let result = error?.response;
             console.log(endPoint, {error, data: error?.response?.data})
@@ -57,32 +84,60 @@ export class ApiHttp {
         }
     }
 
-    async put<T>(endPoint: string, data?: any) {
+    async put<T>(endPoint: string, data?: any): Promise<any>  {
         try {
-            const subscription = await this.httpService.put<T>(`${this._env.get('URL_BASE_SAP')}${endPoint}`, data, {
-                headers: {
-                    'Cookie': `B1SESSION=${this.SessionId}`
-                }
-            });
-            const result = await firstValueFrom(subscription);
-            console.log({result})
-            return {data: result.data, status: result.status};
+            // const subscription = await this.httpService.put<T>(`${this._env.get('URL_BASE_SAP')}${endPoint}`, data, {
+            //     headers: {
+            //         'Cookie': `B1SESSION=${this.SessionId}`
+            //     }
+            // });
+            // const result = await firstValueFrom(subscription);
+            // console.log({result})
+            // return {data: result.data, status: result.status};
+            return await new Promise((resolve, reject) => {
+                this.httpService
+                  .put(endPoint, data, {
+                    headers: {
+                        'Cookie': `B1SESSION=${this.SessionId}`
+                    },
+                  }).subscribe(
+                    (resp) => {
+                      resolve({data: resp.data, status: resp.status});
+                    },
+                    async (error) => {
+                      reject(error);
+                    })
+              });
         } catch (error) {
             let result = error?.response;
             return {message: result?.message || result?.statusText, status: result.status};
         }
     }
 
-    async patch<T>(endPoint: string, data?: any) {
+    async patch<T>(endPoint: string, data?: any): Promise<any> {
         try {
-            const subscription = await this.httpService.patch<T>(`${this._env.get('URL_BASE_SAP')}${endPoint}`, data, {
-                headers: {
-                    'Cookie': `B1SESSION=${this.SessionId}`
-                }
-            });
-            const result = await firstValueFrom(subscription);
-            console.log({result})
-            return {data: result.data, status: result.status};
+            // const subscription = await this.httpService.patch<T>(`${this._env.get('URL_BASE_SAP')}${endPoint}`, data, {
+            //     headers: {
+            //         'Cookie': `B1SESSION=${this.SessionId}`
+            //     }
+            // });
+            // const result = await firstValueFrom(subscription);
+            // console.log({result})
+            // return {data: result.data, status: result.status};
+            return await new Promise((resolve, reject) => {
+                this.httpService
+                  .patch(endPoint, data, {
+                    headers: {
+                        'Cookie': `B1SESSION=${this.SessionId}`
+                    },
+                  }).subscribe(
+                    (resp) => {
+                      resolve({data: resp.data, status: resp.status});
+                    },
+                    async (error) => {
+                      reject(error);
+                    })
+              });
         } catch (error) {
             console.log(endPoint, {error})
             let result = error?.response;
@@ -90,16 +145,30 @@ export class ApiHttp {
         }       
     }
 
-    async delete<T>(endPoint: string, data?: any) {
+    async delete<T>(endPoint: string, data?: any): Promise<any>  {
         try {
-            const subscription = await this.httpService.delete<T>(`${this._env.get('URL_BASE_SAP')}${endPoint}`, {
-                headers: {
-                    'Cookie': `B1SESSION=${this.SessionId}`
-                }
-            });
-            const result = await firstValueFrom(subscription);
-            console.log({result})
-            return {data: result.data, status: result.status};
+            // const subscription = await this.httpService.delete<T>(`${this._env.get('URL_BASE_SAP')}${endPoint}`, {
+            //     headers: {
+            //         'Cookie': `B1SESSION=${this.SessionId}`
+            //     }
+            // });
+            // const result = await firstValueFrom(subscription);
+            // console.log({result})
+            // return {data: result.data, status: result.status};
+            return await new Promise((resolve, reject) => {
+                this.httpService
+                  .delete(endPoint, {
+                    headers: {
+                        'Cookie': `B1SESSION=${this.SessionId}`
+                    },
+                  }).subscribe(
+                    (resp) => {
+                      resolve({data: resp.data, status: resp.status});
+                    },
+                    async (error) => {
+                      reject(error);
+                    })
+              });
         } catch (error) {
             console.log(endPoint, {error})
             let result = error?.response;
