@@ -31,7 +31,7 @@ export class ItemsService {
     if (params.page > 0) {
       const paginate = this.paginationService.createPaginator({page: params.page, perPage: params.perPage });
       return paginate<Model, Prisma.ItemsFindManyArgs>(
-        this.prisma.customer, {
+        this.prisma.items, {
             cursor,
             where,
             orderBy,
