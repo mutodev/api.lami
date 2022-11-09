@@ -113,7 +113,7 @@ export class TaskProductService {
                         result = await this.getData(`/${result.data["odata.nextLink"]}`);
                     } else {
                         hasItems = false;
-                        return;
+                        break;
                     }
                 }
 
@@ -130,6 +130,7 @@ export class TaskProductService {
                                 quantityOnStock: item.QuantityOnStock,
                                 quantityOrderedFromVendors: item.QuantityOrderedFromVendors,
                                 quantityOrderedByCustomers: item.QuantityOrderedByCustomers,
+                                arTaxCode: item.ArTaxCode,
                                 itemsWareHouses: {
                                     create: item.ItemWarehouseInfoCollection.map((w) => {
                                         const { WarehouseCode, InStock, ItemCode } = w;
@@ -138,7 +139,7 @@ export class TaskProductService {
                                             warehouseCode: WarehouseCode,
                                             warehouseName: wareHouse.WarehouseName,
                                             inStock: InStock,
-                                            itemCode: ItemCode
+                                            itemCode: ItemCode                                            
                                         }
                                     })
                                 }

@@ -158,6 +158,7 @@ export class IntegrationSapService {
                 quantityOnStock: item.QuantityOnStock,
                 quantityOrderedFromVendors: item.QuantityOrderedFromVendors,
                 quantityOrderedByCustomers: item.QuantityOrderedByCustomers,
+                arTaxCode: item.ArTaxCode,
                 itemsWareHouses: {
                   create: item.ItemWarehouseInfoCollection.map((w) => {
                     const { WarehouseCode, InStock, ItemCode } = w;

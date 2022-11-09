@@ -215,6 +215,7 @@ model Items {
   quantityOnStock             Float
   quantityOrderedFromVendors  Float
   quantityOrderedByCustomers  Float
+  arTaxCode                   String?
   itemsWareHouses             ItemsWareHouse[] @relation(name: "itemitemwarehouse")
   createdAt                   DateTime @default(now())
   updatedAt                   DateTime @updatedAt
