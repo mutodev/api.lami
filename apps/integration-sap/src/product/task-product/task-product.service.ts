@@ -21,7 +21,7 @@ export class TaskProductService {
         private authService: AuthService) { }
 
 
-    @Cron(CronExpression.EVERY_DAY_AT_6AM)
+    // @Cron(CronExpression.EVERY_DAY_AT_6AM)
     async handleCron6AM() {
         try {
             if (!isRunning) {
@@ -46,7 +46,7 @@ export class TaskProductService {
         }
     }
 
-    @Cron(CronExpression.EVERY_DAY_AT_NOON)
+    // @Cron(CronExpression.EVERY_DAY_AT_NOON)
     async handleCronNoon() {
         try {
             if (!isRunning) {
@@ -105,9 +105,10 @@ export class TaskProductService {
             let result: any;
             await this.prismaService.items.deleteMany({});
             const resultWareHouses = await this.apiHttp.get<any>(`${EnumApis.WAREHOUSE}`);
+            const wareHouses: any[] = resultWareHouses.data.value;
             while (hasItems) {
                 if (!result) {
-                    result = await this.getData(`${EnumApis.ITEM}?$filter=SalesItem eq 'tYES' and Valid eq 'tYES'&$select=ItemCode,ItemName,QuantityOnStock,QuantityOrderedFromVendors,QuantityOrderedByCustomers,ItemPrices,ItemWarehouseInfoCollection,SalesItem,Valid`);
+                    result = await this.getData(`${EnumApis.ITEM}?$filter=SalesItem eq 'tYES' and Valid eq 'tYES'&$select=ItemCode,ItemName,QuantityOnStock,QuantityOrderedFromVendors,QuantityOrderedByCustomers,ItemPrices,ItemWarehouseInfoCollection,SalesItem,Valid,ArTaxCode`);
                 } else {
                     if (result.data["odata.nextLink"]) {
                         result = await this.getData(`/${result.data["odata.nextLink"]}`);
@@ -116,37 +117,36 @@ export class TaskProductService {
                         break;
                     }
                 }
-
-                const wareHouses: any[] = resultWareHouses.data.value;
                 console.log({ result });
-                await Promise.all(result.data.value.map(async (item) => {
-                    if (item.SalesItem == 'tYES' && item.Valid === 'tYES') {
-                        let price = item.ItemPrices.find((a) => a.PriceList == 1);
-                        await this.prismaService.items.create({
-                            data: {
-                                name: item.ItemName,
-                                code: item.ItemCode,
-                                price: price ? price.Price : 0,
-                                quantityOnStock: item.QuantityOnStock,
-                                quantityOrderedFromVendors: item.QuantityOrderedFromVendors,
-                                quantityOrderedByCustomers: item.QuantityOrderedByCustomers,
-                                arTaxCode: item.ArTaxCode,
-                                itemsWareHouses: {
-                                    create: item.ItemWarehouseInfoCollection.map((w) => {
-                                        const { WarehouseCode, InStock, ItemCode } = w;
-                                        let wareHouse = wareHouses.find((a) => a.WarehouseCode == w.WarehouseCode);
-                                        return {
-                                            warehouseCode: WarehouseCode,
-                                            warehouseName: wareHouse.WarehouseName,
-                                            inStock: InStock,
-                                            itemCode: ItemCode                                            
-                                        }
-                                    })
+                if (result?.data && result?.data?.value && result?.data?.value?.length > 0)
+                    await Promise.all(result.data.value.map(async (item) => {
+                        if (item.SalesItem == 'tYES' && item.Valid === 'tYES') {
+                            let price = item.ItemPrices.find((a) => a.PriceList == 1);
+                            await this.prismaService.items.create({
+                                data: {
+                                    name: item.ItemName,
+                                    code: item.ItemCode,
+                                    price: price ? price.Price : 0,
+                                    quantityOnStock: item.QuantityOnStock,
+                                    quantityOrderedFromVendors: item.QuantityOrderedFromVendors,
+                                    quantityOrderedByCustomers: item.QuantityOrderedByCustomers,
+                                    arTaxCode: item.ArTaxCode,
+                                    itemsWareHouses: {
+                                        create: item.ItemWarehouseInfoCollection.map((w) => {
+                                            const { WarehouseCode, InStock, ItemCode } = w;
+                                            let wareHouse = wareHouses.find((a) => a.WarehouseCode == w.WarehouseCode);
+                                            return {
+                                                warehouseCode: WarehouseCode,
+                                                warehouseName: wareHouse.WarehouseName,
+                                                inStock: InStock,
+                                                itemCode: ItemCode                                            
+                                            }
+                                        })
+                                    }
                                 }
-                            }
-                        });
-                    }
-                }));
+                            });
+                        }
+                    }));
             }
         } catch (error) {
             console.log('migrateItems', error)
