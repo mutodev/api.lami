@@ -60,7 +60,7 @@ export class TaskCustomerService {
                                 Address: customer.address,
                                 Phone1: customer.phone,
                                 MailAddress: customer.address,
-                                CardType: customer.cardType,
+                                CardType: customer.cardType || customer.source,
                                 FederalTaxID: customer.FederalTaxID,
                                 GroupCode: customer.groupCode,
                                 PayTermsGrpCode: customer.payTermsGrpCode,
@@ -113,7 +113,7 @@ export class TaskCustomerService {
                                 U_HBT_DirMM: customer.U_HBT_DirMM
                             };
                             const bPAddressesString = JSON.stringify(bPAddresses);
-                            const exists = BPAddressesListString.includes(bPAddressesString);
+                            // const exists = BPAddressesListString.includes(bPAddressesString);
 
                             const body = {
                                 CardCode: customer.identification,
@@ -121,7 +121,7 @@ export class TaskCustomerService {
                                 Address: customer.address,
                                 Phone1: customer.phone,
                                 MailAddress: customer.address || customerSap.data?.MailAddress,
-                                CardType: customer.cardType,
+                                CardType: customer.cardType || customer.source,
                                 FederalTaxID: customer.identification,
                                 GroupCode: customer.groupCode,
                                 PayTermsGrpCode: customer.payTermsGrpCode || customerSap.data?.PayTermsGrpCode,
@@ -139,9 +139,9 @@ export class TaskCustomerService {
                                 U_HBT_ResFis: customer.U_HBT_ResFis || customerSap.data?.U_HBT_ResFis,
                                 U_HBT_MedPag: customer.U_HBT_MedPag || customerSap.data?.U_HBT_MedPag
                             };
-                            if (!exists) {
-                                body['BPAddresses'] = bPAddresses;
-                            }
+                            // if (!exists) {
+                            //     body['BPAddresses'] = bPAddresses;
+                            // }
                             const result = await this.customerService.update(
                                 customer.identification,
                                 body

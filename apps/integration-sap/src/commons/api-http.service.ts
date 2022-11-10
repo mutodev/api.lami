@@ -110,7 +110,7 @@ export class ApiHttp {
               });
         } catch (error) {
             let result = error?.response;
-            return {message: result?.message || result?.statusText, status: result.status};
+            return {message: result?.message || result?.statusText, status: result?.status};
         }
     }
 
@@ -141,7 +141,7 @@ export class ApiHttp {
         } catch (error) {
             console.log(endPoint, {error})
             let result = error?.response;
-            return {message: result?.message || result?.statusText, status: result.status};
+            return {message: result?.message || result?.statusText, status: result?.status};
         }       
     }
 
@@ -172,7 +172,7 @@ export class ApiHttp {
         } catch (error) {
             console.log(endPoint, {error})
             let result = error?.response;
-            return {message: result?.message || result?.statusText, status: result.status};
+            return {message: result?.message || result?.statusText, status: result?.status};
         }
     }
 }
