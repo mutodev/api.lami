@@ -77,13 +77,16 @@ export class CustomerService {
 
   async getOrder(id: string) {
     const setting = await this.prisma.setting.findUnique({where: {name: 'STATUS_ORDER'}});
-    return await this.prisma.settingDetail.findMany({
+    const result = await this.prisma.settingDetail.findMany({
       where: {settingId: setting.id},
       include: {
         orders: {
           where: {customerId: id}
         }
       }
+    });
+    return result.map((item) => {
+      return {...item, countOrder: item.orders.length};
     });
   }
 

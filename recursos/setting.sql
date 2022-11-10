@@ -1480,19 +1480,19 @@ insert into public."Setting"(id, "name", "createdAt", "updatedAt")values('43de02
 
 insert into public."Setting"(id, "name", "createdAt", "updatedAt")values('bc9065ee-e15c-4076-8d34-28cc0a1487a2', 'TAX', now(), now());
 
-insert into public."SettingDetail"(id, "createdAt", "updatedAt", "settingId", code, "name", "value")values(uuid_generate_v1(), now(), now(),'cdac5d6c-501d-11ed-b8b2-93cfa5187c2a','I_LEG_T0','Iva Legalizacion Tarifa 0%','0');
-insert into public."SettingDetail"(id, "createdAt", "updatedAt", "settingId", code, "name", "value")values(uuid_generate_v1(), now(), now(),'cdac5d6c-501d-11ed-b8b2-93cfa5187c2a','IVA_EXE','IVA EXCENTO TARIFA 0%','0');
-insert into public."SettingDetail"(id, "createdAt", "updatedAt", "settingId", code, "name", "value")values(uuid_generate_v1(), now(), now(),'cdac5d6c-501d-11ed-b8b2-93cfa5187c2a','IVA_HBT','IVA TARIFA 0%','0');
-insert into public."SettingDetail"(id, "createdAt", "updatedAt", "settingId", code, "name", "value")values(uuid_generate_v1(), now(), now(),'cdac5d6c-501d-11ed-b8b2-93cfa5187c2a','IVADSI','IMPUESTO A LAS VENTAS DIA SIN IVA','0');
-insert into public."SettingDetail"(id, "createdAt", "updatedAt", "settingId", code, "name", "value")values(uuid_generate_v1(), now(), now(),'cdac5d6c-501d-11ed-b8b2-93cfa5187c2a','IVANTIC','IVA NO APLICABLE A ANTICIPOS CLIENTES','0');
-insert into public."SettingDetail"(id, "createdAt", "updatedAt", "settingId", code, "name", "value")values(uuid_generate_v1(), now(), now(),'cdac5d6c-501d-11ed-b8b2-93cfa5187c2a','IVAV_EXC','IMPUESTO A LAS VENTAS GENERADO EXCUIDO','0');
-insert into public."SettingDetail"(id, "createdAt", "updatedAt", "settingId", code, "name", "value")values(uuid_generate_v1(), now(), now(),'cdac5d6c-501d-11ed-b8b2-93cfa5187c2a','IVAV_EXE','IMPUESTO A LAS VENTAS GENERADO EXENTO','0');
-insert into public."SettingDetail"(id, "createdAt", "updatedAt", "settingId", code, "name", "value")values(uuid_generate_v1(), now(), now(),'cdac5d6c-501d-11ed-b8b2-93cfa5187c2a','IVAV05','IMPUESTO A LAS VENTAS GENERADO TARIFA 5%','5');
-insert into public."SettingDetail"(id, "createdAt", "updatedAt", "settingId", code, "name", "value")values(uuid_generate_v1(), now(), now(),'cdac5d6c-501d-11ed-b8b2-93cfa5187c2a','IVAV19','IMPUESTO A LAS VENTAS GENERADO TARIFA 19%','19');
-insert into public."SettingDetail"(id, "createdAt", "updatedAt", "settingId", code, "name", "value")values(uuid_generate_v1(), now(), now(),'cdac5d6c-501d-11ed-b8b2-93cfa5187c2a','IVAVS05','IMPUESTO A LOS SERVICIOS GENERADO TARIFA 5%','5');
-insert into public."SettingDetail"(id, "createdAt", "updatedAt", "settingId", code, "name", "value")values(uuid_generate_v1(), now(), now(),'cdac5d6c-501d-11ed-b8b2-93cfa5187c2a','IVAVS19','IMPUESTO A LOS SERVICIOS GENERADO TARIFA 19%','19');
-insert into public."SettingDetail"(id, "createdAt", "updatedAt", "settingId", code, "name", "value")values(uuid_generate_v1(), now(), now(),'cdac5d6c-501d-11ed-b8b2-93cfa5187c2a','IVAVSEXC','IMPUESTO A LOS SERVICIOS GENERADO EXENTO','0');
-insert into public."SettingDetail"(id, "createdAt", "updatedAt", "settingId", code, "name", "value")values(uuid_generate_v1(), now(), now(),'cdac5d6c-501d-11ed-b8b2-93cfa5187c2a','IVAVSEXE','IMPUESTO A LOS SERVICIOS GENERADO EXCUIDO','0');
+insert into public."SettingDetail"(id, "createdAt", "updatedAt", "settingId", code, "name", "value")values(uuid_generate_v1(), now(), now(),'bc9065ee-e15c-4076-8d34-28cc0a1487a2','I_LEG_T0','Iva Legalizacion Tarifa 0%','0');
+insert into public."SettingDetail"(id, "createdAt", "updatedAt", "settingId", code, "name", "value")values(uuid_generate_v1(), now(), now(),'bc9065ee-e15c-4076-8d34-28cc0a1487a2','IVA_EXE','IVA EXCENTO TARIFA 0%','0');
+insert into public."SettingDetail"(id, "createdAt", "updatedAt", "settingId", code, "name", "value")values(uuid_generate_v1(), now(), now(),'bc9065ee-e15c-4076-8d34-28cc0a1487a2','IVA_HBT','IVA TARIFA 0%','0');
+insert into public."SettingDetail"(id, "createdAt", "updatedAt", "settingId", code, "name", "value")values(uuid_generate_v1(), now(), now(),'bc9065ee-e15c-4076-8d34-28cc0a1487a2','IVADSI','IMPUESTO A LAS VENTAS DIA SIN IVA','0');
+insert into public."SettingDetail"(id, "createdAt", "updatedAt", "settingId", code, "name", "value")values(uuid_generate_v1(), now(), now(),'bc9065ee-e15c-4076-8d34-28cc0a1487a2','IVANTIC','IVA NO APLICABLE A ANTICIPOS CLIENTES','0');
+insert into public."SettingDetail"(id, "createdAt", "updatedAt", "settingId", code, "name", "value")values(uuid_generate_v1(), now(), now(),'bc9065ee-e15c-4076-8d34-28cc0a1487a2','IVAV_EXC','IMPUESTO A LAS VENTAS GENERADO EXCUIDO','0');
+insert into public."SettingDetail"(id, "createdAt", "updatedAt", "settingId", code, "name", "value")values(uuid_generate_v1(), now(), now(),'bc9065ee-e15c-4076-8d34-28cc0a1487a2','IVAV_EXE','IMPUESTO A LAS VENTAS GENERADO EXENTO','0');
+insert into public."SettingDetail"(id, "createdAt", "updatedAt", "settingId", code, "name", "value")values(uuid_generate_v1(), now(), now(),'bc9065ee-e15c-4076-8d34-28cc0a1487a2','IVAV05','IMPUESTO A LAS VENTAS GENERADO TARIFA 5%','5');
+insert into public."SettingDetail"(id, "createdAt", "updatedAt", "settingId", code, "name", "value")values(uuid_generate_v1(), now(), now(),'bc9065ee-e15c-4076-8d34-28cc0a1487a2','IVAV19','IMPUESTO A LAS VENTAS GENERADO TARIFA 19%','19');
+insert into public."SettingDetail"(id, "createdAt", "updatedAt", "settingId", code, "name", "value")values(uuid_generate_v1(), now(), now(),'bc9065ee-e15c-4076-8d34-28cc0a1487a2','IVAVS05','IMPUESTO A LOS SERVICIOS GENERADO TARIFA 5%','5');
+insert into public."SettingDetail"(id, "createdAt", "updatedAt", "settingId", code, "name", "value")values(uuid_generate_v1(), now(), now(),'bc9065ee-e15c-4076-8d34-28cc0a1487a2','IVAVS19','IMPUESTO A LOS SERVICIOS GENERADO TARIFA 19%','19');
+insert into public."SettingDetail"(id, "createdAt", "updatedAt", "settingId", code, "name", "value")values(uuid_generate_v1(), now(), now(),'bc9065ee-e15c-4076-8d34-28cc0a1487a2','IVAVSEXC','IMPUESTO A LOS SERVICIOS GENERADO EXENTO','0');
+insert into public."SettingDetail"(id, "createdAt", "updatedAt", "settingId", code, "name", "value")values(uuid_generate_v1(), now(), now(),'bc9065ee-e15c-4076-8d34-28cc0a1487a2','IVAVSEXE','IMPUESTO A LOS SERVICIOS GENERADO EXCUIDO','0');
 
 -- status order
 
