@@ -1,1 +1,21 @@
-export class CreateOrderDto {}
+export class CreateOrderDto {
+    CardCode: string;
+    Series: string;
+    DocDate?: string;
+    DocDueDate?: string;
+    SalesPersonCode?: string;
+    Comments?: string;
+    DiscountPercent: number;    
+    VatSum: number;
+    DocTotal: number;
+    DocumentLines: {
+            ItemCode: string;
+            Quantity: number;
+            UnitPrice: number;
+            DiscountPercent?: number;
+            Price?: number;
+            WarehouseCode: string;
+            Project?: string;
+            ArTaxCode?: string;
+        }[]
+}

@@ -107,6 +107,7 @@ export class TaskProductService {
             const resultWareHouses = await this.apiHttp.get<any>(`${EnumApis.WAREHOUSE}`);
             const wareHouses: any[] = resultWareHouses.data.value;
             while (hasItems) {
+               try {
                 if (!result) {
                     result = await this.getData(`${EnumApis.ITEM}?$filter=SalesItem eq 'tYES' and Valid eq 'tYES'&$select=ItemCode,ItemName,QuantityOnStock,QuantityOrderedFromVendors,QuantityOrderedByCustomers,ItemPrices,ItemWarehouseInfoCollection,SalesItem,Valid,ArTaxCode`);
                 } else {
@@ -147,6 +148,9 @@ export class TaskProductService {
                             });
                         }
                     }));
+               } catch (error) {
+                    console.log('error task items', error);
+               }
             }
         } catch (error) {
             console.log('migrateItems', error)

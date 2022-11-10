@@ -67,9 +67,10 @@ export class TaskOrderService {
                                     Quantity: item.amount,
                                     UnitPrice: item.value,
                                     DiscountPercent: item.discount || 0,
-                                    Price: item.value * item.amount,
+                                    //Price: item.value * item.amount,
                                     WarehouseCode: item.wareHouseCode || '',
-                                    Project: item.project
+                                    Project: item.project,
+                                    ArTaxCode: item.arTaxCode
                                 };
                             })
                         });

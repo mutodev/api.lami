@@ -163,6 +163,7 @@ model OrderDetail {
   vat                 Float
   project             String
   wareHouseCode       String?
+  arTaxCode           String?
   createdAt           DateTime @default(now())
   updatedAt           DateTime @updatedAt
 }

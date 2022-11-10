@@ -76,4 +76,10 @@ export class ItemsService {
     });
   }
 
+  findByCode(code: string): Promise<Model | null> {
+    return this.prisma.items.findFirst({
+      where: { code }
+    });
+  }
+
 }
