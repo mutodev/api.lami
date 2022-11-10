@@ -46,4 +46,10 @@ export class CustomerController {
     const result = await this.customerService.remove({id});
     return successResponse('', result);
   }
+
+  @Get('orders/:id')
+  async getOrders(@Param('id') id: string) {
+    const result = await this.customerService.getOrder(id);
+    return successResponse('', result);
+  }
 }

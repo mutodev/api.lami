@@ -32,7 +32,7 @@ export class OrderService {
             cursor,
             where,
             orderBy,
-            include: {customer: true}
+            include: {customer: true, status: true}
           });
     } else {
       return this.prisma.order.findMany({
@@ -51,7 +51,8 @@ export class OrderService {
       where: userWhereUniqueInput,
       include: {
         customer: true,
-        orderDetails: true
+        orderDetails: true,
+        status: true
       }
     });
   }

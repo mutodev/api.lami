@@ -1476,3 +1476,29 @@ insert into public."SettingDetail"(id, "createdAt", "updatedAt", "settingId", co
 
 insert into public."Setting"(id, "name", "createdAt", "updatedAt")values('43de025a-578b-11ed-b8b2-93cfa5187c2a', 'County', now(), now());
 
+-- TAX
+
+insert into public."Setting"(id, "name", "createdAt", "updatedAt")values('bc9065ee-e15c-4076-8d34-28cc0a1487a2', 'TAX', now(), now());
+
+insert into public."SettingDetail"(id, "createdAt", "updatedAt", "settingId", code, "name")values(uuid_generate_v1(), now(), now(),'cdac5d6c-501d-11ed-b8b2-93cfa5187c2a','I_LEG_T0','Iva Legalizacion Tarifa 0%');
+insert into public."SettingDetail"(id, "createdAt", "updatedAt", "settingId", code, "name")values(uuid_generate_v1(), now(), now(),'cdac5d6c-501d-11ed-b8b2-93cfa5187c2a','IVA_EXE','IVA EXCENTO TARIFA 0%');
+insert into public."SettingDetail"(id, "createdAt", "updatedAt", "settingId", code, "name")values(uuid_generate_v1(), now(), now(),'cdac5d6c-501d-11ed-b8b2-93cfa5187c2a','IVA_HBT','IVA TARIFA 0%');
+insert into public."SettingDetail"(id, "createdAt", "updatedAt", "settingId", code, "name")values(uuid_generate_v1(), now(), now(),'cdac5d6c-501d-11ed-b8b2-93cfa5187c2a','IVADSI','IMPUESTO A LAS VENTAS DIA SIN IVA');
+insert into public."SettingDetail"(id, "createdAt", "updatedAt", "settingId", code, "name")values(uuid_generate_v1(), now(), now(),'cdac5d6c-501d-11ed-b8b2-93cfa5187c2a','IVANTIC','IVA NO APLICABLE A ANTICIPOS CLIENTES');
+insert into public."SettingDetail"(id, "createdAt", "updatedAt", "settingId", code, "name")values(uuid_generate_v1(), now(), now(),'cdac5d6c-501d-11ed-b8b2-93cfa5187c2a','IVAV_EXC','IMPUESTO A LAS VENTAS GENERADO EXCUIDO');
+insert into public."SettingDetail"(id, "createdAt", "updatedAt", "settingId", code, "name")values(uuid_generate_v1(), now(), now(),'cdac5d6c-501d-11ed-b8b2-93cfa5187c2a','IVAV_EXE','IMPUESTO A LAS VENTAS GENERADO EXENTO');
+insert into public."SettingDetail"(id, "createdAt", "updatedAt", "settingId", code, "name")values(uuid_generate_v1(), now(), now(),'cdac5d6c-501d-11ed-b8b2-93cfa5187c2a','IVAV05','IMPUESTO A LAS VENTAS GENERADO TARIFA 5%');
+insert into public."SettingDetail"(id, "createdAt", "updatedAt", "settingId", code, "name")values(uuid_generate_v1(), now(), now(),'cdac5d6c-501d-11ed-b8b2-93cfa5187c2a','IVAV19','IMPUESTO A LAS VENTAS GENERADO TARIFA 19%');
+insert into public."SettingDetail"(id, "createdAt", "updatedAt", "settingId", code, "name")values(uuid_generate_v1(), now(), now(),'cdac5d6c-501d-11ed-b8b2-93cfa5187c2a','IVAVS05','IMPUESTO A LOS SERVICIOS GENERADO TARIFA 5%');
+insert into public."SettingDetail"(id, "createdAt", "updatedAt", "settingId", code, "name")values(uuid_generate_v1(), now(), now(),'cdac5d6c-501d-11ed-b8b2-93cfa5187c2a','IVAVS19','IMPUESTO A LOS SERVICIOS GENERADO TARIFA 19%');
+insert into public."SettingDetail"(id, "createdAt", "updatedAt", "settingId", code, "name")values(uuid_generate_v1(), now(), now(),'cdac5d6c-501d-11ed-b8b2-93cfa5187c2a','IVAVSEXC','IMPUESTO A LOS SERVICIOS GENERADO EXENTO');
+insert into public."SettingDetail"(id, "createdAt", "updatedAt", "settingId", code, "name")values(uuid_generate_v1(), now(), now(),'cdac5d6c-501d-11ed-b8b2-93cfa5187c2a','IVAVSEXE','IMPUESTO A LOS SERVICIOS GENERADO EXCUIDO');
+
+
+-- status order
+
+insert into public."Setting"(id, "name", "createdAt", "updatedAt")values('4eb2865c-6130-11ed-b8b2-93cfa5187c2a', 'STATUS_ORDER', now(), now());
+
+insert into public."SettingDetail"(id, "createdAt", "updatedAt", "settingId", code, "name")values('56591ede-6130-11ed-b8b2-93cfa5187c2a', now(), now(),'4eb2865c-6130-11ed-b8b2-93cfa5187c2a','Por Cobrar');
+insert into public."SettingDetail"(id, "createdAt", "updatedAt", "settingId", code, "name")values('5dd95fd4-6130-11ed-b8b2-93cfa5187c2a', now(), now(),'4eb2865c-6130-11ed-b8b2-93cfa5187c2a','Pago Parcial');
+insert into public."SettingDetail"(id, "createdAt", "updatedAt", "settingId", code, "name")values('6322bac6-6130-11ed-b8b2-93cfa5187c2a', now(), now(),'4eb2865c-6130-11ed-b8b2-93cfa5187c2a','Pagado');

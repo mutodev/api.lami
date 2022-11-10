@@ -144,11 +144,18 @@ model Order {
   serie               String?
   salesPersonCode     String?
   messageError        String? @db.Text() @default("")
-  status              String?
+  statusId            String?
+  status              SettingDetail? @relation(name: "orderstatus", fields: [statusId], references: [id])
   createdAt           DateTime @default(now())
   updatedAt           DateTime @updatedAt
   orderDetails        OrderDetail[] @relation(name: "orderdetailorder")
 }
+
+// enum EnumOrderStatus { 
+//   PorCobrar @map("Por_Cobrar")
+//   PagoParcial @map("Pago_Parcial")
+//   Pagado  @map("Pagado")
+// }
 
 model OrderDetail {
   id                  String @default(uuid()) @id
@@ -204,6 +211,7 @@ model SettingDetail {
   menuRoles                   MenuRole[] @relation(name: "menurolessetting")
   customers                   Customer[] @relation(name: "typecustomersetting")
   customerIdentificationTypes Customer[] @relation(name: "identificationtypesetting")
+  orders                      Order[] @relation(name: "orderstatus")
   createdAt                   DateTime @default(now())
   updatedAt                   DateTime @updatedAt
 }

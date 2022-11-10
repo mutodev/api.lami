@@ -6,6 +6,7 @@ import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { JwtAuthGuard } from './../commons/guards';
 import { successResponse } from '../commons/functions';
 import { ItemsService } from '../items/items.service';
+import { EnumOrderStatus } from '../commons/enums/enum-order-status';
 
 @ApiTags('ORDER')
 @ApiBearerAuth()
@@ -23,7 +24,7 @@ export class OrderController {
       const item = await this.itemsService.findByCode(detail.itemCode);
       return {...detail, arTaxCode: item.arTaxCode}
     }));
-    const result = await this.orderService.create({...order, orderDetails: {
+    const result = await this.orderService.create({...order, statusId: EnumOrderStatus.PorCobrar, orderDetails: {
       create: [
         ...(details as any[])
       ]
