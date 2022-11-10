@@ -22,7 +22,7 @@ export class ApiHttp {
         return result.data;
     }  
 
-    async get<T>(endPoint: string, data?: any): Promise<{data: any, status: number}>  {
+    async get<T>(endPoint: string, data?: any) {
         try {
             // const subscription = await this.httpService.get<T>(`${this._env.get('URL_BASE_SAP')}${endPoint}`, {
             //     params: data,
