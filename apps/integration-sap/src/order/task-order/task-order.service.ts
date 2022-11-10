@@ -67,8 +67,8 @@ export class TaskOrderService {
                                     Quantity: item.amount,
                                     UnitPrice: item.value,
                                     DiscountPercent: item.discount || 0,
-                                    //Price: item.value * item.amount,
-                                    WarehouseCode: item.wareHouseCode || '',
+                                    // Price: item.value * item.amount,
+                                    WarehouseCode: item.wareHouseCode || null,
                                     Project: item.project,
                                     ArTaxCode: item.arTaxCode
                                 };
