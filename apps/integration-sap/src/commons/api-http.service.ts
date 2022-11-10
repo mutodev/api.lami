@@ -65,7 +65,7 @@ export class ApiHttp {
             // return {data: result.data, status: result.status};
             return await new Promise((resolve, reject) => {
                 this.httpService
-                  .post(endPoint, data, {
+                  .post(`${this._env.get('URL_BASE_SAP')}${endPoint}`, data, {
                     headers: {
                         'Cookie': `B1SESSION=${this.SessionId}`
                     },
@@ -96,7 +96,7 @@ export class ApiHttp {
             // return {data: result.data, status: result.status};
             return await new Promise((resolve, reject) => {
                 this.httpService
-                  .put(endPoint, data, {
+                  .put(`${this._env.get('URL_BASE_SAP')}${endPoint}`, data, {
                     headers: {
                         'Cookie': `B1SESSION=${this.SessionId}`
                     },
@@ -126,7 +126,7 @@ export class ApiHttp {
             // return {data: result.data, status: result.status};
             return await new Promise((resolve, reject) => {
                 this.httpService
-                  .patch(endPoint, data, {
+                  .patch(`${this._env.get('URL_BASE_SAP')}${endPoint}`, data, {
                     headers: {
                         'Cookie': `B1SESSION=${this.SessionId}`
                     },
@@ -157,7 +157,7 @@ export class ApiHttp {
             // return {data: result.data, status: result.status};
             return await new Promise((resolve, reject) => {
                 this.httpService
-                  .delete(endPoint, {
+                  .delete(`${this._env.get('URL_BASE_SAP')}${endPoint}`, {
                     headers: {
                         'Cookie': `B1SESSION=${this.SessionId}`
                     },
