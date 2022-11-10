@@ -15,7 +15,7 @@ export class TaskCustomerService {
         private customerService: CustomerService,
         private authService: AuthService) { }
 
-    // @Cron(CronExpression.EVERY_10_SECONDS)
+    @Cron(CronExpression.EVERY_10_SECONDS)
     async handleCron() {
         try {
             if (!isRunning) {
