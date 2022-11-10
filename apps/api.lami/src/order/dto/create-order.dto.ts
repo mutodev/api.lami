@@ -54,9 +54,14 @@ export class OrderDetail {
     project: string;
 
     @ApiProperty()
-    @IsNotEmpty()
+    @IsOptional()
     @IsString()
     wareHouseCode?: string;
+
+    @ApiProperty()
+    @IsOptional()
+    @IsString()
+    arTaxCode?: string;
 }
 
 export class CreateOrderDto {
