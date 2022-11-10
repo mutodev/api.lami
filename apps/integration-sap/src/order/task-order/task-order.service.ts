@@ -15,7 +15,7 @@ export class TaskOrderService {
         private orderService: OrderService,
         private authService: AuthService) { }
 
-    // @Cron(CronExpression.EVERY_10_SECONDS)
+    @Cron(CronExpression.EVERY_10_SECONDS)
     async handleCron() {
         try {
             if (!isRunning) {
