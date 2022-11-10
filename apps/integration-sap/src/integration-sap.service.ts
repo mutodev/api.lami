@@ -200,8 +200,8 @@ export class IntegrationSapService {
       // if (item.Type === 'bbpgt_CustomerGroup')
       await this.prismaService.settingDetail.create({
         data: {
-          name: item.Code,
-          code: item.Name,
+          name: item.Name,
+          code: item.Code,
           settingId: setting.id
         }
       })
