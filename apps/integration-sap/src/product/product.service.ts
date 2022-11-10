@@ -25,10 +25,10 @@ export class ProductService {
     return result;
   }
 
-  async findOne(itemCode: string) {
+  async findOne(itemCode: string, select: string = '*') {
     try {
       await this.authService.login();
-      const result = await this.apiHttp.get<any>(`${EnumApis.ITEM}('${itemCode}')?$select=*`);
+      const result = await this.apiHttp.get<any>(`${EnumApis.ITEM}('${itemCode}')?$select=${select}`);
       return result;
     } catch (error) {
       throw error;

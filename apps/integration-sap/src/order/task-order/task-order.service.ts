@@ -2,6 +2,7 @@ import { Injectable, Logger } from '@nestjs/common';
 import { Cron, CronExpression } from '@nestjs/schedule';
 import { AuthService } from '../../auth/auth.service';
 import { PrismaService } from '../../commons/prisma.service';
+import { ProductService } from '../../product/product.service';
 import { OrderService } from '../order.service';
 
 var isRunning = false;
@@ -13,6 +14,7 @@ export class TaskOrderService {
 
     constructor(private prismaService: PrismaService,
         private orderService: OrderService,
+        private productService: ProductService,
         private authService: AuthService) { }
 
     @Cron(CronExpression.EVERY_10_SECONDS)
@@ -78,6 +80,17 @@ export class TaskOrderService {
                         if (result.status === 201) {
                             order.sendToSap = true;
                             await this.prismaService.order.update({ where: { id: order.id }, data: { sendToSap: true, docNumber: result.data.DocNum, integrationId: result.data.DocEntry } });
+                             
+                            order.orderDetails.map(async (detail) => {
+                                try {
+                                    const item = await this.productService.findOne(detail.itemCode, 'QuantityOnStock,QuantityOrderedFromVendors,QuantityOrderedByCustomers');
+                                    await this.prismaService.items.updateMany({where: {code: detail.itemCode}, data: {quantityOnStock: item.data.QuantityOnStock,
+                                                                                                    quantityOrderedFromVendors: item.data.QuantityOrderedFromVendors,
+                                                                                                    quantityOrderedByCustomers: item.data.QuantityOrderedByCustomers}});
+                                } catch (error) {
+                                    console.log('update item', error);
+                                }                               
+                            });
                         }
 
                     } catch (error) {
