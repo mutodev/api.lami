@@ -86,7 +86,7 @@ export class CustomerService {
       }
     });
     return result.map((item) => {
-      return {...item, countOrder: item.orders.length};
+      return {...item, orderCount: item.orders.length};
     });
   }
 
