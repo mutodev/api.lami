@@ -112,7 +112,7 @@ export class TaskCustomerService {
                                 U_HBT_MunMed: customer.U_HBT_MunMed,
                                 U_HBT_DirMM: customer.U_HBT_DirMM
                             };
-                            const bPAddressesString = JSON.stringify(bPAddresses);
+                            // const bPAddressesString = JSON.stringify(bPAddresses);
                             // const exists = BPAddressesListString.includes(bPAddressesString);
 
                             const body = {
