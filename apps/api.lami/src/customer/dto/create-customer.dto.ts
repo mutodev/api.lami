@@ -113,10 +113,10 @@ export class CreateCustomerDto {
     @IsString()
     U_HBT_MedPag?: string; 
 
-    @ApiProperty()
-    @IsString()
-    @ValidateIf((item) => item.source === 'C')
-    @IsNotEmpty()
-    AddressName?: string;
+    // @ApiProperty()
+    // @IsString()
+    // @ValidateIf((item) => item.source === 'C')
+    // @IsNotEmpty()
+    // AddressName?: string;
 
 }
