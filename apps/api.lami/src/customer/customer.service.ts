@@ -24,7 +24,7 @@ export class CustomerService {
       const {identification, ...customer} = data;
       return await this.prisma.customer.create({
         data: {...customer, 
-        identification: `CL-${identification}`, 
+        identification: data.source == 'C' ? `CL-${identification}` : data.identification, 
         cardType: customer.source,
         FederalTaxID: identification
         }

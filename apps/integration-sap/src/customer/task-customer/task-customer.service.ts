@@ -1,6 +1,7 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { Cron, CronExpression } from '@nestjs/schedule';
 import { AuthService } from '../../auth/auth.service';
+import { EnumCustomerType } from '../../commons/enum-customer-type';
 import { PrismaService } from '../../commons/prisma.service';
 import { CustomerService } from '../customer.service';
 
@@ -56,7 +57,7 @@ export class TaskCustomerService {
                         if (customerSap.status === 404) {
                             const result = await this.customerService.create({
                                 CardCode: customer.identification,
-                                CardName: `${customer.firstName} ${customer.lastName}`,
+                                CardName: EnumCustomerType.PersonaNatural ? `${customer.firstName} ${customer.lastName} ${customer.lastName2}` : customer.name,
                                 Address: customer.address,
                                 Phone1: customer.phone,
                                 MailAddress: customer.address,
@@ -70,9 +71,9 @@ export class TaskCustomerService {
                                 U_HBT_TipDoc: customer.identificationType.code,
                                 U_HBT_MunMed: customer.U_HBT_MunMed,
                                 U_HBT_TipEnt: customer.type.code,
-                                U_HBT_Nombres: customer.firstName,
-                                U_HBT_Apellido1: customer.lastName,
-                                U_HBT_Apellido2: customer.lastName2,
+                                U_HBT_Nombres: customer.firstNameBilling,
+                                U_HBT_Apellido1: customer.lastNameBilling,
+                                U_HBT_Apellido2: customer.lastName2Billing,
                                 U_HBT_Nacional: customer.U_HBT_Nacional,
                                 U_HBT_RegFis: customer.U_HBT_RegFis,
                                 U_HBT_ResFis: customer.U_HBT_ResFis,
@@ -117,7 +118,7 @@ export class TaskCustomerService {
 
                             const body = {
                                 CardCode: customer.identification,
-                                CardName: `${customer.firstName} ${customer.lastName}`,
+                                CardName: EnumCustomerType.PersonaNatural ? `${customer.firstName} ${customer.lastName} ${customer.lastName2}` : customer.name,
                                 Address: customer.address,
                                 Phone1: customer.phone,
                                 MailAddress: customer.address || customerSap.data?.MailAddress,
@@ -131,9 +132,9 @@ export class TaskCustomerService {
                                 U_HBT_TipDoc: customer.identificationType.code || customerSap.data?.U_HBT_TipDoc,
                                 U_HBT_MunMed: customer.U_HBT_MunMed || customerSap.data?.U_HBT_MunMed,
                                 U_HBT_TipEnt: customer.type.code,
-                                U_HBT_Nombres: customer.firstName,
-                                U_HBT_Apellido1: customer.lastName,
-                                U_HBT_Apellido2: customer.lastName2,
+                                U_HBT_Nombres: customer.firstNameBilling || '',,
+                                U_HBT_Apellido1: customer.lastNameBilling || '',,
+                                U_HBT_Apellido2: customer.lastName2Billing || '',
                                 U_HBT_Nacional: customer.U_HBT_Nacional,
                                 U_HBT_RegFis: customer.U_HBT_RegFis || customerSap.data?.U_HBT_RegFis,
                                 U_HBT_ResFis: customer.U_HBT_ResFis || customerSap.data?.U_HBT_ResFis,

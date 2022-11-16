@@ -25,8 +25,9 @@ export class CreateCustomerDto {
     identificationTypeId: string;
 
     @ApiProperty()
-    @IsNotEmpty()
     @IsString()
+    @ValidateIf((item) => item.typeId === '87345bcb-46c0-11ed-88f1-7b765a5d50e1')
+    @IsNotEmpty()
     name: string;
 
     @ApiProperty()
@@ -46,19 +47,19 @@ export class CreateCustomerDto {
 
     @ApiProperty()
     @IsString()
-    @ValidateIf((item) => item.source === 'C')
+    @ValidateIf((item) => item.typeId === '87345bca-46c0-11ed-88f1-7b765a5d50e1')
     @IsNotEmpty()
     firstName: string;
 
     @ApiProperty()
     @IsString()
-    @ValidateIf((item) => item.source === 'C')
+    @ValidateIf((item) => item.typeId === '87345bca-46c0-11ed-88f1-7b765a5d50e1')
     @IsNotEmpty()
     lastName: string;
 
     @ApiProperty()
     @IsString()
-    @ValidateIf((item) => item.source === 'C')
+    @ValidateIf((item) => item.typeId === '87345bca-46c0-11ed-88f1-7b765a5d50e1')
     @IsNotEmpty()
     lastName2: string;
 
@@ -113,10 +114,23 @@ export class CreateCustomerDto {
     @IsString()
     U_HBT_MedPag?: string; 
 
-    // @ApiProperty()
-    // @IsString()
-    // @ValidateIf((item) => item.source === 'C')
-    // @IsNotEmpty()
-    // AddressName?: string;
+    @ApiProperty()
+    @IsString()
+    @ValidateIf((item) => item.source === 'C')
+    @IsNotEmpty()
+    firstNameBilling: string;
+
+    @ApiProperty()
+    @IsString()
+    @ValidateIf((item) => item.source === 'C')
+    @IsNotEmpty()
+    lastNameBilling: string;
+
+    @ApiProperty()
+    @IsString()
+    @ValidateIf((item) => item.source === 'C')
+    @IsNotEmpty()
+    lastName2Billing: string;
+
 
 }

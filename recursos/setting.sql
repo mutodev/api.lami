@@ -22,8 +22,8 @@ insert into public."SettingDetail"(id, "createdAt", "updatedAt", "settingId", co
 insert into public."Setting"(id, "name", "createdAt", "updatedAt")values('7bfc940c-46c0-11ed-88f1-7b765a5d50e1', 'CUSTOMER_TYPE', now(), now())
 
 insert into public."SettingDetail"(id, code, "name", "settingId", "createdAt", "updatedAt")values
-(uuid_generate_v1(), '1', 'Persona Natural', '7bfc940c-46c0-11ed-88f1-7b765a5d50e1', now(), now()),
-(uuid_generate_v1(), '2', 'Persona Juridica', '7bfc940c-46c0-11ed-88f1-7b765a5d50e1', now(), now())
+('87345bca-46c0-11ed-88f1-7b765a5d50e1', '1', 'Persona Natural', '7bfc940c-46c0-11ed-88f1-7b765a5d50e1', now(), now()),
+('87345bcb-46c0-11ed-88f1-7b765a5d50e1', '2', 'Persona Juridica', '7bfc940c-46c0-11ed-88f1-7b765a5d50e1', now(), now())
 
 
 -- roles

@@ -81,9 +81,12 @@ model Customer {
   name                String?
   source              String @db.VarChar(100)
   email               String @db.VarChar(100)
-  firstName           String @db.VarChar(100)
+  firstName           String? @db.VarChar(100)
   lastName            String? @db.VarChar(100)
   lastName2           String? @db.VarChar(100)
+  firstNameBilling    String? @db.VarChar(100)
+  lastNameBilling     String? @db.VarChar(100)
+  lastName2Billing    String? @db.VarChar(100)
   address             String? @db.VarChar(255)
   phone               String? @db.VarChar(30)
   // companyName         String?
