@@ -213,6 +213,7 @@ model SettingDetail {
   customers                   Customer[] @relation(name: "typecustomersetting")
   customerIdentificationTypes Customer[] @relation(name: "identificationtypesetting")
   orders                      Order[] @relation(name: "orderstatus")
+  active                      Boolean? @default(true)
   createdAt                   DateTime @default(now())
   updatedAt                   DateTime @updatedAt
 }
