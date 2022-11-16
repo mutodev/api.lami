@@ -10,14 +10,28 @@ export class CustomerService {
     private paginationService: PaginationService) {}
   
   async create(data: Prisma.CustomerUncheckedCreateInput): Promise<Model> {
-    const {identification, ...customer} = data;
-    return this.prisma.customer.create({
-      data: {...customer, 
-      identification: `CL-${identification}`, 
-      cardType: customer.source,
-      FederalTaxID: identification
-      }
-    });
+    try {
+      const cus = await this.prisma.customer.findFirst({
+        where: {OR: 
+          [
+            {identification: data.identification}, 
+            {identification: `CL-${data.identification}`}
+          ]
+        }});
+      if (cus) {
+        throw "El cliente o el posible cliente ya existe.";
+      }        
+      const {identification, ...customer} = data;
+      return await this.prisma.customer.create({
+        data: {...customer, 
+        identification: `CL-${identification}`, 
+        cardType: customer.source,
+        FederalTaxID: identification
+        }
+      });
+    } catch (error) {
+      throw error;
+    }    
   }
 
   findAll(params: {
