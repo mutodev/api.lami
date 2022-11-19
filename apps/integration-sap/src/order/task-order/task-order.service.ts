@@ -52,6 +52,8 @@ export class TaskOrderService {
 
                     try {
 
+                        const setting = await this.prismaService.setting.findFirst({where: {name: 'Project'}, include: {settingDetail: true}});
+                        // const projects = await this.prismaService.settingDetail.findMany({where: {settingId: setting.id}})
                         await this.authService.login();
                         const result = await this.orderService.create({
                             CardCode: order.customer.identification,
@@ -64,6 +66,7 @@ export class TaskOrderService {
                             VatSum: order.vatTotal || 0,
                             DocTotal: order.total || 0,
                             DocumentLines: order.orderDetails.map((item) => {
+                                const project = setting.settingDetail.find((d) => d.code == item.project);
                                 return {
                                     ItemCode: item.itemCode,
                                     Quantity: item.amount,
@@ -71,7 +74,7 @@ export class TaskOrderService {
                                     DiscountPercent: item.discount || 0,
                                     // Price: item.value * item.amount,
                                     WarehouseCode: item.wareHouseCode || null,
-                                    Project: item.project,
+                                    Project: project.value,
                                     ArTaxCode: item.arTaxCode
                                 };
                             })
