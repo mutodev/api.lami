@@ -43,19 +43,19 @@ export class CreateCustomerDto {
     @ApiProperty()
     @IsNotEmpty()
     @IsString()
-    email: string;
+    email?: string;
 
     @ApiProperty()
     @IsString()
     @ValidateIf((item) => item.typeId === '87345bca-46c0-11ed-88f1-7b765a5d50e1')
     @IsNotEmpty()
-    firstName: string;
+    firstName?: string;
 
     @ApiProperty()
     @IsString()
     @ValidateIf((item) => item.typeId === '87345bca-46c0-11ed-88f1-7b765a5d50e1')
     @IsNotEmpty()
-    lastName: string;
+    lastName?: string;
 
     @ApiProperty()
     @IsString()
@@ -118,19 +118,24 @@ export class CreateCustomerDto {
     @IsString()
     @ValidateIf((item) => item.source === 'C')
     @IsNotEmpty()
-    firstNameBilling: string;
+    firstNameBilling?: string;
 
     @ApiProperty()
     @IsString()
     @ValidateIf((item) => item.source === 'C')
     @IsNotEmpty()
-    lastNameBilling: string;
+    lastNameBilling?: string;
 
     @ApiProperty()
     @IsString()
     @ValidateIf((item) => item.source === 'C')
     @IsNotEmpty()
-    lastName2Billing: string;
+    lastName2Billing?: string;
+
+    @ApiProperty()
+    @IsString()
+    @IsOptional()
+    project?: string;
 
 
 }

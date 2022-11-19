@@ -77,8 +77,9 @@ export class CustomerService {
   }): Promise<Model> {
     const { where, data } = params;
     const {identification, ...customer} = data;
+    let newIdentification = data.source == 'C' && !identification.toString().includes('CL') ? `CL-${identification}` : identification;
     return this.prisma.customer.update({
-      data: {...customer, sendToSap: false},
+      data: {...customer, identification: newIdentification , sendToSap: false},
       where,
     });
   }
