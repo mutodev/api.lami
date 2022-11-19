@@ -144,7 +144,7 @@ export class TaskCustomerService {
                             //     body['BPAddresses'] = bPAddresses;
                             // }
                             const result = await this.customerService.update(
-                                customer.identification,
+                                customer.codeUpdated,
                                 body
                             );
                             console.log('update customer', result)

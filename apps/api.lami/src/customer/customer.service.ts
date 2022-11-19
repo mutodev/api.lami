@@ -71,15 +71,16 @@ export class CustomerService {
     });
   }
 
-  update(params: {
+  async update(params: {
     where: Prisma.CustomerWhereUniqueInput;
     data: Prisma.CustomerUpdateInput;
   }): Promise<Model> {
     const { where, data } = params;
+    const cus = await this.prisma.customer.findUnique({where: {id: where.id}});
     const {identification, ...customer} = data;
     let newIdentification = data.source == 'C' && !identification.toString().includes('CL') ? `CL-${identification}` : identification;
-    return this.prisma.customer.update({
-      data: {...customer, identification: newIdentification , sendToSap: false},
+    return await this.prisma.customer.update({
+      data: {...customer, identification: newIdentification , sendToSap: false, codeUpdated: cus.identification},
       where,
     });
   }

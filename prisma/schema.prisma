@@ -121,6 +121,7 @@ model Customer {
   FederalTaxID        String?
   project             String?
   checkSameInfo       Boolean? @default(false)
+  codeUpdated         String?
   orders              Order[] @relation(name: "ordercustomer")
   createdAt           DateTime @default(now())
   updatedAt           DateTime @updatedAt
