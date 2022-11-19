@@ -59,7 +59,7 @@ export class TaskOrderService {
                             DocDate: order.date.toISOString().replace('T', ' ').substring(0, 10),
                             DocDueDate: order.dueDate.toISOString().replace('T', ' ').substring(0, 10),
                             SalesPersonCode: order.salesPersonCode || '',
-                            Comments: order.comments,
+                            Comments: `${order.comments}\n\n${order.orderDetails.map((d) => `${d.aditionalInfo}\n\n`)}`,
                             DiscountPercent: order.discount || 0,    
                             VatSum: order.vatTotal || 0,
                             DocTotal: order.total || 0,

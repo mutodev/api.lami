@@ -196,13 +196,25 @@ export class IntegrationSapService {
       data: { name: 'Project' }
     });
     console.log({ result })
-    await Promise.all(result.data.value.map(async (item) => {
-      // if (item.Type === 'bbpgt_CustomerGroup')
+    let projects =   [
+      { code:"0011", name: "Retail TV-Radio", field: 'retail'} ,
+      { code:"0012", name: "Retail Tienda", field: 'retail'} ,
+      { code:"0013", name: "Retail Referido", field: 'retail'} ,
+      { code:"0014", name: "Retail Volanteo", field: 'retail'} ,
+      { code:"0015", name: "Retail Aliados", field: 'retail'} ,
+      { code:"0021", name: "Digital Instagram", field: 'digital'} ,
+      { code:"0022", name: "Digital Facebook", field: 'digital'} ,
+      { code:"0023", name: "Digital Google", field: 'digital'}
+    ];
+    let sapProjects = result.data.value;
+    await Promise.all(projects.map(async (item) => {
+      const proj = sapProjects.find((a) => a.Name.toLowerCase().includes(item.field));
       await this.prismaService.settingDetail.create({
         data: {
-          name: item.Name,
-          code: item.Code,
-          settingId: setting.id
+          name: item.name,
+          code: item.code,
+          settingId: setting.id,
+          value: proj.Code
         }
       })
     }));
