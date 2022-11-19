@@ -120,6 +120,7 @@ model Customer {
   U_HBT_DirMM         String?
   FederalTaxID        String?
   project             String?
+  checkSameInfo       Boolean? @default(false)
   orders              Order[] @relation(name: "ordercustomer")
   createdAt           DateTime @default(now())
   updatedAt           DateTime @updatedAt
