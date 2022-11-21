@@ -34,7 +34,7 @@ export class OrderController {
 
   @Get()
   async findAll(@Request() req: Request) {
-    const result = await this.orderService.findAll({page: req['query'].page, perPage: req['query'].perPage});
+    const result = await this.orderService.findAll({page: req['query'].page, perPage: req['query'].perPage, orderBy: {createdAt: 'desc'}});
     return successResponse('', result);
   }
 

@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { Customer as Model , Prisma } from '@prisma/client';
+import { EnumCustomerType } from '../commons/enums/enum-customer-type';
 import { PaginationService } from './../commons/services/pagination/pagination.service';
 import { PrismaService } from './../commons/services/prisma.service';
 
@@ -21,12 +22,14 @@ export class CustomerService {
       if (cus) {
         throw "El cliente o el posible cliente ya existe.";
       }        
-      const {identification, ...customer} = data;
+      const {identification, name, ...customer} = data;
+      let nameV = data.typeId == EnumCustomerType.PersonaNatural ? `${data.firstName} ${data.lastName}` : data.name; 
       return await this.prisma.customer.create({
         data: {...customer, 
         identification: data.source == 'C' ? `CL-${identification}` : data.identification, 
         cardType: customer.source,
-        FederalTaxID: identification
+        FederalTaxID: identification,
+        name: nameV
         }
       });
     } catch (error) {
@@ -73,14 +76,15 @@ export class CustomerService {
 
   async update(params: {
     where: Prisma.CustomerWhereUniqueInput;
-    data: Prisma.CustomerUpdateInput;
+    data: Prisma.CustomerUncheckedUpdateInput;
   }): Promise<Model> {
     const { where, data } = params;
     const cus = await this.prisma.customer.findUnique({where: {id: where.id}});
-    const {identification, ...customer} = data;
+    const {identification, name, ...customer} = data;
     let newIdentification = data.source == 'C' && !identification.toString().includes('CL') ? `CL-${identification}` : identification;
+    let nameV = data.typeId == EnumCustomerType.PersonaNatural ? `${data.firstName} ${data.lastName}` : data.name; 
     return await this.prisma.customer.update({
-      data: {...customer, identification: newIdentification , sendToSap: false, codeUpdated: cus.identification},
+      data: {...customer, name: nameV,identification: newIdentification , sendToSap: false, codeUpdated: cus.identification},
       where,
     });
   }
