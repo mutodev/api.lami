@@ -35,7 +35,7 @@ export class SettingService {
             where,
             orderBy,
             include: {
-              settingDetail: { where: {active: true}}
+              settingDetail: { where: {active: true}, orderBy: {name: 'asc'}}
             }
           });
     } else {
@@ -56,7 +56,7 @@ export class SettingService {
     return this.prisma.setting.findUnique({
       where: userWhereUniqueInput,
       include: {
-        settingDetail: { where: {active: true}}
+        settingDetail: { where: {active: true}, orderBy: {name: 'asc'}}
       }
     });
   }
