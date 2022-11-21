@@ -43,3 +43,4 @@ ssh/Ubuntu-LAMI.pem
 ssh/Ubuntu-LAMI2.pem
 ssh/Ubuntu-LAMI3.pem
 yarn.lock
+package-lock.json

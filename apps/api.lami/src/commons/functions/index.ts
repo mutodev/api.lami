@@ -20,6 +20,19 @@ export class Functions {
         return {status: 'error', message, data: null} as IResponse<T>;
     }
 
+    calculateEstimateDate(today: Date, totalStock: number, isEspecial: boolean) {
+        if (totalStock <= 0 && !isEspecial) {
+            let days = 15;
+            return new Date(today.getFullYear(), today.getMonth(), today.getDate() + days, 12);
+          } else if (totalStock > 0 && !isEspecial) {
+            let days = 3;
+            return new Date(today.getFullYear(), today.getMonth(), today.getDate() + days, 12);              
+          } else if (isEspecial) {
+            let days = 30;
+            return new Date(today.getFullYear(), today.getMonth(), today.getDate() + days, 12); 
+          }
+    }
+
 }
 
-export const {successResponse, warningResponse, errorResponse} = new Functions;
+export const {successResponse, warningResponse, errorResponse, calculateEstimateDate} = new Functions;

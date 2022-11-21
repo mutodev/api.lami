@@ -2,8 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { Items as Model, Prisma } from '@prisma/client';
 import { PaginationService } from '../commons/services/pagination/pagination.service';
 import { PrismaService } from '../commons/services/prisma.service';
-import { CreateItemDto } from './dto/create-item.dto';
-import { UpdateItemDto } from './dto/update-item.dto';
+import { calculateEstimateDate } from '../commons/functions';
 
 @Injectable()
 export class ItemsService {
@@ -17,7 +16,7 @@ export class ItemsService {
     });
   }
 
-  findAll(params: {
+  async findAll(params: {
     skip?: number;
     take?: number;
     cursor?: Prisma.ItemsWhereUniqueInput;
@@ -30,7 +29,7 @@ export class ItemsService {
     const { skip, take, cursor, where, orderBy, wareHouseCode } = params;
     if (params.page > 0) {
       const paginate = this.paginationService.createPaginator({page: params.page, perPage: params.perPage });
-      return paginate<Model, Prisma.ItemsFindManyArgs>(
+      const result = await paginate<Model, Prisma.ItemsFindManyArgs>(
         this.prisma.items, {
             cursor,
             where,
@@ -39,8 +38,21 @@ export class ItemsService {
               itemsWareHouses: {where: {warehouseCode: wareHouseCode}}
             },
           });
+          let list = [];
+          let today = new Date();
+          result.data.map((item) => {
+            const isEspecial = !!item.name.toLowerCase().includes('especial');
+            let totalStock = (item.quantityOnStock - (item.quantityOrderedByCustomers || 0)) -3;
+            let estimatedDate = calculateEstimateDate(today, totalStock, isEspecial);
+            list.push({
+              ...item,
+              estimatedDate: `${estimatedDate.getFullYear()}-${estimatedDate.getMonth() + 1}-${estimatedDate.getDate()}`
+            });
+          });
+      const {data, ...items} = result    
+      return {...items, data: list};
     } else {
-      return this.prisma.items.findMany({
+      const result = await this.prisma.items.findMany({
         skip,
         take,
         cursor,
@@ -50,6 +62,19 @@ export class ItemsService {
           itemsWareHouses: {where: {warehouseCode: wareHouseCode}}
         },
       });
+      let list = [];
+      let today = new Date();
+      result.map((item) => {
+        const isEspecial = !!item.name.toLowerCase().includes('especial');
+        let totalStock = (item.quantityOnStock - (item.quantityOrderedByCustomers || 0)) -3;
+        let estimatedDate = calculateEstimateDate(today, totalStock, isEspecial);
+        list.push({
+          ...item,
+          estimatedDate: `${estimatedDate.getFullYear()}-${estimatedDate.getMonth() + 1}-${estimatedDate.getDate()}`
+        });
+      });
+      
+      return list;
     }
   }
 
