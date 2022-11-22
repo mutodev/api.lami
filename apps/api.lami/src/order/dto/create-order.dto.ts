@@ -14,7 +14,7 @@ import {
 export class OrderDetail {
 
     @ApiProperty()
-    @IsNotEmpty()
+    @IsNotEmpty({message: 'El item es requerido.'})
     @IsString()
     itemCode: string;
     
@@ -68,12 +68,12 @@ export class CreateOrderDto {
 
     @ApiProperty()
     @IsString()
-    @IsNotEmpty()
+    @IsNotEmpty({message: 'El cliente es requerido.'})
     customerId: string;
 
     @ApiProperty()
     @IsDate()
-    @IsNotEmpty()
+    @IsNotEmpty({message: 'La fecha es requerida.'})
     date: Date;
 
     @ApiProperty()
@@ -93,7 +93,7 @@ export class CreateOrderDto {
 
     @ApiProperty()
     @IsNumber()
-    @IsNotEmpty()
+    @IsNotEmpty({message: 'El total es requerido.'})
     total: number;
 
     @ApiProperty()

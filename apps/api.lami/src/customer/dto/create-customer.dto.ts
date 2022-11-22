@@ -9,7 +9,8 @@ import {
     IsOptional,
     IsBoolean,
     Validate,
-    ValidateIf
+    ValidateIf,
+    MaxLength
 } from 'class-validator';
 
 export class CreateCustomerDto {
@@ -20,18 +21,19 @@ export class CreateCustomerDto {
     typeId: string;
 
     @ApiProperty()
-    @IsNotEmpty()
+    @IsNotEmpty({message: 'El tipo de identificación es requerido.'})
     @IsString()
     identificationTypeId: string;
 
     @ApiProperty()
     @IsString()
+    @MaxLength(255, {message: 'La cantidad de caracteres maximos permitodos son 255.'})
     @ValidateIf((item) => item.typeId === '87345bcb-46c0-11ed-88f1-7b765a5d50e1')
-    @IsNotEmpty()
+    @IsNotEmpty({message: 'En nombre es requerido.'})
     name: string;
 
     @ApiProperty()
-    @IsNotEmpty()
+    @IsNotEmpty({message: 'El número de identificación es requerido.'})
     @IsString()
     identification: string
 
@@ -41,26 +43,30 @@ export class CreateCustomerDto {
     source: string;
 
     @ApiProperty()
-    @IsNotEmpty()
+    @IsNotEmpty({message: 'El correo es requerido.'})
     @IsString()
+    @MaxLength(255, {message: 'La cantidad de caracteres maximos permitodos son 100.'})
     email: string;
 
     @ApiProperty()
     @IsString()
+    @MaxLength(255, {message: 'La cantidad de caracteres maximos permitodos en el nombre son 255.'})
     @ValidateIf((item) => item.typeId === '87345bca-46c0-11ed-88f1-7b765a5d50e1')
-    @IsNotEmpty()
+    @IsNotEmpty({message: 'El nombre es requerido.'})
     firstName: string;
 
     @ApiProperty()
     @IsString()
+    @MaxLength(255, {message: 'La cantidad de caracteres maximos permitodos en el primer apellido son 255.'})
     @ValidateIf((item) => item.typeId === '87345bca-46c0-11ed-88f1-7b765a5d50e1')
-    @IsNotEmpty()
+    @IsNotEmpty({message: 'El apellido es requerido.'})
     lastName: string;
 
     @ApiProperty()
     @IsString()
+    @MaxLength(255, {message: 'La cantidad de caracteres maximos permitodos en el segundo apellido son 255.'})
     @ValidateIf((item) => item.typeId === '87345bca-46c0-11ed-88f1-7b765a5d50e1')
-    @IsNotEmpty()
+    @IsNotEmpty({message: 'El segundo apellido es requerido.'})
     lastName2: string;
 
     @ApiProperty()
@@ -70,6 +76,7 @@ export class CreateCustomerDto {
 
     @ApiProperty()
     @IsOptional()
+    @MaxLength(30, {message: 'La cantidad de caracteres maximos permitodos en el telefón son 30.'})
     @IsString()
     phone?: string;
 
@@ -96,7 +103,7 @@ export class CreateCustomerDto {
     @ApiProperty()
     @IsString()
     @ValidateIf((item) => item.source === 'C')
-    @IsNotEmpty()
+    @IsNotEmpty({message: 'El Municipio medios magnetico es requerido.'})
     U_HBT_MunMed?: string; 
 
     @ApiProperty()
@@ -116,20 +123,23 @@ export class CreateCustomerDto {
 
     @ApiProperty()
     @IsString()
+    @MaxLength(255, {message: 'La cantidad de caracteres maximos permitodos en el nombre para facturación son 255.'})
     @ValidateIf((item) => item.source === 'C')
-    @IsNotEmpty()
+    @IsNotEmpty({message: 'El nombre para facturación es requerido.'})
     firstNameBilling?: string;
 
     @ApiProperty()
     @IsString()
+    @MaxLength(255, {message: 'La cantidad de caracteres maximos permitodos en el aplleido para facturación son 255.'})
     @ValidateIf((item) => item.source === 'C')
-    @IsNotEmpty()
+    @IsNotEmpty({message: 'El apellido para facturación es requerido.'})
     lastNameBilling?: string;
 
     @ApiProperty()
     @IsString()
+    @MaxLength(255, {message: 'La cantidad de caracteres maximos permitodos en el segundo apellido para facturación son 255.'})
     @ValidateIf((item) => item.source === 'C')
-    @IsNotEmpty()
+    @IsNotEmpty({message: 'El segundo apellido para facturación es requerido.'})
     lastName2Billing?: string;
 
     @ApiProperty()
