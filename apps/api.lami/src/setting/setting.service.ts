@@ -35,7 +35,7 @@ export class SettingService {
             where,
             orderBy,
             include: {
-              settingDetail: { where: {active: true}, orderBy: {name: 'desc'}}
+              settingDetail: { where: {active: true}, orderBy: {name: where.name == 'IDENTIFICATION_TYPE' ? 'asc' : 'desc'}}
             }
           });
     } else {
@@ -46,7 +46,7 @@ export class SettingService {
         where,
         orderBy,
         include: {
-          settingDetail: { where: {active: true}, orderBy: {name: 'desc'}}
+          settingDetail: { where: {active: true}, orderBy: {name: where.name == 'IDENTIFICATION_TYPE' ? 'asc' : 'desc'}}
         }
       });
     }
