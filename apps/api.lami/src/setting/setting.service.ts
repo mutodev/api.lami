@@ -56,7 +56,7 @@ export class SettingService {
     return this.prisma.setting.findUnique({
       where: userWhereUniqueInput,
       include: {
-        settingDetail: { where: {active: true}, orderBy: {name: 'desc'}}
+        settingDetail: { where: {active: true}, orderBy: {name: userWhereUniqueInput.name == 'IDENTIFICATION_TYPE' ? 'asc' : 'desc'}}
       }
     });
   }
