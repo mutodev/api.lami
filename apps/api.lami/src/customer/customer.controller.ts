@@ -1,5 +1,9 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, Request } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, Request, Query, Req, Sse } from '@nestjs/common';
+import { Ctx, MessagePattern, Payload, RedisContext } from '@nestjs/microservices';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import { Observable } from 'rxjs';
+import { Public } from '../commons/decorators';
+import { seeEventCustomerStream } from '../commons/streams/actions-order';
 import { successResponse } from './../commons/functions';
 import { JwtAuthGuard } from './../commons/guards';
 import { CustomerService } from './customer.service';
@@ -52,4 +56,26 @@ export class CustomerController {
     const result = await this.customerService.getOrder(id);
     return successResponse('', result);
   }
+
+  @Public()
+  @MessagePattern('customer/change-status-sap')
+  async changeStatusSap(@Payload() payload: {customerId: string}, @Ctx() context: RedisContext): Promise<any> {
+    try {
+      const customer = await this.customerService.findOne({id: payload.customerId});
+      seeEventCustomerStream.next(customer);
+    return null;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  @Sse('see/customer/change-status-sap')
+	seeEventChangeStatus(@Req() req: Request, @Query('token') token: string): Observable<MessageEvent> {
+		try {
+			return seeEventCustomerStream;
+		} catch (error) {
+			console.log({ error });
+		}
+	}
+
 }

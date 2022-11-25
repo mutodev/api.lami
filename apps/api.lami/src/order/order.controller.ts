@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, Request } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, Request, Sse, Req, Query } from '@nestjs/common';
 import { OrderService } from './order.service';
 import { CreateOrderDto } from './dto/create-order.dto';
 import { UpdateOrderDto } from './dto/update-order.dto';
@@ -7,6 +7,10 @@ import { JwtAuthGuard } from './../commons/guards';
 import { successResponse } from '../commons/functions';
 import { ItemsService } from '../items/items.service';
 import { EnumOrderStatus } from '../commons/enums/enum-order-status';
+import { Public } from '../commons/decorators';
+import { Ctx, MessagePattern, Payload, RedisContext } from '@nestjs/microservices';
+import { seeEventOrderStream } from '../commons/streams/actions-order';
+import { Observable } from 'rxjs';
 
 @ApiTags('ORDER')
 @ApiBearerAuth()
@@ -64,5 +68,26 @@ export class OrderController {
     const result = await this.orderService.remove({id});
     return successResponse('', result);
   }
+
+  @Public()
+  @MessagePattern('order/change-status-sap')
+  async changeStatusSap(@Payload() payload: {orderId: string}, @Ctx() context: RedisContext): Promise<any> {
+    try {
+      const order = await this.orderService.findOne({id: payload.orderId});
+      seeEventOrderStream.next(order);
+    return null;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  @Sse('see/order/change-status-sap')
+	seeEventChangeStatus(@Req() req: Request, @Query('token') token: string): Observable<MessageEvent> {
+		try {
+			return seeEventOrderStream;
+		} catch (error) {
+			console.log({ error });
+		}
+	}
 
 }

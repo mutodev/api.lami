@@ -10,11 +10,28 @@ import { EasyconfigModule } from 'nestjs-easyconfig';
 import { SettingModule } from './setting/setting.module';
 import { AuthModule } from './auth/auth.module';
 import { ItemsModule } from './items/items.module';
+import { ClientsModule, Transport } from '@nestjs/microservices';
 
 @Module({
   imports: [
     EasyconfigModule.register({ path: './.env' }),
-    UserModule, AuthModule, CustomerModule, OrderModule, FinanceModule, SettingModule, ItemsModule],
+    UserModule, 
+    AuthModule, 
+    CustomerModule, 
+    OrderModule, 
+    FinanceModule, 
+    SettingModule, 
+    ItemsModule,
+    ClientsModule.register([
+      {
+        name: 'CLIENT_SERVICE',
+        transport: Transport.REDIS,
+        options: {
+          host: 'localhost',
+          port: 6379
+        }
+      }
+    ])],
   controllers: [AppController],
   providers: [AppService],
   exports: []

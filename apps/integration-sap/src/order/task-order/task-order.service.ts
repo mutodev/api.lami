@@ -1,4 +1,5 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { Inject, Injectable, Logger } from '@nestjs/common';
+import { ClientProxy } from '@nestjs/microservices';
 import { Cron, CronExpression } from '@nestjs/schedule';
 import { AuthService } from '../../auth/auth.service';
 import { PrismaService } from '../../commons/prisma.service';
@@ -15,7 +16,8 @@ export class TaskOrderService {
     constructor(private prismaService: PrismaService,
         private orderService: OrderService,
         private productService: ProductService,
-        private authService: AuthService) { }
+        private authService: AuthService,
+        @Inject('CLIENT_SERVICE') private clientProxi: ClientProxy) { }
 
     @Cron(CronExpression.EVERY_10_SECONDS)
     async handleCron() {
@@ -94,6 +96,8 @@ export class TaskOrderService {
                                     console.log('update item', error);
                                 }                               
                             });
+
+                            this.clientProxi.send<string>('order/change-status-sap', {orderId: order.id});
                         }
 
                     } catch (error) {

@@ -29,7 +29,8 @@ export class CustomerService {
         identification: data.source == 'C' ? `CL-${identification}` : data.identification, 
         cardType: customer.source,
         FederalTaxID: identification,
-        name: nameV
+        name: nameV,
+        codeUpdated: data.source == 'C' ? `CL-${identification}` : data.identification
         }
       });
     } catch (error) {
@@ -84,7 +85,7 @@ export class CustomerService {
     let newIdentification = data.source == 'C' && !identification.toString().includes('CL') ? `CL-${identification}` : identification;
     let nameV = data.typeId == EnumCustomerType.PersonaNatural ? `${data.firstName} ${data.lastName}` : data.name; 
     return await this.prisma.customer.update({
-      data: {...customer, name: nameV,identification: newIdentification , sendToSap: false, codeUpdated: cus.identification},
+      data: {...customer, name: nameV,identification: newIdentification , sendToSap: false, codeUpdated: cus.identification, cardType: customer.source },
       where,
     });
   }

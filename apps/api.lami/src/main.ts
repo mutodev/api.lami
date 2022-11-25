@@ -1,8 +1,11 @@
-import { ValidationPipe } from '@nestjs/common';
+import { INestMicroservice, Logger, ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
+import { Transport } from '@nestjs/microservices';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { AppModule } from './app.module';
 import { ErrorsInterceptor, ResponseInterceptor } from './commons/interceptors';
+
+const logger = new Logger('Api lami');
 
 async function bootstrap() {
   
@@ -35,6 +38,16 @@ async function bootstrap() {
   );
 
   await app.listen(1200);
+
+  const appMS: INestMicroservice = await NestFactory.createMicroservice(AppModule, {
+    transport: Transport.REDIS,
+    options: {
+      url: 'redis://localhost:6379'
+    }
+  });
+
+  await appMS.listen();
+  logger.log('Microservice integration sap is listening');
 
 }
 bootstrap();

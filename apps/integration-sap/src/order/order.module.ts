@@ -4,11 +4,22 @@ import { OrderController } from './order.controller';
 import { TaskOrderService } from './task-order/task-order.service';
 import { CommonsModule } from '../commons/commons.module';
 import { AuthModule } from '../auth/auth.module';
+import { ClientsModule, Transport } from '@nestjs/microservices';
 
 @Module({
   imports: [
     CommonsModule,
-    AuthModule
+    AuthModule,
+    ClientsModule.register([
+      {
+        name: 'CLIENT_SERVICE',
+        transport: Transport.REDIS,
+        options: {
+          host: 'localhost',
+          port: 6379
+        }
+      }
+    ])
   ],
   controllers: [OrderController],
   providers: [OrderService, TaskOrderService]

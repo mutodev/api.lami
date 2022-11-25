@@ -1,4 +1,5 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { Inject, Injectable, Logger } from '@nestjs/common';
+import { ClientProxy } from '@nestjs/microservices';
 import { Cron, CronExpression } from '@nestjs/schedule';
 import { AuthService } from '../../auth/auth.service';
 import { EnumCustomerType } from '../../commons/enum-customer-type';
@@ -14,7 +15,8 @@ export class TaskCustomerService {
 
     constructor(private prismaService: PrismaService,
         private customerService: CustomerService,
-        private authService: AuthService) { }
+        private authService: AuthService,
+        @Inject('CLIENT_SERVICE') private clientProxi: ClientProxy) { }
 
     @Cron(CronExpression.EVERY_10_SECONDS)
     async handleCron() {
@@ -52,7 +54,7 @@ export class TaskCustomerService {
                     try {
 
                         await this.authService.login();
-                        const customerSap = await this.customerService.findOne(customer.identification);
+                        const customerSap = await this.customerService.findOne(customer.codeUpdated);
                         console.log({ customerSap })
                         if (customerSap.status === 404) {
                             const result = await this.customerService.create({
@@ -61,7 +63,7 @@ export class TaskCustomerService {
                                 Address: customer.address,
                                 Phone1: customer.phone,
                                 MailAddress: customer.address,
-                                CardType: customer.cardType || customer.source,
+                                CardType: customer.source,
                                 FederalTaxID: customer.FederalTaxID,
                                 GroupCode: customer.groupCode,
                                 PayTermsGrpCode: customer.payTermsGrpCode,
@@ -96,6 +98,7 @@ export class TaskCustomerService {
                             if (result.status === 201) {
                                 customer.sendToSap = true;
                                 await this.prismaService.customer.update({ where: { id: customer.id }, data: { sendToSap: true } });
+                                this.clientProxi.send<string>('customer/change-status-sap', {customerId: customer.id});
                             }
                         } else if (customerSap.status === 200) {
                             console.log('entro a update customer');
@@ -151,6 +154,7 @@ export class TaskCustomerService {
                             if (result.status === 204) {
                                 customer.sendToSap = true;
                                 await this.prismaService.customer.update({ where: { id: customer.id }, data: { sendToSap: true } });
+                                this.clientProxi.send<string>('customer/change-status-sap', {customerId: customer.id});
                             }
                         } else {
                             await this.prismaService.customer.update({ where: { id: customer.id }, data: { sendToSap: false, messageError: customerSap.message } });
