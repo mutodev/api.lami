@@ -1,7 +1,7 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, Request, Query, Req, Sse } from '@nestjs/common';
 import { Ctx, MessagePattern, Payload, RedisContext } from '@nestjs/microservices';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
-import { Observable } from 'rxjs';
+import { interval, map, Observable } from 'rxjs';
 import { Public } from '../commons/decorators';
 import { seeEventCustomerStream } from '../commons/streams/actions-order';
 import { successResponse } from './../commons/functions';
@@ -69,7 +69,7 @@ export class CustomerController {
     }
   }
 
-  @Sse('see/customer/change-status-sap')
+  @Sse('sse/change-status-sap')
 	seeEventChangeStatus(@Req() req: Request, @Query('token') token: string): Observable<MessageEvent> {
 		try {
 			return seeEventCustomerStream;
@@ -77,5 +77,11 @@ export class CustomerController {
 			console.log({ error });
 		}
 	}
+
+  @Public()
+  @Sse('sse/sse')
+  sse(): Observable<MessageEvent> {
+    return interval(1000).pipe(map((_) => ({ data: { hello: 'world' } } as any)));
+  }
 
 }

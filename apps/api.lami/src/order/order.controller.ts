@@ -81,7 +81,7 @@ export class OrderController {
     }
   }
 
-  @Sse('see/order/change-status-sap')
+  @Sse('sse/change-status-sap')
 	seeEventChangeStatus(@Req() req: Request, @Query('token') token: string): Observable<MessageEvent> {
 		try {
 			return seeEventOrderStream;
