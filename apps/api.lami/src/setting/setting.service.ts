@@ -35,7 +35,7 @@ export class SettingService {
             where,
             orderBy,
             include: {
-              settingDetail: { where: {active: true}, orderBy: {name: where.name == 'IDENTIFICATION_TYPE' ? 'asc' : 'desc'}}
+              settingDetail: { where: {active: true}, orderBy: {name: where.name == 'Project' ? 'desc' : 'asc'}}
             }
           });
     } else {
@@ -46,7 +46,7 @@ export class SettingService {
         where,
         orderBy,
         include: {
-          settingDetail: { where: {active: true}, orderBy: {name: where.name == 'IDENTIFICATION_TYPE' ? 'asc' : 'desc'}}
+          settingDetail: { where: {active: true}, orderBy: {name: where.name == 'Project' ? 'desc' : 'asc'}}
         }
       });
     }
@@ -56,7 +56,7 @@ export class SettingService {
     return this.prisma.setting.findUnique({
       where: userWhereUniqueInput,
       include: {
-        settingDetail: { where: {active: true}, orderBy: {name: userWhereUniqueInput.name == 'IDENTIFICATION_TYPE' ? 'asc' : 'desc'}}
+        settingDetail: { where: {active: true}, orderBy: {name: userWhereUniqueInput.name == 'Project' ? 'desc' : 'asc'}}
       }
     });
   }
