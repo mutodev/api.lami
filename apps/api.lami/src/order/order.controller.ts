@@ -8,9 +8,9 @@ import { successResponse } from '../commons/functions';
 import { ItemsService } from '../items/items.service';
 import { EnumOrderStatus } from '../commons/enums/enum-order-status';
 import { Public } from '../commons/decorators';
-import { Ctx, MessagePattern, Payload, RedisContext } from '@nestjs/microservices';
+import { Ctx, EventPattern, MessagePattern, Payload, RedisContext } from '@nestjs/microservices';
 import { seeEventOrderStream } from '../commons/streams/actions-order';
-import { Observable } from 'rxjs';
+import { filter, Observable } from 'rxjs';
 
 @ApiTags('ORDER')
 @ApiBearerAuth()
@@ -21,14 +21,14 @@ export class OrderController {
               private readonly itemsService: ItemsService) {}
 
   @Post()
-  async create(@Body() createOrderDto: CreateOrderDto) {
+  async create(@Req() req, @Body() createOrderDto: CreateOrderDto) {
     console.log({createOrderDto})
     const {orderDetails, ...order} = createOrderDto;
     const details = await Promise.all(orderDetails.map(async (detail) => {
       const item = await this.itemsService.findByCode(detail.itemCode);
       return {...detail, arTaxCode: item.arTaxCode}
     }));
-    const result = await this.orderService.create({...order, statusId: EnumOrderStatus.PorCobrar, orderDetails: {
+    const result = await this.orderService.create({...order, userId: req.user.id, statusId: EnumOrderStatus.PorCobrar, orderDetails: {
       create: [
         ...(details as any[])
       ]
@@ -49,13 +49,13 @@ export class OrderController {
   }
 
   @Patch(':id')
-  async update(@Param('id') id: string, @Body() updateOrderDto: UpdateOrderDto) {
+  async update(@Req() req, @Param('id') id: string, @Body() updateOrderDto: UpdateOrderDto) {
     const {orderDetails, ...order} = updateOrderDto;
     const details = await Promise.all(orderDetails.map(async (detail) => {
       const item = await this.itemsService.findByCode(detail.itemCode);
       return {...detail, arTaxCode: item.arTaxCode}
     }));
-    const result = await this.orderService.update({where: {id}, data: {...order, orderDetails: {
+    const result = await this.orderService.update({where: {id}, data: {...order, userId: req.user.id, orderDetails: {
       create: [
         ...(details as any[])
       ]
@@ -70,11 +70,11 @@ export class OrderController {
   }
 
   @Public()
-  @MessagePattern('order/change-status-sap')
-  async changeStatusSap(@Payload() payload: {orderId: string}, @Ctx() context: RedisContext): Promise<any> {
+  @EventPattern('order/change-status-sap')
+  async changeStatusSap(@Payload() orderId: string, @Ctx() context: RedisContext): Promise<any> {
     try {
-      const order = await this.orderService.findOne({id: payload.orderId});
-      seeEventOrderStream.next(order);
+      const order = await this.orderService.findOne({id: orderId});
+      seeEventOrderStream.next({data: {order}});
     return null;
     } catch (error) {
       throw error;
@@ -82,9 +82,9 @@ export class OrderController {
   }
 
   @Sse('sse/change-status-sap')
-	seeEventChangeStatus(@Req() req: Request, @Query('token') token: string): Observable<MessageEvent> {
+	seeEventChangeStatus(@Req() req, @Query('token') token: string): Observable<MessageEvent> {
 		try {
-			return seeEventOrderStream;
+			return seeEventOrderStream.pipe(filter((data) => data.data.userId === req.user.id));
 		} catch (error) {
 			console.log({ error });
 		}

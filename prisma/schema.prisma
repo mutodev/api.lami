@@ -58,6 +58,8 @@ model User {
   roleId        String
   role          SettingDetail? @relation(name: "usersrolessetting", fields: [roleId], references: [id])
   active        Boolean? @default(true)
+  customers     Customer[] @relation(name: "usercustomer")
+  orders        Order[] @relation(name: "userorder")
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
 }
@@ -122,6 +124,8 @@ model Customer {
   project             String?
   checkSameInfo       Boolean? @default(false)
   codeUpdated         String?
+  userId              String?
+  user                User? @relation(name: "usercustomer", fields: [userId], references: [id])
   orders              Order[] @relation(name: "ordercustomer")
   createdAt           DateTime @default(now())
   updatedAt           DateTime @updatedAt
@@ -152,6 +156,8 @@ model Order {
   messageError        String? @db.Text() @default("")
   statusId            String?
   status              SettingDetail? @relation(name: "orderstatus", fields: [statusId], references: [id])
+  userId              String?
+  user                User? @relation(name: "userorder", fields: [userId], references: [id])
   createdAt           DateTime @default(now())
   updatedAt           DateTime @updatedAt
   orderDetails        OrderDetail[] @relation(name: "orderdetailorder")

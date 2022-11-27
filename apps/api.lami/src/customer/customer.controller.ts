@@ -1,7 +1,7 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, Request, Query, Req, Sse } from '@nestjs/common';
-import { Ctx, MessagePattern, Payload, RedisContext } from '@nestjs/microservices';
+import { Ctx, EventPattern, MessagePattern, Payload, RedisContext } from '@nestjs/microservices';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
-import { interval, map, Observable } from 'rxjs';
+import { filter, interval, map, Observable } from 'rxjs';
 import { Public } from '../commons/decorators';
 import { seeEventCustomerStream } from '../commons/streams/actions-order';
 import { successResponse } from './../commons/functions';
@@ -18,9 +18,9 @@ export class CustomerController {
   constructor(private readonly customerService: CustomerService) {}
 
   @Post()
-  async create(@Body() createCustomerDto: CreateCustomerDto) {
+  async create(@Req() req, @Body() createCustomerDto: CreateCustomerDto) {
     const result = await this.customerService.create({...createCustomerDto});
-    return successResponse('Registro guardado satisfactoriamente.', result);
+    return successResponse('Registro guardado satisfactoriamente.', {...result, userId: req.user.id});
   }
 
   @Get()
@@ -40,8 +40,8 @@ export class CustomerController {
   }
 
   @Patch(':id')
-  async update(@Param('id') id: string, @Body() updateCustomerDto: UpdateCustomerDto) {
-    const result = await this.customerService.update({where: {id}, data: {...updateCustomerDto}});
+  async update(@Req() req, @Param('id') id: string, @Body() updateCustomerDto: UpdateCustomerDto) {
+    const result = await this.customerService.update({where: {id}, data: {...updateCustomerDto, userId: req.user.id}});
     return successResponse('Registro actualizado satisfactoriamente.', result);
   }
 
@@ -58,30 +58,30 @@ export class CustomerController {
   }
 
   @Public()
-  @MessagePattern('customer/change-status-sap')
-  async changeStatusSap(@Payload() payload: {customerId: string}, @Ctx() context: RedisContext): Promise<any> {
+  @EventPattern('customer/change-status-sap')
+  async changeStatusSap(@Payload() customerId: string, @Ctx() context: RedisContext): Promise<any> {
     try {
-      const customer = await this.customerService.findOne({id: payload.customerId});
-      seeEventCustomerStream.next(customer);
-    return null;
+      console.log({customerId});
+      const customer = await this.customerService.findOne({id: customerId});
+      seeEventCustomerStream.next({ data: customer });
     } catch (error) {
       throw error;
     }
   }
 
   @Sse('sse/change-status-sap')
-	seeEventChangeStatus(@Req() req: Request, @Query('token') token: string): Observable<MessageEvent> {
+	seeEventChangeStatus(@Req() req, @Query('token') token: string): Observable<MessageEvent> {
 		try {
-			return seeEventCustomerStream;
+      return seeEventCustomerStream.pipe(filter((data) => data.data.userId === req.user.id));
 		} catch (error) {
 			console.log({ error });
 		}
 	}
 
-  @Public()
-  @Sse('sse/sse')
-  sse(): Observable<MessageEvent> {
-    return interval(1000).pipe(map((_) => ({ data: { hello: 'world' } } as any)));
-  }
+  // @Public()
+  // @Sse('sse/sse')
+  // sse(): Observable<MessageEvent> {
+  //   return interval(1000).pipe(map((_) => ({ data: { hello: 'world' } } as any)));
+  // }
 
 }

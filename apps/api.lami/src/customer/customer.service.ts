@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { Customer as Model , Prisma } from '@prisma/client';
 import { EnumCustomerType } from '../commons/enums/enum-customer-type';
+import { seeEventCustomerStream } from '../commons/streams/actions-order';
 import { PaginationService } from './../commons/services/pagination/pagination.service';
 import { PrismaService } from './../commons/services/prisma.service';
 
@@ -24,6 +25,7 @@ export class CustomerService {
       }        
       const {identification, name, ...customer} = data;
       let nameV = data.typeId == EnumCustomerType.PersonaNatural ? `${data.firstName} ${data.lastName}` : data.name; 
+      seeEventCustomerStream.next(customer);
       return await this.prisma.customer.create({
         data: {...customer, 
         identification: data.source == 'C' ? `CL-${identification}` : data.identification, 

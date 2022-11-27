@@ -1,6 +1,6 @@
 import { INestMicroservice, Logger, ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
-import { Transport } from '@nestjs/microservices';
+import { MicroserviceOptions, Transport } from '@nestjs/microservices';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { ErrorsInterceptor, ResponseInterceptor } from './commons/interceptors';
 import { IntegrationSapModule } from './integration-sap.module';
@@ -41,10 +41,13 @@ async function bootstrap() {
 
   await app.listen(1201);
 
-  const appMS: INestMicroservice = await NestFactory.createMicroservice(IntegrationSapModule, {
+  const appMS: INestMicroservice = await NestFactory.createMicroservice<MicroserviceOptions>(IntegrationSapModule, {
     transport: Transport.REDIS,
     options: {
-      url: 'redis://localhost:6379'
+      host: 'localhost',
+      port: 6379,
+      retryAttempts: 3,
+      retryDelay: 1000
     }
   });
 

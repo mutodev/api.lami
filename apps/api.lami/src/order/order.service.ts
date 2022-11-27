@@ -84,7 +84,7 @@ export class OrderService {
 
   update(params: {
     where: Prisma.OrderWhereUniqueInput;
-    data: Prisma.OrderUpdateInput;
+    data: Prisma.OrderUncheckedUpdateInput;
   }): Promise<Model> {
     const { where, data } = params;
     return this.prisma.order.update({

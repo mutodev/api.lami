@@ -97,7 +97,7 @@ export class TaskOrderService {
                                 }                               
                             });
 
-                            this.clientProxi.send<string>('order/change-status-sap', {orderId: order.id});
+                            this.clientProxi.emit('order/change-status-sap', order.id);
                         }
 
                     } catch (error) {

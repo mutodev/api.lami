@@ -1,6 +1,7 @@
 import { Inject, Injectable, Logger } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
 import { Cron, CronExpression } from '@nestjs/schedule';
+import { firstValueFrom } from 'rxjs';
 import { AuthService } from '../../auth/auth.service';
 import { EnumCustomerType } from '../../commons/enum-customer-type';
 import { PrismaService } from '../../commons/prisma.service';
@@ -98,7 +99,7 @@ export class TaskCustomerService {
                             if (result.status === 201) {
                                 customer.sendToSap = true;
                                 await this.prismaService.customer.update({ where: { id: customer.id }, data: { sendToSap: true } });
-                                await this.clientProxi.send<string>('customer/change-status-sap', {customerId: customer.id});
+                                this.clientProxi.emit('customer/change-status-sap', customer.id);
                             }
                         } else if (customerSap.status === 200) {
                             console.log('entro a update customer');
@@ -150,11 +151,11 @@ export class TaskCustomerService {
                                 customer.codeUpdated,
                                 body
                             );
-                            console.log('update customer', result)
+                            
                             if (result.status === 204) {
                                 customer.sendToSap = true;
                                 await this.prismaService.customer.update({ where: { id: customer.id }, data: { sendToSap: true } });
-                                await this.clientProxi.send<any>('customer/change-status-sap', {customerId: customer.id});
+                                this.clientProxi.emit('customer/change-status-sap', customer.id);                            
                             }
                         } else {
                             await this.prismaService.customer.update({ where: { id: customer.id }, data: { sendToSap: false, messageError: customerSap.message } });

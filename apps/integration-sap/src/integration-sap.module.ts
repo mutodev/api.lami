@@ -21,7 +21,7 @@ import { ClientsModule, Transport } from '@nestjs/microservices';
     OrderModule,
     ProductModule,
     WarehoureModule,
-    SerieModule,
+    SerieModule
     ],
   controllers: [IntegrationSapController],
   providers: [IntegrationSapService],

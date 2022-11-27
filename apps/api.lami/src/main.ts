@@ -1,6 +1,6 @@
 import { INestMicroservice, Logger, ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
-import { Transport } from '@nestjs/microservices';
+import { MicroserviceOptions, Transport } from '@nestjs/microservices';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { AppModule } from './app.module';
 import { ErrorsInterceptor, ResponseInterceptor } from './commons/interceptors';
@@ -39,10 +39,11 @@ async function bootstrap() {
 
   await app.listen(1200);
 
-  const appMS: INestMicroservice = await NestFactory.createMicroservice(AppModule, {
+  const appMS: INestMicroservice = await NestFactory.createMicroservice<MicroserviceOptions>(AppModule, {
     transport: Transport.REDIS,
     options: {
-      url: 'redis://localhost:6379'
+      host: 'localhost',
+      port: 6379
     }
   });
 
