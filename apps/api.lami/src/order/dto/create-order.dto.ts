@@ -120,4 +120,9 @@ export class CreateOrderDto {
     @IsArray()
     @Type(() => OrderDetail)
     orderDetails: OrderDetail[]
+
+    @ApiProperty()
+    @IsDateString()
+    @IsOptional()
+    estimatedDate?: Date;
 }
