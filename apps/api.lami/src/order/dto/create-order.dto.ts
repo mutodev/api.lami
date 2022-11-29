@@ -122,7 +122,7 @@ export class CreateOrderDto {
     orderDetails: OrderDetail[]
 
     @ApiProperty()
-    @IsDateString()
+    @IsDate()
     @IsOptional()
     estimatedDate?: Date;
 }
