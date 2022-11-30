@@ -129,13 +129,14 @@ export class IntegrationSapService {
       console.log({ result });
       await Promise.all(result.data.value.map(async (item) => {
         // if (item.Type === 'bbpgt_CustomerGroup')
+       let city = convertCity(item.Remarks);
         await this.prismaService.settingDetail.create({
           data: {
             name: item.SalesEmployeeName,
             code: item.SalesEmployeeCode + "",
             settingId: setting.id,
             extendedData: {
-              city: convertCity(item.Remarks)
+              cities: city ? [city] : []
             }
           }
         })
