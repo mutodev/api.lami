@@ -61,13 +61,18 @@ export class SettingService {
         where: settingWhereUniqueInput, 
         include: {
           settingDetail: { where: {
-            OR: [
-              ...cities?.map((item: string) => {
-                return  {extendedData: {
-                  path: ['cities'],
-                  string_contains: item
-                  }};
-              })], active: true}, 
+            extendedData: {
+              path: ['cities'],
+              string_contains: 'Barranquilla'
+              },
+            // OR: [
+            //   ...cities?.map((item: string) => {
+            //     return  {extendedData: {
+            //       path: ['cities'],
+            //       string_contains: item
+            //       }};
+            //   })]
+            active: true}, 
             orderBy: {name: settingWhereUniqueInput.name == 'Project' ? 'desc' : 'asc'}
           }
         }
