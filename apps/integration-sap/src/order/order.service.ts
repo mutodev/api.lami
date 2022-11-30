@@ -48,5 +48,10 @@ export class OrderService {
     const result = await this.apiHttp.delete<any>(`${EnumApis.ORDER}('${orderCode}')`);
     return result;
   }
+
+  async getDistributionRules() {
+    const result = await this.apiHttp.get<any>('DistributionRules');
+    return result;
+  }
   
 }

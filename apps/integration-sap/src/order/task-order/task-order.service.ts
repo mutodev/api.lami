@@ -50,13 +50,13 @@ export class TaskOrderService {
             const orders = await this.prismaService.order.findMany({ where: { sendToSap: false }, include: { customer: true, orderDetails: true } });
 
             if (orders.length > 0) {
+                const setting = await this.prismaService.setting.findFirst({where: {name: 'Project'}, include: {settingDetail: true}});
                 await Promise.all(orders.map(async (order) => {
 
-                    try {
-
-                        const setting = await this.prismaService.setting.findFirst({where: {name: 'Project'}, include: {settingDetail: true}});
-                        // const projects = await this.prismaService.settingDetail.findMany({where: {settingId: setting.id}})
+                    try {                        
+                        const paymentTerm = await this.prismaService.settingDetail.findFirst({where: {setting: { name: 'PayTermsGrpCode'}, code: order.customer.payTermsGrpCode}});
                         await this.authService.login();
+                        const codes = (paymentTerm.extendedData as any).codes;
                         const result = await this.orderService.create({
                             CardCode: order.customer.identification,
                             Series: order.serie,
@@ -77,7 +77,9 @@ export class TaskOrderService {
                                     // Price: item.value * item.amount,
                                     WarehouseCode: item.wareHouseCode || null,
                                     Project: project.value,
-                                    ArTaxCode: item.arTaxCode
+                                    ArTaxCode: item.arTaxCode,
+                                    CostingCode: codes?.factorCode,
+                                    CostingCode2: codes?.factorCode2
                                 };
                             })
                         });

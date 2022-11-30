@@ -70,12 +70,26 @@ export class IntegrationSapService {
     const setting = await this.prismaService.setting.create({
       data: { name: 'PayTermsGrpCode' }
     });
-    const data =  [{ name: 'Brilla Barranquilla', cities: ['Barranquilla'] },
-    { name: 'Contado Barranquilla', cities: ['Barranquilla'] },
-    { name: 'Contraentrega Barranquilla', cities: ['Barranquilla'] },
-    { name: 'Obsequio', cities: ['Barranquilla','Cartagena', 'Valledupar' ] },
-    { name: 'Plan Separe Barranquilla', cities: ['Barranquilla'] },
-    { name: 'CREDITO EMPLEADOS', cities: ['Barranquilla','Cartagena', 'Valledupar'] }];
+    const data =  [
+      { name: 'Brilla Barranquilla', cities: ['Barranquilla'], codes: {factorCode: 'BAQ', factorCode2: 'BRILLA'} },
+      { name: 'Brilla Cartagena', cities: ['Cartagena'], codes: {factorCode: 'CAR', factorCode2: 'BRILLA'} },
+      { name: 'Brilla Valledupar', cities: ['Valledupar'], codes: {factorCode: 'VAL', factorCode2: 'BRILLA'} },
+      { name: 'Contado Barranquilla', cities: ['Barranquilla'], codes: {factorCode: 'BAQ', factorCode2: 'CONTADO'} },
+      { name: 'Contado Cartagena', cities: ['Cartagena'], codes: {factorCode: 'CAR', factorCode2: 'CONTADO'} },
+      { name: 'Contado Valledupar', cities: ['Valledupar'], codes: {factorCode: 'VAL', factorCode2: 'CONTADO'} },
+      { name: 'Contraentrega Barranquilla', cities: ['Barranquilla'], codes: {factorCode: 'BAQ', factorCode2: 'CONTADO'} },
+      { name: 'Contraentrega Cartagena', cities: ['Cartagena'], codes: {factorCode: 'CAR', factorCode2: 'CONTADO'} },
+      { name: 'Contraentrega Valledupar', cities: ['Valledupar'], codes: {factorCode: 'VAL', factorCode2: 'CONTADO'} },
+      { name: 'Obsequio', cities: ['Barranquilla'], codes: {factorCode: 'BAQ', factorCode2: ''} },
+      { name: 'Obsequio', cities: ['Cartagena' ], codes: {factorCode: 'CAR', factorCode2: ''} },
+      { name: 'Obsequio', cities: ['Valledupar' ], codes: {factorCode: 'VAL', factorCode2: ''} },
+      { name: 'Plan Separe Barranquilla', cities: ['Barranquilla'], codes: {factorCode: 'BAQ', factorCode2: 'CREDITO'} },
+      { name: 'Plan Separe Cartagena', cities: ['Cartagena'], codes: {factorCode: 'CAR', factorCode2: 'CREDITO'} },
+      { name: 'Plan Separe Valledupar', cities: ['Valledupar'], codes: {factorCode: 'VAL', factorCode2: 'CREDITO'} },
+      { name: 'CREDITOS A EMPLEADOS', cities: ['Barranquilla'], codes: {factorCode: 'BAQ', factorCode2: 'CREDITO'} },
+      { name: 'CREDITOS A EMPLEADOS', cities: ['Cartagena'], codes: {factorCode: 'CAR', factorCode2: 'CREDITO'} },
+      { name: 'CREDITOS A EMPLEADOS', cities: ['Valledupar'], codes: {factorCode: 'VAL', factorCode2: 'CREDITO'} }
+    ];
     while (hasItems) {
       if (!result) {
         result = await this.getData(`/PaymentTermsTypes`);
@@ -91,16 +105,19 @@ export class IntegrationSapService {
       console.log({ result });
       if (result?.data && result?.data?.value && result?.data?.value?.length > 0)
         await Promise.all(result.data.value.map(async (item) => {
-          const obj = data.find((a) => a.name.toLowerCase() === item.PaymentTermsGroupName.toLowerCase());
-          if (obj)
-            await this.prismaService.settingDetail.create({
-              data: {
-                name: item.PaymentTermsGroupName,
-                code: item.GroupNumber + "",
-                settingId: setting.id,
-                extendedData: {cities: obj.cities}
-              }
-            });
+          const list = data.filter((a) => a.name.toLowerCase() === item.PaymentTermsGroupName.toLowerCase());
+          if (list.length > 0) {
+            Promise.all(list.map(async (obj) => {
+              await this.prismaService.settingDetail.create({
+                data: {
+                  name: item.PaymentTermsGroupName,
+                  code: item.GroupNumber + "",
+                  settingId: setting.id,
+                  extendedData: {cities: obj.cities, codes: obj.codes}
+                }
+              });
+            }));
+          }
         }));
     }
     return 'Migrado';
