@@ -51,4 +51,9 @@ export class CreateUserDto {
     @IsNotEmpty()
     @IsBoolean()
     active: boolean;
+
+    @ApiProperty()
+    @IsOptional()
+    @IsString()
+    salesPersonCode?: string;
 }

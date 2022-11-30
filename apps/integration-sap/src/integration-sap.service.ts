@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { AuthService } from './auth/auth.service';
 import { ApiHttp } from './commons/api-http.service';
 import { EnumApis } from './commons/enum-apis';
+import { convertCity } from './commons/functions';
 import { PrismaService } from './commons/prisma.service';
 
 @Injectable()
@@ -19,6 +20,18 @@ export class IntegrationSapService {
     const setting = await this.prismaService.setting.create({
       data: { name: 'CUSTOMER_GROUP' }
     });
+    let data =  [{ name: 'CLCONTADOBAQ', cities: ['Barranquilla'] },
+    { name: 'CLCONTADOVALLE', cities: ['Valledupar'] },
+    { name: 'CLCONTADOCART', cities: ['Cartagena'] },
+    { name: 'CLBRILLABAQ', cities: ['Barranquilla'] },
+    { name: 'CLBRILLAVALLE', cities: ['Valledupar'] },
+    { name: 'CLBRILLACART', cities: ['Cartagena'] },
+    { name: 'CLCREDITOBOGOTA', cities: ['Barranquilla', 'Cartagena', 'Valledupar'] },
+    { name: 'CLBRILLASAN', cities: [] },
+    { name: 'CLPROVEEDORES', cities: ['Barranquilla'] },
+    { name: 'CLSERVICREDITOS', cities: [] },
+    { name: 'CLLISTOPAGO', cities: [] },
+    { name: 'CLCREDGERENCIA', cities: ['Barranquilla', 'Cartagena', 'Valledupar'] }];
     while (hasItems) {
       if (!result) {
         result = await this.getData(`/BusinessPartnerGroups`);
@@ -32,14 +45,18 @@ export class IntegrationSapService {
       }
       console.log({ result });
       await Promise.all(result.data.value.map(async (item) => {
-        if (item.Type === 'bbpgt_CustomerGroup')
+        if (item.Type === 'bbpgt_CustomerGroup') {
+          const obj = data.find((a) => a.name.toLowerCase() === item.Name.toLowerCase());
           await this.prismaService.settingDetail.create({
             data: {
               name: item.Name,
               code: item.Code + "",
-              settingId: setting.id
+              settingId: setting.id,
+              extendedData: {cities: obj.cities},
+              active: !!obj
             }
-          })
+          });
+        }
       }));
     }
     return 'Migrado';
@@ -53,6 +70,12 @@ export class IntegrationSapService {
     const setting = await this.prismaService.setting.create({
       data: { name: 'PayTermsGrpCode' }
     });
+    const data =  [{ name: 'Brilla Barranquilla', cities: ['Barranquilla'] },
+    { name: 'Contado Barranquilla', cities: ['Barranquilla'] },
+    { name: 'Contraentrega Barranquilla', cities: ['Barranquilla'] },
+    { name: 'Obsequio', cities: ['Barranquilla','Cartagena', 'Valledupar' ] },
+    { name: 'Plan Separe Barranquilla', cities: ['Barranquilla'] },
+    { name: 'CREDITO EMPLEADOS', cities: ['Barranquilla','Cartagena', 'Valledupar'] }];
     while (hasItems) {
       if (!result) {
         result = await this.getData(`/PaymentTermsTypes`);
@@ -68,13 +91,16 @@ export class IntegrationSapService {
       console.log({ result });
       if (result?.data && result?.data?.value && result?.data?.value?.length > 0)
         await Promise.all(result.data.value.map(async (item) => {
-          await this.prismaService.settingDetail.create({
-            data: {
-              name: item.PaymentTermsGroupName,
-              code: item.GroupNumber + "",
-              settingId: setting.id
-            }
-          });
+          const obj = data.find((a) => a.name.toLowerCase() === item.PaymentTermsGroupName.toLowerCase());
+          if (obj)
+            await this.prismaService.settingDetail.create({
+              data: {
+                name: item.PaymentTermsGroupName,
+                code: item.GroupNumber + "",
+                settingId: setting.id,
+                extendedData: {cities: obj.cities}
+              }
+            });
         }));
     }
     return 'Migrado';
@@ -91,7 +117,7 @@ export class IntegrationSapService {
     while (hasItems) {
       // const result = await this.apiHttp.get<any>('/SalesPersons');
       if (!result) {
-        result = await this.getData(`/SalesPersons`);
+        result = await this.getData(`/SalesPersons?$filter=Active eq 'tYES'`);
       } else {
         if (result.data["odata.nextLink"]) {
           result = await this.getData(`/${result.data["odata.nextLink"]}`);
@@ -107,7 +133,10 @@ export class IntegrationSapService {
           data: {
             name: item.SalesEmployeeName,
             code: item.SalesEmployeeCode + "",
-            settingId: setting.id
+            settingId: setting.id,
+            extendedData: {
+              city: convertCity(item.Remarks)
+            }
           }
         })
       }));

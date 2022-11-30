@@ -3,19 +3,19 @@
 -- tipos de identificacion
 insert into public."Setting"(id, "name", "createdAt", "updatedAt")values('6b0d65ea-46c0-11ed-88f1-7b765a5d50e1', 'IDENTIFICATION_TYPE', now(), now())
 
-insert into public."SettingDetail"(id, "createdAt", "updatedAt", "settingId", code, "name")values(uuid_generate_v1(), now(), now(),'6b0d65ea-46c0-11ed-88f1-7b765a5d50e1','13','Cédula de ciudadanía');
-insert into public."SettingDetail"(id, "createdAt", "updatedAt", "settingId", code, "name")values(uuid_generate_v1(), now(), now(),'6b0d65ea-46c0-11ed-88f1-7b765a5d50e1','22','Cédula de extranjería');
-insert into public."SettingDetail"(id, "createdAt", "updatedAt", "settingId", code, "name")values(uuid_generate_v1(), now(), now(),'6b0d65ea-46c0-11ed-88f1-7b765a5d50e1','43','Doc. para información exógena');
-insert into public."SettingDetail"(id, "createdAt", "updatedAt", "settingId", code, "name")values(uuid_generate_v1(), now(), now(),'6b0d65ea-46c0-11ed-88f1-7b765a5d50e1','31','NIT');
-insert into public."SettingDetail"(id, "createdAt", "updatedAt", "settingId", code, "name")values(uuid_generate_v1(), now(), now(),'6b0d65ea-46c0-11ed-88f1-7b765a5d50e1','50','NIT de otro país');
-insert into public."SettingDetail"(id, "createdAt", "updatedAt", "settingId", code, "name")values(uuid_generate_v1(), now(), now(),'6b0d65ea-46c0-11ed-88f1-7b765a5d50e1','91','NUIP');
-insert into public."SettingDetail"(id, "createdAt", "updatedAt", "settingId", code, "name")values(uuid_generate_v1(), now(), now(),'6b0d65ea-46c0-11ed-88f1-7b765a5d50e1','41','Pasaporte');
-insert into public."SettingDetail"(id, "createdAt", "updatedAt", "settingId", code, "name")values(uuid_generate_v1(), now(), now(),'6b0d65ea-46c0-11ed-88f1-7b765a5d50e1','47','Permiso Especial de Permanencia');
-insert into public."SettingDetail"(id, "createdAt", "updatedAt", "settingId", code, "name")values(uuid_generate_v1(), now(), now(),'6b0d65ea-46c0-11ed-88f1-7b765a5d50e1','45','Permiso especial Venezolanos');
-insert into public."SettingDetail"(id, "createdAt", "updatedAt", "settingId", code, "name")values(uuid_generate_v1(), now(), now(),'6b0d65ea-46c0-11ed-88f1-7b765a5d50e1','11','Registro civil de nacimiento');
-insert into public."SettingDetail"(id, "createdAt", "updatedAt", "settingId", code, "name")values(uuid_generate_v1(), now(), now(),'6b0d65ea-46c0-11ed-88f1-7b765a5d50e1','21','Tarjeta de extranjería');
-insert into public."SettingDetail"(id, "createdAt", "updatedAt", "settingId", code, "name")values(uuid_generate_v1(), now(), now(),'6b0d65ea-46c0-11ed-88f1-7b765a5d50e1','12','Tarjeta de identidad');
-insert into public."SettingDetail"(id, "createdAt", "updatedAt", "settingId", code, "name")values(uuid_generate_v1(), now(), now(),'6b0d65ea-46c0-11ed-88f1-7b765a5d50e1','42','Tipo de documento extranjero');
+insert into public."SettingDetail"(id, "createdAt", "updatedAt", "settingId", code, "name", active)values('7974094a-46c0-11ed-88f1-7b765a5d50e1', now(), now(),'6b0d65ea-46c0-11ed-88f1-7b765a5d50e1','13','Cédula de ciudadanía', true);
+insert into public."SettingDetail"(id, "createdAt", "updatedAt", "settingId", code, "name", active)values('7974094b-46c0-11ed-88f1-7b765a5d50e1', now(), now(),'6b0d65ea-46c0-11ed-88f1-7b765a5d50e1','22','Cédula de extranjería', true);
+insert into public."SettingDetail"(id, "createdAt", "updatedAt", "settingId", code, "name", active)values('743bf702-501e-11ed-b8b2-93cfa5187c2a', now(), now(),'6b0d65ea-46c0-11ed-88f1-7b765a5d50e1','43','Doc. para información exógena', false);
+insert into public."SettingDetail"(id, "createdAt", "updatedAt", "settingId", code, "name", active)values('743bf703-501e-11ed-b8b2-93cfa5187c2a', now(), now(),'6b0d65ea-46c0-11ed-88f1-7b765a5d50e1','31','NIT', true);
+insert into public."SettingDetail"(id, "createdAt", "updatedAt", "settingId", code, "name", active)values('743bf704-501e-11ed-b8b2-93cfa5187c2a', now(), now(),'6b0d65ea-46c0-11ed-88f1-7b765a5d50e1','50','NIT de otro país', false);
+insert into public."SettingDetail"(id, "createdAt", "updatedAt", "settingId", code, "name", active)values('743bf705-501e-11ed-b8b2-93cfa5187c2a', now(), now(),'6b0d65ea-46c0-11ed-88f1-7b765a5d50e1','91','NUIP', false);
+insert into public."SettingDetail"(id, "createdAt", "updatedAt", "settingId", code, "name", active)values('743bf706-501e-11ed-b8b2-93cfa5187c2a', now(), now(),'6b0d65ea-46c0-11ed-88f1-7b765a5d50e1','41','Pasaporte', true);
+insert into public."SettingDetail"(id, "createdAt", "updatedAt", "settingId", code, "name", active)values('743bf707-501e-11ed-b8b2-93cfa5187c2a', now(), now(),'6b0d65ea-46c0-11ed-88f1-7b765a5d50e1','47','Permiso Especial de Permanencia', false);
+insert into public."SettingDetail"(id, "createdAt", "updatedAt", "settingId", code, "name", active)values('743bf708-501e-11ed-b8b2-93cfa5187c2a', now(), now(),'6b0d65ea-46c0-11ed-88f1-7b765a5d50e1','45','Permiso especial Venezolanos', false);
+insert into public."SettingDetail"(id, "createdAt", "updatedAt", "settingId", code, "name", active)values('743bf709-501e-11ed-b8b2-93cfa5187c2a', now(), now(),'6b0d65ea-46c0-11ed-88f1-7b765a5d50e1','11','Registro civil de nacimiento', false);
+insert into public."SettingDetail"(id, "createdAt", "updatedAt", "settingId", code, "name", active)values('743bf70a-501e-11ed-b8b2-93cfa5187c2a', now(), now(),'6b0d65ea-46c0-11ed-88f1-7b765a5d50e1','21','Tarjeta de extranjería', false);
+insert into public."SettingDetail"(id, "createdAt", "updatedAt", "settingId", code, "name", active)values('743bf70b-501e-11ed-b8b2-93cfa5187c2a', now(), now(),'6b0d65ea-46c0-11ed-88f1-7b765a5d50e1','12','Tarjeta de identidad', true);
+insert into public."SettingDetail"(id, "createdAt", "updatedAt", "settingId", code, "name", active)values('743bf70c-501e-11ed-b8b2-93cfa5187c2a', now(), now(),'6b0d65ea-46c0-11ed-88f1-7b765a5d50e1','42','Tipo de documento extranjero', false);
 
 
 -- tipos de clientes
