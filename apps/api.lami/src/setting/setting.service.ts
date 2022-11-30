@@ -52,13 +52,32 @@ export class SettingService {
     }
   }
 
-  findOne(userWhereUniqueInput: Prisma.SettingWhereUniqueInput): Promise<Model | null> {
-    return this.prisma.setting.findUnique({
-      where: userWhereUniqueInput,
-      include: {
-        settingDetail: { where: {active: true}, orderBy: {name: userWhereUniqueInput.name == 'Project' ? 'desc' : 'asc'}}
-      }
-    });
+  async findOne(settingWhereUniqueInput: Prisma.SettingWhereUniqueInput, salesPersonCode?: string): Promise<Model | null> {
+    if (['PayTermsGrpCode', 'SalesPersonCode', 'CUSTOMER_GROUP'].includes(settingWhereUniqueInput.name)) {
+      const salesCode = await this.prisma.settingDetail.findFirst({ where: {code: salesPersonCode, setting: {name: 'SalesPersonCode'}}});
+      return await this.prisma.setting.findUnique({
+        where: settingWhereUniqueInput, 
+        include: {
+          settingDetail: { where: {
+            OR: [
+              ...(salesCode.extendedData as Prisma.JsonArray).map((item: string) => {
+                return  {extendedData: {
+                  path: ['cities'],
+                  string_contains: item
+                  }};
+              })], active: true}, 
+            orderBy: {name: settingWhereUniqueInput.name == 'Project' ? 'desc' : 'asc'}
+          }
+        }
+      });
+    } else {
+      return await this.prisma.setting.findUnique({
+        where: settingWhereUniqueInput, 
+        include: {
+          settingDetail: { where: {active: true}, orderBy: {name: settingWhereUniqueInput.name == 'Project' ? 'desc' : 'asc'}}
+        }
+      });
+    }
   }
 
   update(params: {
