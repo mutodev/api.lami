@@ -55,6 +55,8 @@ export class SettingService {
   async findOne(settingWhereUniqueInput: Prisma.SettingWhereUniqueInput, salesPersonCode?: string): Promise<Model | null> {
     if (['PayTermsGrpCode', 'SalesPersonCode', 'CUSTOMER_GROUP'].includes(settingWhereUniqueInput.name)) {
       const salesCode = await this.prisma.settingDetail.findFirst({ where: {code: salesPersonCode, setting: {name: 'SalesPersonCode'}}});
+      let cities = (salesCode.extendedData as Prisma.JsonObject)?.cities as any[];
+      console.log({cities})
       return await this.prisma.setting.findUnique({
         where: settingWhereUniqueInput, 
         include: {
