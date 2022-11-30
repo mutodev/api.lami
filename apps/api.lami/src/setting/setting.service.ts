@@ -56,22 +56,14 @@ export class SettingService {
     if (['PayTermsGrpCode', 'SalesPersonCode', 'CUSTOMER_GROUP'].includes(settingWhereUniqueInput.name)) {
       const salesCode = await this.prisma.settingDetail.findFirst({ where: {code: salesPersonCode, setting: {name: 'SalesPersonCode'}}});
       let cities = (salesCode.extendedData as Prisma.JsonObject)?.cities as any[];
-      console.log({cities})
       return await this.prisma.setting.findUnique({
         where: settingWhereUniqueInput, 
         include: {
           settingDetail: { where: {
             extendedData: {
               path: ['cities'],
-              string_contains: 'Barranquilla'
-              },
-            // OR: [
-            //   ...cities?.map((item: string) => {
-            //     return  {extendedData: {
-            //       path: ['cities'],
-            //       string_contains: item
-            //       }};
-            //   })]
+              array_contains: cities
+            },
             active: true}, 
             orderBy: {name: settingWhereUniqueInput.name == 'Project' ? 'desc' : 'asc'}
           }
