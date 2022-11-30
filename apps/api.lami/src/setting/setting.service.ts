@@ -99,4 +99,15 @@ export class SettingService {
     });
   }
 
+  async findSalesPersonCode(): Promise<Model | null> {
+   
+    return await this.prisma.setting.findUnique({
+      where: {name: 'SalesPersonCode'}, 
+      include: {
+        settingDetail: { where: {active: true}, orderBy: {name: 'asc'}}
+      }
+    });
+    
+  }
+
 }

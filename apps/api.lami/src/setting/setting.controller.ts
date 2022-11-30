@@ -37,4 +37,10 @@ export class SettingController {
   remove(@Param('id') id: string) {
     return this.settingService.remove({id});
   }
+
+  @Get('sales/personcode')
+  findSalesPersonCode() {
+    return this.settingService.findSalesPersonCode();
+  }
+
 }
