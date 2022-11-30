@@ -60,7 +60,7 @@ export class SettingService {
         include: {
           settingDetail: { where: {
             OR: [
-              ...(salesCode.extendedData as Prisma.JsonArray).map((item: string) => {
+              ...((salesCode.extendedData as Prisma.JsonObject).cities as Prisma.JsonArray).map((item: string) => {
                 return  {extendedData: {
                   path: ['cities'],
                   string_contains: item
