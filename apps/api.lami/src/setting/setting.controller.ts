@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, Request } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, Request, Req } from '@nestjs/common';
 import { SettingService } from './setting.service';
 import { CreateSettingDto } from './dto/create-setting.dto';
 import { UpdateSettingDto } from './dto/update-setting.dto';
@@ -24,8 +24,8 @@ export class SettingController {
   }
 
   @Get(':name')
-  findOne(@Param('name') name: string) {
-    return this.settingService.findOne({name});
+  findOne(@Req() req, @Param('name') name: string) {
+    return this.settingService.findOne({name}, req.user?.salesPersonCode);
   }
 
   @Patch(':id')
