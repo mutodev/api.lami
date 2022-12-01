@@ -78,8 +78,8 @@ export class TaskCustomerService {
                                 U_HBT_Apellido1: customer.lastNameBilling,
                                 U_HBT_Apellido2: customer.lastName2Billing,
                                 U_HBT_Nacional: customer.U_HBT_Nacional,
-                                U_HBT_RegFis: customer.U_HBT_RegFis,
-                                U_HBT_ResFis: customer.U_HBT_ResFis,
+                                U_HBT_RegFis: customer.U_HBT_RegFis || null,
+                                U_HBT_ResFis: customer.U_HBT_ResFis || null,
                                 U_HBT_MedPag: customer.U_HBT_MedPag,
                                 BPAddresses: [{
                                     AddressName: customer.AddressName,
@@ -150,12 +150,12 @@ export class TaskCustomerService {
                                 U_HBT_TipDoc: customer.identificationType.code || customerSap.data?.U_HBT_TipDoc,
                                 U_HBT_MunMed: customer.U_HBT_MunMed || customerSap.data?.U_HBT_MunMed,
                                 U_HBT_TipEnt: customer.type.code,
-                                U_HBT_Nombres: customer.firstNameBilling || '',
-                                U_HBT_Apellido1: customer.lastNameBilling || '',
-                                U_HBT_Apellido2: customer.lastName2Billing || '',
+                                U_HBT_Nombres: customer.firstNameBilling || null,
+                                U_HBT_Apellido1: customer.lastNameBilling || null,
+                                U_HBT_Apellido2: customer.lastName2Billing || null,
                                 U_HBT_Nacional: customer.U_HBT_Nacional,
-                                U_HBT_RegFis: customer.U_HBT_RegFis || customerSap.data?.U_HBT_RegFis,
-                                U_HBT_ResFis: customer.U_HBT_ResFis || customerSap.data?.U_HBT_ResFis,
+                                U_HBT_RegFis: customer.U_HBT_RegFis || customerSap.data?.U_HBT_RegFis || null,
+                                U_HBT_ResFis: customer.U_HBT_ResFis || customerSap.data?.U_HBT_ResFis || null,
                                 U_HBT_MedPag: customer.U_HBT_MedPag || customerSap.data?.U_HBT_MedPag
                             };
                             // if (!exists) {
