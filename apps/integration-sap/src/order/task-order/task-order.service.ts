@@ -53,10 +53,11 @@ export class TaskOrderService {
                 const setting = await this.prismaService.setting.findFirst({where: {name: 'Project'}, include: {settingDetail: true}});
                 await Promise.all(orders.map(async (order) => {
 
-                    try {                        
-                        const paymentTerm = await this.prismaService.settingDetail.findFirst({where: {setting: { name: 'PayTermsGrpCode'}, code: order.customer.payTermsGrpCode}});
+                    try {       
+                        // code: order.customer.payTermsGrpCode                 
+                        const paymentTerm = await this.prismaService.setting.findUnique({where: {name: 'PayTermsGrpCode'}, include: {settingDetail: {where: {active: true, code: order.customer.payTermsGrpCode}}}});
                         await this.authService.login();
-                        const codes = (paymentTerm.extendedData as any).codes;
+                        const codes = (paymentTerm.settingDetail[0].extendedData as any).codes;
                         const result = await this.orderService.create({
                             CardCode: order.customer.identification,
                             Series: order.serie,
