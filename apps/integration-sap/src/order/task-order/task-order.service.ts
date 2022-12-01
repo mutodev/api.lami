@@ -76,10 +76,12 @@ export class TaskOrderService {
                                     DiscountPercent: item.discount || 0,
                                     // Price: item.value * item.amount,
                                     WarehouseCode: item.wareHouseCode || null,
-                                    Project: project.value,
+                                    ProjectCode: project.value,
                                     ArTaxCode: item.arTaxCode,
                                     CostingCode: codes?.factorCode,
-                                    CostingCode2: codes?.factorCode2
+                                    CostingCode2: codes?.factorCode2,
+                                    COGSCostingCode3: 'VTA',
+                                    COGSCostingCode2: codes?.factorCode2
                                 };
                             })
                         });

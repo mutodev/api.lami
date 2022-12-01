@@ -81,18 +81,32 @@ export class TaskCustomerService {
                                 U_HBT_RegFis: customer.U_HBT_RegFis,
                                 U_HBT_ResFis: customer.U_HBT_ResFis,
                                 U_HBT_MedPag: customer.U_HBT_MedPag,
-                                BPAddresses: {
+                                BPAddresses: [{
                                     AddressName: customer.AddressName,
-                                    Street: null,
+                                    Street: customer.address,
                                     Block: null,
                                     ZipCode: null,
-                                    City: null,
-                                    County: null,
-                                    Country: null,
+                                    City: customer.City,
+                                    County: customer.County,
+                                    Country: customer.Country,
                                     State: null,
                                     U_HBT_MunMed: customer.U_HBT_MunMed,
-                                    U_HBT_DirMM: customer.U_HBT_DirMM
-                                }
+                                    U_HBT_DirMM: 'N',
+                                    AddressType: 'bo_ShipTo'
+                                },
+                                {
+                                    AddressName: customer.AddressName,
+                                    Street: customer.addressBilling,
+                                    Block: null,
+                                    ZipCode: null,
+                                    City: customer.CityBilling,
+                                    County: customer.CountyBilling,
+                                    Country: customer.Country,
+                                    State: null,
+                                    U_HBT_MunMed: customer.U_HBT_MunMed,
+                                    U_HBT_DirMM: 'Y',
+                                    AddressType: 'bo_BillTo'
+                                }]
 
                             });
                             console.log('respuesta crear cliente', { result })

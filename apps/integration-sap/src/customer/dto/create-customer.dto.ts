@@ -33,8 +33,8 @@ export class CreateCustomerDto {
         AddressType?: string;
         BPCode?: string;
         U_HBT_MunMed?: string;
-        U_HBT_DirMM?: string; 
-    }
+        U_HBT_DirMM?: string;
+    }[]
 }
 
 

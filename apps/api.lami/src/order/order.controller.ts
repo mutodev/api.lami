@@ -11,6 +11,7 @@ import { Public } from '../commons/decorators';
 import { Ctx, EventPattern, MessagePattern, Payload, RedisContext } from '@nestjs/microservices';
 import { seeEventOrderStream } from '../commons/streams/actions-order';
 import { filter, Observable } from 'rxjs';
+import { CustomerService } from '../customer/customer.service';
 
 @ApiTags('ORDER')
 @ApiBearerAuth()
@@ -18,15 +19,16 @@ import { filter, Observable } from 'rxjs';
 @Controller('order')
 export class OrderController {
   constructor(private readonly orderService: OrderService,
-              private readonly itemsService: ItemsService) {}
+              private readonly itemsService: ItemsService,
+              private readonly customerService: CustomerService) {}
 
   @Post()
   async create(@Req() req, @Body() createOrderDto: CreateOrderDto) {
-    console.log({createOrderDto})
     const {orderDetails, ...order} = createOrderDto;
+    const customer = await this.customerService.findOne({id: createOrderDto.customerId});
     const details = await Promise.all(orderDetails.map(async (detail) => {
-      const item = await this.itemsService.findByCode(detail.itemCode);
-      return {...detail, arTaxCode: item.arTaxCode}
+      const item = await this.itemsService.findByCode(detail.itemCode);     
+      return {...detail, arTaxCode: item.arTaxCode, project: customer.project || '0022'};
     }));
     const result = await this.orderService.create({...order, userId: req.user.id, statusId: EnumOrderStatus.PorCobrar, orderDetails: {
       create: [

@@ -13,7 +13,7 @@ export class CustomerService {
     try {
       const {BPAddresses, ...customer} = createCustomerDto;
       console.log('json customer', JSON.stringify(createCustomerDto))
-      const result = await this.apiHttp.post<any>(EnumApis.CUSTOMER, {...customer, BPAddresses: [BPAddresses]});
+      const result = await this.apiHttp.post<any>(EnumApis.CUSTOMER, {...customer, BPAddresses: BPAddresses});
       return result;
     } catch (error) {
       throw error;

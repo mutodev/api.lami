@@ -48,10 +48,10 @@ export class OrderDetail {
     @IsNumber()
     vat?: number;
 
-    @ApiProperty()
-    @IsNotEmpty()
-    @IsString()
-    project: string;
+    // @ApiProperty()
+    // @IsNotEmpty()
+    // @IsString()
+    // project: string;
 
     @ApiProperty()
     @IsOptional()

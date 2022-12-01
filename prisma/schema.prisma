@@ -126,6 +126,10 @@ model Customer {
   checkSameInfo       Boolean? @default(false)
   codeUpdated         String?
   userId              String?
+  checkSameAddress    Boolean? @default(false)
+  addressBilling      String? @db.VarChar(255)
+  CityBilling         String?
+  CountyBilling       String?
   user                User? @relation(name: "usercustomer", fields: [userId], references: [id])
   orders              Order[] @relation(name: "ordercustomer")
   createdAt           DateTime @default(now())

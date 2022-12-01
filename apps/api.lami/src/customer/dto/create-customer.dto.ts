@@ -151,4 +151,24 @@ export class CreateCustomerDto {
     @IsBoolean()
     @IsOptional()
     checkSameInfo?: boolean;
+
+    @ApiProperty()
+    @IsString()
+    @IsOptional()
+    addressBilling?: string;
+
+    @ApiProperty()
+    @IsString()
+    @IsOptional()
+    CityBilling?: string;
+
+    @ApiProperty()
+    @IsString()
+    @IsOptional()
+    CountyBilling?: string;
+
+    @ApiProperty()
+    @IsBoolean()
+    @IsOptional()
+    checkSameAddress?: boolean;
 }
