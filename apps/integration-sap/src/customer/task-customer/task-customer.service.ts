@@ -166,6 +166,7 @@ export class TaskCustomerService {
                                 body
                             );
                             
+                            console.log({body})
                             if (result.status === 204) {
                                 customer.sendToSap = true;
                                 await this.prismaService.customer.update({ where: { id: customer.id }, data: { sendToSap: true } });
