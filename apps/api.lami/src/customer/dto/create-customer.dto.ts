@@ -155,6 +155,16 @@ export class CreateCustomerDto {
     @ApiProperty()
     @IsString()
     @IsOptional()
+    City?: string;
+
+    @ApiProperty()
+    @IsString()
+    @IsOptional()
+    County?: string;
+
+    @ApiProperty()
+    @IsString()
+    @IsOptional()
     addressBilling?: string;
 
     @ApiProperty()
