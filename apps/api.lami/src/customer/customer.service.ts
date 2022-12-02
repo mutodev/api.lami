@@ -32,7 +32,7 @@ export class CustomerService {
         cardType: customer.source,
         FederalTaxID: identification,
         name: nameV,
-        codeUpdated: data.source == 'C' ? `CL-${identification}` : data.identification
+        codeUpdated: `CL-${identification}`
         }
       });
     } catch (error) {
@@ -40,7 +40,7 @@ export class CustomerService {
     }    
   }
 
-  findAll(params: {
+  async findAll(params: {
     skip?: number;
     take?: number;
     cursor?: Prisma.CustomerWhereUniqueInput;
@@ -52,15 +52,22 @@ export class CustomerService {
     const { skip, take, cursor, where, orderBy } = params;
     if (params.page > 0) {
       const paginate = this.paginationService.createPaginator({page: params.page, perPage: params.perPage });
-      return paginate<Model, Prisma.CustomerFindManyArgs>(
+      const result = await paginate<Model, Prisma.CustomerFindManyArgs>(
         this.prisma.customer, {
             cursor,
             where,
             orderBy,
             include: {type: true, identificationType: true}
           });
+
+      const list = result.data.map((item) => {
+        const {identification, ...l} = item;
+        return {...l, identification: l.source == 'L' ? identification.replace('CL-', '') : identification};
+      });   
+      result.data = list;
+      return result; 
     } else {
-      return this.prisma.customer.findMany({
+      const result = await this.prisma.customer.findMany({
         skip,
         take,
         cursor,
@@ -68,13 +75,20 @@ export class CustomerService {
         orderBy,
         include: {type: true, identificationType: true}
       });
+      const list = result.map((item) => {
+        const {identification, ...l} = item;
+        return {...l, identification: l.source == 'L' ? identification.replace('CL-', '') : identification};
+      });  
+      return list;
     }
   }
 
-  findOne(userWhereUniqueInput: Prisma.CustomerWhereUniqueInput): Promise<Model | null> {
-    return this.prisma.customer.findUnique({
+  async findOne(userWhereUniqueInput: Prisma.CustomerWhereUniqueInput): Promise<Model | null> {
+    const result = await this.prisma.customer.findUnique({
       where: userWhereUniqueInput,
     });
+    const {identification, ...data} = result;
+    return {...data, identification: data.source == 'L' ? identification.replace('CL-', '') : identification};
   }
 
   async update(params: {
