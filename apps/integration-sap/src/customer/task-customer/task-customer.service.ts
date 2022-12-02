@@ -135,13 +135,11 @@ export class TaskCustomerService {
                             // const exists = BPAddressesListString.includes(bPAddressesString);
 
                             const body = {
-                                CardCode: customer.identification,
                                 CardName: EnumCustomerType.PersonaNatural ? `${customer.firstName} ${customer.lastName} ${customer.lastName2}` : customer.name,
                                 Address: customer.address,
                                 Phone1: customer.phone,
                                 MailAddress: customer.address || customerSap.data?.MailAddress,
                                 CardType: customer.cardType || customer.source,
-                                FederalTaxID: customer.identification,
                                 GroupCode: customer.groupCode,
                                 PayTermsGrpCode: customer.payTermsGrpCode || customerSap.data?.PayTermsGrpCode,
                                 SalesPersonCode: customer.salesPersonCode || customerSap.data?.SalesPersonCode,
@@ -162,7 +160,7 @@ export class TaskCustomerService {
                             //     body['BPAddresses'] = bPAddresses;
                             // }
                             const result = await this.customerService.update(
-                                customer.codeUpdated,
+                                customer.identification,
                                 body
                             );
                             

@@ -28,7 +28,7 @@ export class CustomerService {
       seeEventCustomerStream.next(customer);
       return await this.prisma.customer.create({
         data: {...customer, 
-        identification: data.source == 'C' ? `CL-${identification}` : data.identification, 
+        identification: `CL-${identification}`, 
         cardType: customer.source,
         FederalTaxID: identification,
         name: nameV,
@@ -84,10 +84,10 @@ export class CustomerService {
     const { where, data } = params;
     const cus = await this.prisma.customer.findUnique({where: {id: where.id}});
     const {identification, name, ...customer} = data;
-    let newIdentification = data.source == 'C' && cus.source == 'L' ? `CL-${identification}` : identification;
+    // let newIdentification = cus.source == 'L' ? `CL-${identification}` : identification;
     let nameV = data.typeId == EnumCustomerType.PersonaNatural ? `${data.firstName} ${data.lastName}` : data.name; 
     return await this.prisma.customer.update({
-      data: {...customer, name: nameV,identification: newIdentification , sendToSap: false, codeUpdated: cus.identification, cardType: customer.source },
+      data: {...customer, name: nameV, sendToSap: false, codeUpdated: cus.identification, cardType: customer.source },
       where,
     });
   }

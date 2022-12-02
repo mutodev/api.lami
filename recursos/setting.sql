@@ -2634,3 +2634,12 @@ insert into public."SettingDetail"(id, "createdAt", "updatedAt", "settingId", co
 insert into public."SettingDetail"(id, "createdAt", "updatedAt", "settingId", code, "name", "value", active)values(uuid_generate_v1(), now(), now(),'b822fc20-71b6-11ed-b8b2-93cfa5187c2a','SAN JOSE DE OCUNE','SAN JOSE DE OCUNE','VICHADA',true);
 insert into public."SettingDetail"(id, "createdAt", "updatedAt", "settingId", code, "name", "value", active)values(uuid_generate_v1(), now(), now(),'b822fc20-71b6-11ed-b8b2-93cfa5187c2a','SANTA RITA','SANTA RITA','VICHADA',true);
 insert into public."SettingDetail"(id, "createdAt", "updatedAt", "settingId", code, "name", "value", active)values(uuid_generate_v1(), now(), now(),'b822fc20-71b6-11ed-b8b2-93cfa5187c2a','SANTA ROSALIA','SANTA ROSALIA','VICHADA',true);
+
+
+-- series
+
+insert into public."Setting"(id, "name", "createdAt", "updatedAt")values('34efb730-725b-11ed-b8b2-93cfa5187c2a', 'SERIES', now(), now());
+
+insert into public."SettingDetail"(id, "createdAt", "updatedAt", "settingId", code, "name", active)values(uuid_generate_v1(), now(), now(),'34efb730-725b-11ed-b8b2-93cfa5187c2a','13','BQ', true);
+insert into public."SettingDetail"(id, "createdAt", "updatedAt", "settingId", code, "name", active)values(uuid_generate_v1(), now(), now(),'34efb730-725b-11ed-b8b2-93cfa5187c2a','102','BBQ', true);
+insert into public."SettingDetail"(id, "createdAt", "updatedAt", "settingId", code, "name", active)values(uuid_generate_v1(), now(), now(),'34efb730-725b-11ed-b8b2-93cfa5187c2a','103','PSBBQ', true);
