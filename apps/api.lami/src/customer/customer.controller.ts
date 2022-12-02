@@ -19,8 +19,8 @@ export class CustomerController {
 
   @Post()
   async create(@Req() req, @Body() createCustomerDto: CreateCustomerDto) {
-    const result = await this.customerService.create({...createCustomerDto});
-    return successResponse('Registro guardado satisfactoriamente.', {...result, userId: req.user.id});
+    const result = await this.customerService.create({...createCustomerDto, userId: req.user.id});
+    return successResponse('Registro guardado satisfactoriamente.', {...result});
   }
 
   @Get()
