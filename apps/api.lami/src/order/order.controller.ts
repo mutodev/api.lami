@@ -76,7 +76,7 @@ export class OrderController {
   async changeStatusSap(@Payload() orderId: string, @Ctx() context: RedisContext): Promise<any> {
     try {
       const order = await this.orderService.findOne({id: orderId});
-      seeEventOrderStream.next({data: {order}});
+      seeEventOrderStream.next({data: order});
     return null;
     } catch (error) {
       throw error;
