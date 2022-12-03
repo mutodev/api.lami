@@ -60,7 +60,7 @@ export class TaskOrderService {
                         const codes = (paymentTerm.settingDetail[0].extendedData as any).codes;
                         const result = await this.orderService.create({
                             CardCode: order.customer.identification,
-                            Series: order.serie,
+                            Series: +order.serie,
                             DocDate: order.date.toISOString().replace('T', ' ').substring(0, 10),
                             DocDueDate: order.dueDate.toISOString().replace('T', ' ').substring(0, 10),
                             SalesPersonCode: order.salesPersonCode || '',

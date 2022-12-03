@@ -5,6 +5,8 @@ export class CreateCustomerDto {
     Phone1: string;
     MailAddress: string;    
     CardType?: string;
+    County?: string;
+    City?: string;
     FederalTaxID?: string;
     GroupCode?: string;
     PayTermsGrpCode?: string;

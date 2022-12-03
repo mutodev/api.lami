@@ -1,6 +1,6 @@
 export class CreateOrderDto {
     CardCode: string;
-    Series: string;
+    Series: number;
     DocDate?: string;
     DocDueDate?: string;
     SalesPersonCode?: string;

@@ -64,6 +64,8 @@ export class TaskCustomerService {
                                 Address: customer.address,
                                 Phone1: customer.phone,
                                 MailAddress: customer.address,
+                                City: customer.City,
+                                County: customer.County,
                                 CardType: customer.source,
                                 FederalTaxID: customer.FederalTaxID,
                                 GroupCode: customer.groupCode,
@@ -140,6 +142,8 @@ export class TaskCustomerService {
                                 Phone1: customer.phone,
                                 MailAddress: customer.address || customerSap.data?.MailAddress,
                                 CardType: customer.cardType || customer.source,
+                                City: customer.City,
+                                County: customer.County,
                                 GroupCode: customer.groupCode,
                                 PayTermsGrpCode: customer.payTermsGrpCode || customerSap.data?.PayTermsGrpCode,
                                 SalesPersonCode: customer.salesPersonCode || customerSap.data?.SalesPersonCode,
@@ -154,7 +158,33 @@ export class TaskCustomerService {
                                 U_HBT_Nacional: customer.U_HBT_Nacional,
                                 U_HBT_RegFis: customer.U_HBT_RegFis || customerSap.data?.U_HBT_RegFis || null,
                                 U_HBT_ResFis: customer.U_HBT_ResFis || customerSap.data?.U_HBT_ResFis || null,
-                                U_HBT_MedPag: customer.U_HBT_MedPag || customerSap.data?.U_HBT_MedPag
+                                U_HBT_MedPag: customer.U_HBT_MedPag || customerSap.data?.U_HBT_MedPag,
+                                BPAddresses: [{
+                                    AddressName: customer.AddressName,
+                                    Street: customer.address,
+                                    Block: null,
+                                    ZipCode: null,
+                                    City: customer.City,
+                                    County: customer.County,
+                                    Country: customer.Country,
+                                    State: null,
+                                    U_HBT_MunMed: customer.U_HBT_MunMed,
+                                    U_HBT_DirMM: 'N',
+                                    AddressType: 'bo_ShipTo'
+                                },
+                                {
+                                    AddressName: customer.AddressName,
+                                    Street: customer.addressBilling,
+                                    Block: null,
+                                    ZipCode: null,
+                                    City: customer.CityBilling,
+                                    County: customer.CountyBilling,
+                                    Country: customer.Country,
+                                    State: null,
+                                    U_HBT_MunMed: customer.U_HBT_MunMed,
+                                    U_HBT_DirMM: 'Y',
+                                    AddressType: 'bo_BillTo'
+                                }]
                             };
                             // if (!exists) {
                             //     body['BPAddresses'] = bPAddresses;
