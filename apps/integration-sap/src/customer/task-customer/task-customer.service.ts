@@ -60,7 +60,7 @@ export class TaskCustomerService {
                         if (customerSap.status === 404) {
                             const result = await this.customerService.create({
                                 CardCode: customer.identification,
-                                CardName: EnumCustomerType.PersonaNatural ? `${customer.firstName} ${customer.lastName} ${customer.lastName2}` : customer.name,
+                                CardName: customer.typeId == EnumCustomerType.PersonaNatural.toString() ? `${customer.firstName} ${customer.lastName} ${customer.lastName2}` : customer.name,
                                 Address: customer.address,
                                 Phone1: customer.phone,
                                 MailAddress: customer.address,
@@ -137,7 +137,7 @@ export class TaskCustomerService {
                             // const exists = BPAddressesListString.includes(bPAddressesString);
 
                             const body = {
-                                CardName: EnumCustomerType.PersonaNatural ? `${customer.firstName} ${customer.lastName} ${customer.lastName2}` : customer.name,
+                                CardName: customer.typeId == EnumCustomerType.PersonaNatural.toString() ? `${customer.firstName} ${customer.lastName} ${customer.lastName2}` : customer.name,
                                 Address: customer.address,
                                 Phone1: customer.phone,
                                 MailAddress: customer.address || customerSap.data?.MailAddress,

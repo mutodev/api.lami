@@ -36,6 +36,7 @@ export class CustomerController {
     const result = await this.customerService.findAll({
       page: req['query'].page, 
       perPage: req['query'].perPage,
+      orderBy: {createdAt: 'desc'},
       where
     });
     return successResponse('', result);
