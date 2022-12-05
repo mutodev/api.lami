@@ -41,7 +41,7 @@ export class OrderService {
         cursor,
         where,
         orderBy,
-        include: { customer: {include: {identificationType: true}, status: true }
+        include: { customer: {include: {identificationType: true}}, status: true }
       });
     }
   }
