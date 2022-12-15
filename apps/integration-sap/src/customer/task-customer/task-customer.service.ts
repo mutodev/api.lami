@@ -47,7 +47,7 @@ export class TaskCustomerService {
     async createCustomer() {
         try {
 
-            const customers = await this.prismaService.customer.findMany({ where: { sendToSap: false }, include: { type: true, identificationType: true } });
+            const customers = await this.prismaService.customer.findMany({ where: {OR: [{sendToSap: false}, {sendToSap: null}] }, include: { type: true, identificationType: true } });
 
             if (customers.length > 0) {
                 await Promise.all(customers.map(async (customer) => {
@@ -55,11 +55,14 @@ export class TaskCustomerService {
                     try {
 
                         await this.authService.login();
-                        const customerSap = await this.customerService.findOne(customer.codeUpdated);
+                        const arrayIdentification = customer.identification.split('-');
+                        const carcode = customer.typeId == EnumCustomerType.PersonaJuridica.toString() && arrayIdentification[1] && arrayIdentification[2] ? `${arrayIdentification[0]}-${arrayIdentification[1]}` : customer.identification;
+                        const customerSap = await this.customerService.findOne(carcode);
                         console.log({ customerSap })
                         if (customerSap.status === 404) {
+                           
                             const result = await this.customerService.create({
-                                CardCode: customer.identification,
+                                CardCode: carcode,
                                 CardName: customer.typeId == EnumCustomerType.PersonaNatural.toString() ? `${customer.firstName} ${customer.lastName} ${customer.lastName2}` : customer.name,
                                 Address: customer.address,
                                 Phone1: customer.phone,
@@ -72,17 +75,19 @@ export class TaskCustomerService {
                                 PayTermsGrpCode: customer.payTermsGrpCode,
                                 SalesPersonCode: customer.salesPersonCode,
                                 EmailAddress: customer.email,
+                                U_HBT_MailRecep_FE: customer.email,
                                 U_HBT_RegTrib: customer.U_HBT_RegTrib,
                                 U_HBT_TipDoc: customer.identificationType.code,
                                 U_HBT_MunMed: customer.U_HBT_MunMed,
                                 U_HBT_TipEnt: customer.type.code,
-                                U_HBT_Nombres: customer.firstNameBilling,
-                                U_HBT_Apellido1: customer.lastNameBilling,
-                                U_HBT_Apellido2: customer.lastName2Billing,
+                                U_HBT_Nombres: customer.firstNameBilling || null,
+                                U_HBT_Apellido1: customer.lastNameBilling || null,
+                                U_HBT_Apellido2: customer.lastName2Billing || null,
                                 U_HBT_Nacional: customer.U_HBT_Nacional,
                                 U_HBT_RegFis: customer.U_HBT_RegFis || null,
                                 U_HBT_ResFis: customer.U_HBT_ResFis || null,
                                 U_HBT_MedPag: customer.U_HBT_MedPag,
+                                U_HBT_ActEco: customer.U_HBT_ActEco || null,
                                 BPAddresses: [{
                                     AddressName: customer.AddressName,
                                     Street: customer.address,
@@ -109,7 +114,6 @@ export class TaskCustomerService {
                                     U_HBT_DirMM: 'Y',
                                     AddressType: 'bo_BillTo'
                                 }]
-
                             });
                             console.log('respuesta crear cliente', { result })
                             if (result.status === 201) {
@@ -148,6 +152,7 @@ export class TaskCustomerService {
                                 PayTermsGrpCode: customer.payTermsGrpCode || customerSap.data?.PayTermsGrpCode,
                                 SalesPersonCode: customer.salesPersonCode || customerSap.data?.SalesPersonCode,
                                 EmailAddress: customer.email,
+                                U_HBT_MailRecep_FE: customer.email,
                                 U_HBT_RegTrib: customer.U_HBT_RegTrib || customerSap.data?.U_HBT_RegTrib,
                                 U_HBT_TipDoc: customer.identificationType.code || customerSap.data?.U_HBT_TipDoc,
                                 U_HBT_MunMed: customer.U_HBT_MunMed || customerSap.data?.U_HBT_MunMed,
@@ -159,6 +164,7 @@ export class TaskCustomerService {
                                 U_HBT_RegFis: customer.U_HBT_RegFis || customerSap.data?.U_HBT_RegFis || null,
                                 U_HBT_ResFis: customer.U_HBT_ResFis || customerSap.data?.U_HBT_ResFis || null,
                                 U_HBT_MedPag: customer.U_HBT_MedPag || customerSap.data?.U_HBT_MedPag,
+                                U_HBT_ActEco: customer.U_HBT_ActEco || null,
                                 BPAddresses: [{
                                     AddressName: customer.AddressName,
                                     Street: customer.address,
@@ -190,7 +196,7 @@ export class TaskCustomerService {
                             //     body['BPAddresses'] = bPAddresses;
                             // }
                             const result = await this.customerService.update(
-                                customer.identification,
+                                carcode,
                                 body
                             );
                             

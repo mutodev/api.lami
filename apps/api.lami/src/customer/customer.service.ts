@@ -25,14 +25,24 @@ export class CustomerService {
       }        
       const {identification, name, ...customer} = data;
       let nameV = data.typeId == EnumCustomerType.PersonaNatural ? `${data.firstName} ${data.lastName}` : data.name; 
-      seeEventCustomerStream.next(customer);
+      
+      let U_HBT_MunMed = '';
+      if (data.source == 'C') {
+        const setting = await this.prisma.setting.findUnique({where: {name: 'CITIES', }, include: {settingDetail: {where: {name: data.CityBilling.toString(), value: data.CountyBilling.toString()}}}});
+        if (setting.settingDetail.length > 0) {
+          U_HBT_MunMed = setting.settingDetail[0].value2;
+        }
+      }
+      
       return await this.prisma.customer.create({
         data: {...customer, 
         identification: `CL-${identification}`, 
         cardType: customer.source,
         FederalTaxID: identification,
         name: nameV,
-        codeUpdated: `CL-${identification}`
+        U_HBT_MunMed,
+        codeUpdated: `CL-${identification}`,
+        sendToSap: null
         }
       });
     } catch (error) {
@@ -100,8 +110,17 @@ export class CustomerService {
     const {identification, name, ...customer} = data;
     // let newIdentification = cus.source == 'L' ? `CL-${identification}` : identification;
     let nameV = data.typeId == EnumCustomerType.PersonaNatural ? `${data.firstName} ${data.lastName}` : data.name; 
+    
+    let U_HBT_MunMed = '';
+    if (data.source == 'C') {
+      const setting = await this.prisma.setting.findUnique({where: {name: 'CITIES', }, include: {settingDetail: {where: {name: data.CityBilling.toString(), value: data.CountyBilling.toString()}}}});
+      if (setting.settingDetail.length > 0) {
+        U_HBT_MunMed = setting.settingDetail[0].value2;
+      }
+    }
+
     return await this.prisma.customer.update({
-      data: {...customer, name: nameV, sendToSap: false, codeUpdated: cus.identification, cardType: customer.source },
+      data: {...customer, name: nameV, sendToSap: null, codeUpdated: cus.identification, cardType: customer.source, U_HBT_MunMed },
       where,
     });
   }

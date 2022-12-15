@@ -56,4 +56,9 @@ export class CreateUserDto {
     @IsOptional()
     @IsString()
     salesPersonCode?: string;
+
+    @ApiProperty()
+    @IsOptional()
+    @IsString()
+    sellerTypeId?: string;
 }

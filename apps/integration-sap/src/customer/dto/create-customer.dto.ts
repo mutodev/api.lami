@@ -12,6 +12,7 @@ export class CreateCustomerDto {
     PayTermsGrpCode?: string;
     SalesPersonCode?: string;
     EmailAddress?: string;
+    U_HBT_MailRecep_FE?: string;
     U_HBT_RegTrib?: string;
     U_HBT_TipDoc?: string;
     U_HBT_MunMed?: string;
@@ -23,6 +24,7 @@ export class CreateCustomerDto {
     U_HBT_RegFis?: string;
     U_HBT_ResFis?: string;
     U_HBT_MedPag?: string;
+    U_HBT_ActEco?: string;
     BPAddresses?: {
         AddressName?: string;
         Street?: string;

@@ -12,7 +12,7 @@ import {
     ValidateIf,
     MaxLength
 } from 'class-validator';
-
+import { EnumCustomerType } from './../../commons/enums/enum-customer-type';
 export class CreateCustomerDto {
 
     @ApiProperty()
@@ -28,7 +28,7 @@ export class CreateCustomerDto {
     @ApiProperty()
     @IsString()
     @MaxLength(255, {message: 'La cantidad de caracteres maximos permitodos son 255.'})
-    @ValidateIf((item) => item.typeId === '87345bcb-46c0-11ed-88f1-7b765a5d50e1')
+    @ValidateIf((item) => item.typeId === EnumCustomerType.PersonaJuridica)
     @IsNotEmpty({message: 'En nombre es requerido.'})
     name: string;
 
@@ -51,21 +51,21 @@ export class CreateCustomerDto {
     @ApiProperty()
     @IsString()
     @MaxLength(255, {message: 'La cantidad de caracteres maximos permitodos en el nombre son 255.'})
-    @ValidateIf((item) => item.typeId === '87345bca-46c0-11ed-88f1-7b765a5d50e1')
+    @ValidateIf((item) => item.typeId === EnumCustomerType.PersonaNatural)
     @IsNotEmpty({message: 'El nombre es requerido.'})
     firstName: string;
 
     @ApiProperty()
     @IsString()
     @MaxLength(255, {message: 'La cantidad de caracteres maximos permitodos en el primer apellido son 255.'})
-    @ValidateIf((item) => item.typeId === '87345bca-46c0-11ed-88f1-7b765a5d50e1')
+    @ValidateIf((item) => item.typeId === EnumCustomerType.PersonaNatural)
     @IsNotEmpty({message: 'El apellido es requerido.'})
     lastName: string;
 
     @ApiProperty()
     @IsString()
     @MaxLength(255, {message: 'La cantidad de caracteres maximos permitodos en el segundo apellido son 255.'})
-    @ValidateIf((item) => item.typeId === '87345bca-46c0-11ed-88f1-7b765a5d50e1')
+    @ValidateIf((item) => item.typeId === EnumCustomerType.PersonaNatural)
     @IsNotEmpty({message: 'El segundo apellido es requerido.'})
     lastName2: string;
 
@@ -100,11 +100,11 @@ export class CreateCustomerDto {
     @IsString()
     salesPersonCode?: string; 
 
-    @ApiProperty()
-    @IsString()
-    @ValidateIf((item) => item.source === 'C')
-    @IsNotEmpty({message: 'El Municipio medios magnetico es requerido.'})
-    U_HBT_MunMed?: string; 
+    // @ApiProperty()
+    // @IsString()
+    // @ValidateIf((item) => item.source === 'C')
+    // @IsNotEmpty({message: 'El Municipio medios magnetico es requerido.'})
+    // U_HBT_MunMed?: string; 
 
     @ApiProperty()
     @IsOptional()
@@ -124,21 +124,21 @@ export class CreateCustomerDto {
     @ApiProperty()
     @IsString()
     @MaxLength(255, {message: 'La cantidad de caracteres maximos permitodos en el nombre para facturación son 255.'})
-    @ValidateIf((item) => item.source === 'C')
+    @ValidateIf((item) => item.source === 'C' && item.typeId === EnumCustomerType.PersonaNatural)
     @IsNotEmpty({message: 'El nombre para facturación es requerido.'})
     firstNameBilling?: string;
 
     @ApiProperty()
     @IsString()
     @MaxLength(255, {message: 'La cantidad de caracteres maximos permitodos en el aplleido para facturación son 255.'})
-    @ValidateIf((item) => item.source === 'C')
+    @ValidateIf((item) => item.source === 'C' && item.typeId === EnumCustomerType.PersonaNatural)
     @IsNotEmpty({message: 'El apellido para facturación es requerido.'})
     lastNameBilling?: string;
 
     @ApiProperty()
     @IsString()
     @MaxLength(255, {message: 'La cantidad de caracteres maximos permitodos en el segundo apellido para facturación son 255.'})
-    @ValidateIf((item) => item.source === 'C')
+    @ValidateIf((item) => item.source === 'C' && item.typeId === EnumCustomerType.PersonaNatural)
     @IsNotEmpty({message: 'El segundo apellido para facturación es requerido.'})
     lastName2Billing?: string;
 
@@ -181,4 +181,10 @@ export class CreateCustomerDto {
     @IsBoolean()
     @IsOptional()
     checkSameAddress?: boolean;
+
+    @ApiProperty()
+    @IsString()
+    @ValidateIf((item) => item.typeId === EnumCustomerType.PersonaJuridica)
+    @IsNotEmpty({message: 'La actividad econicmica es requerida.'})
+    U_HBT_ActEco?: string;
 }

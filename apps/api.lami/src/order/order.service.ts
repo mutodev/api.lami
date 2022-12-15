@@ -11,7 +11,10 @@ export class OrderService {
   async create(data: Prisma.OrderUncheckedCreateInput): Promise<Model> {
     console.log({ data: JSON.stringify(data) })
     return this.prisma.order.create({
-      data
+      data: {
+        ...data,
+        sendToSap: null
+      }
     });
   }
 
@@ -88,7 +91,7 @@ export class OrderService {
   }): Promise<Model> {
     const { where, data } = params;
     return this.prisma.order.update({
-      data,
+      data: {...data, sendToSap: null},
       where,
     });
   }

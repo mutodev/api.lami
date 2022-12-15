@@ -59,6 +59,8 @@ model User {
   role            SettingDetail? @relation(name: "usersrolessetting", fields: [roleId], references: [id])
   active          Boolean? @default(true)
   salesPersonCode String?
+  sellerTypeId    String?
+  sellerType      SettingDetail? @relation(name: "sellertypesetting", fields: [sellerTypeId], references: [id])
   customers       Customer[] @relation(name: "usercustomer")
   orders          Order[] @relation(name: "userorder")
   createdAt       DateTime @default(now())
@@ -93,7 +95,7 @@ model Customer {
   address             String? @db.VarChar(255)
   phone               String? @db.VarChar(30)
   // companyName         String?
-  sendToSap           Boolean? @default(false)
+  sendToSap           Boolean?
   messageError        String? @db.Text() @default("")
   cardType            String? // es igual source
   groupCode           String?
@@ -130,6 +132,7 @@ model Customer {
   addressBilling      String? @db.VarChar(255)
   CityBilling         String?
   CountyBilling       String?
+  U_HBT_ActEco        String?
   user                User? @relation(name: "usercustomer", fields: [userId], references: [id])
   orders              Order[] @relation(name: "ordercustomer")
   createdAt           DateTime @default(now())
@@ -152,7 +155,7 @@ model Order {
   subTotal            Float
   total               Float
   discount            Float?
-  sendToSap           Boolean? @default(false)  
+  sendToSap           Boolean?
   integrationId       Int?
   docNumber           Int?
   comments            String? @db.Text
@@ -224,6 +227,7 @@ model SettingDetail {
   code                        String
   name                        String
   value                       String?
+  value2                      String?
   settingId                   String
   setting                     Setting? @relation(name: "settingdetailsetting", fields: [settingId], references: [id], onDelete: Cascade)
   users                       User[] @relation(name: "usersrolessetting")
@@ -231,6 +235,7 @@ model SettingDetail {
   customers                   Customer[] @relation(name: "typecustomersetting")
   customerIdentificationTypes Customer[] @relation(name: "identificationtypesetting")
   orders                      Order[] @relation(name: "orderstatus")
+  userSellerType              User[] @relation(name: "sellertypesetting")
   active                      Boolean? @default(true)
   extendedData                Json?
   createdAt                   DateTime @default(now())
