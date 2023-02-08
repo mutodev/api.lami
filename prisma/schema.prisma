@@ -31,90 +31,167 @@ model Menu {
   parentId          String?
   parent            Menu? @relation(name: "children", fields: [parentId], references: [id]) 
   children          Menu[] @relation(name: "children")    
-  menuRole          MenoRole[] @relation(name: "menurolemenu")    
+  menuRoles         MenuRole[] @relation(name: "menuroles")    
   createdAt         DateTime @default(now())
   updatedAt         DateTime @updatedAt
 }
 
-model MenoRole {
+model MenuRole {
   id            String @default(uuid()) @id
   menuId        String @db.VarChar(255)
-  menu          Menu? @relation(name: "menurolemenu", fields: [menuId], references: [id]) 
-  role          EnumRoles
+  menu          Menu? @relation(name: "menuroles", fields: [menuId], references: [id]) 
+  roleId        String
+  role          SettingDetail? @relation(name: "menurolessetting", fields: [roleId], references: [id])
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
 }
 
 model User {
-  id            String @default(uuid()) @id
-  userName      String @db.VarChar(100) @unique
-  password      String
-  firstName     String @db.VarChar(100)
-  lastName      String @db.VarChar(100)
-  email         String? @db.VarChar(100)
-  phone         String? @db.VarChar(15)
-  photo         String?
-  role          EnumRoles
-  active        Boolean? @default(true)
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
+  id              String @default(uuid()) @id
+  userName        String @db.VarChar(100) @unique
+  password        String
+  firstName       String @db.VarChar(100)
+  lastName        String @db.VarChar(100)
+  email           String? @db.VarChar(100)
+  phone           String? @db.VarChar(15)
+  photo           String?
+  roleId          String
+  role            SettingDetail? @relation(name: "usersrolessetting", fields: [roleId], references: [id])
+  active          Boolean? @default(true)
+  salesPersonCode String?
+  sellerTypeId    String?
+  sellerType      SettingDetail? @relation(name: "sellertypesetting", fields: [sellerTypeId], references: [id])
+  customers       Customer[] @relation(name: "usercustomer")
+  orders          Order[] @relation(name: "userorder")
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
 }
 
-enum EnumRoles { 
-  SUPERADMINISTRADOR
-  LIDER_COMERCIAL
-  VENDEDOR
-  CAJA
-  COORDINADOR_DE_LOGISTICA
-  CONDUCTOR
-}
+// enum EnumRoles { 
+//   SUPERADMINISTRADOR
+//   LIDER_COMERCIAL
+//   VENDEDOR
+//   CAJA
+//   COORDINADOR_DE_LOGISTICA
+//   CONDUCTOR
+// }
 
 model Customer {
   id                  String @default(uuid()) @id
-  type                EnumCustomerType
-  identificationType  String @db.VarChar(100)
+  typeId              String
+  type                SettingDetail? @relation(name: "typecustomersetting", fields: [typeId], references: [id])
+  identificationTypeId  String @db.VarChar(100)
+  identificationType  SettingDetail? @relation(name: "identificationtypesetting", fields: [identificationTypeId], references: [id])
   identification      String @db.VarChar(20) @unique
+  name                String? @db.VarChar(255)
   source              String @db.VarChar(100)
   email               String @db.VarChar(100)
-  firstName           String @db.VarChar(100)
-  lastName            String? @db.VarChar(100)
+  firstName           String? @db.VarChar(255)
+  lastName            String? @db.VarChar(255)
+  lastName2           String? @db.VarChar(255)
+  firstNameBilling    String? @db.VarChar(255)
+  lastNameBilling     String? @db.VarChar(255)
+  lastName2Billing    String? @db.VarChar(255)
   address             String? @db.VarChar(255)
-  phone               String  @unique @db.VarChar(30)
+  phone               String? @db.VarChar(30)
+  // companyName         String?
+  sendToSap           Boolean?
+  messageError        String? @db.Text() @default("")
+  cardType            String? // es igual source
+  groupCode           String?
+  payTermsGrpCode     String?
+  salesPersonCode     String?
+  U_HBT_RegTrib       String?
+  U_HBT_TipDoc        String? // es igual identification type
+  U_HBT_MunMed        String? 
+  U_HBT_TipEnt        String? // es igual a type
+  U_HBT_Nombres       String?
+  U_HBT_Apellido1     String?
+  U_HBT_Apellido2     String?
+  U_HBT_Nacional      String?
+  U_HBT_RegFis        String?
+  U_HBT_ResFis        String?
+  U_HBT_MedPag        String?
+  AddressName         String? @default("GENERAL")
+  Street              String?
+  Block               String?
+  ZipCode             String? @default("0")
+  City                String?
+  County              String?
+  Country             String? @default("CO")
+  State               String?
+  AddressType         String? @default("bo_BillTo")
+  BPCode              String?
+  U_HBT_DirMM         String?
+  FederalTaxID        String?
+  project             String?
+  checkSameInfo       Boolean? @default(false)
+  codeUpdated         String?
+  userId              String?
+  checkSameAddress    Boolean? @default(false)
+  addressBilling      String? @db.VarChar(255)
+  CityBilling         String?
+  CountyBilling       String?
+  U_HBT_ActEco        String?
+  user                User? @relation(name: "usercustomer", fields: [userId], references: [id])
   orders              Order[] @relation(name: "ordercustomer")
   createdAt           DateTime @default(now())
   updatedAt           DateTime @updatedAt
 }
 
-enum EnumCustomerType { 
-  NATURAL
-  JURIDICA
-}
+// enum EnumCustomerType { 
+//   PERSONA_NATURAL
+//   PERSONA_JURIDICA
+// }
 
 
 model Order {
   id                  String @default(uuid()) @id
   customerId          String @db.VarChar(100)
-  customer            Customer @relation(name: "ordercustomer", fields: [customerId], references: [id])
-  date                DateTime
-  vatTotal            Float
+  customer            Customer? @relation(name: "ordercustomer", fields: [customerId], references: [id])
+  date                DateTime @db.Date
+  dueDate             DateTime? @db.Date
+  vatTotal            Float?
   subTotal            Float
   total               Float
-  orderDetails        OrderDetail[] @relation(name: "orderdetailorder")
+  discount            Float?
+  sendToSap           Boolean?
+  integrationId       Int?
+  docNumber           Int?
+  comments            String? @db.Text
+  serie               String?
+  salesPersonCode     String?
+  messageError        String? @db.Text() @default("")
+  statusId            String?
+  status              SettingDetail? @relation(name: "orderstatus", fields: [statusId], references: [id])
+  userId              String?
+  user                User? @relation(name: "userorder", fields: [userId], references: [id])
+  estimatedDate       DateTime? @db.Date
   createdAt           DateTime @default(now())
   updatedAt           DateTime @updatedAt
+  orderDetails        OrderDetail[] @relation(name: "orderdetailorder")
 }
+
+// enum EnumOrderStatus { 
+//   PorCobrar @map("Por_Cobrar")
+//   PagoParcial @map("Pago_Parcial")
+//   Pagado  @map("Pagado")
+// }
 
 model OrderDetail {
   id                  String @default(uuid()) @id
   orderId             String @db.VarChar(100)
-  order               Order @relation(name: "orderdetailorder", fields: [orderId], references: [id])
+  order               Order? @relation(name: "orderdetailorder", fields: [orderId], references: [id], onDelete: Cascade)
+  itemCode            String
   description         String
   aditionalInfo       String
   discount            Float
-  amount              Int
+  amount              Float
   value               Float
   vat                 Float
   project             String
+  wareHouseCode       String?
+  arTaxCode           String?
   createdAt           DateTime @default(now())
   updatedAt           DateTime @updatedAt
 }
@@ -139,18 +216,54 @@ model IntegrationDetail {
 
 model Setting {
   id                  String @default(uuid()) @id
-  name                String
+  name                String @unique
   settingDetail       SettingDetail[] @relation(name: "settingdetailsetting")
   createdAt           DateTime @default(now())
   updatedAt           DateTime @updatedAt
 }
 
 model SettingDetail {
-  id                  String @default(uuid()) @id
-  code                String
-  name                String
-  settingId           String
-  setting             Setting @relation(name: "settingdetailsetting", fields: [settingId], references: [id])
-  createdAt           DateTime @default(now())
-  updatedAt           DateTime @updatedAt
+  id                          String @default(uuid()) @id
+  code                        String
+  name                        String
+  value                       String?
+  value2                      String?
+  settingId                   String
+  setting                     Setting? @relation(name: "settingdetailsetting", fields: [settingId], references: [id], onDelete: Cascade)
+  users                       User[] @relation(name: "usersrolessetting")
+  menuRoles                   MenuRole[] @relation(name: "menurolessetting")
+  customers                   Customer[] @relation(name: "typecustomersetting")
+  customerIdentificationTypes Customer[] @relation(name: "identificationtypesetting")
+  orders                      Order[] @relation(name: "orderstatus")
+  userSellerType              User[] @relation(name: "sellertypesetting")
+  active                      Boolean? @default(true)
+  extendedData                Json?
+  createdAt                   DateTime @default(now())
+  updatedAt                   DateTime @updatedAt
+}
+
+model Items {
+  id                          String @default(uuid()) @id
+  code                        String
+  name                        String
+  price                       Float
+  quantityOnStock             Float
+  quantityOrderedFromVendors  Float
+  quantityOrderedByCustomers  Float
+  arTaxCode                   String?
+  itemsWareHouses             ItemsWareHouse[] @relation(name: "itemitemwarehouse")
+  createdAt                   DateTime @default(now())
+  updatedAt                   DateTime @updatedAt
+}
+
+model ItemsWareHouse {
+  id                          String @default(uuid()) @id
+  itemId                      String
+  item                        Items? @relation(name: "itemitemwarehouse", fields: [itemId], references: [id], onDelete: Cascade)
+  warehouseCode               String
+  warehouseName               String
+  inStock                     Float
+  itemCode                    String?
+  createdAt                   DateTime @default(now())
+  updatedAt                   DateTime @updatedAt
 }
