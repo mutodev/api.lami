@@ -135,6 +135,7 @@ model Customer {
   U_HBT_ActEco        String?
   user                User? @relation(name: "usercustomer", fields: [userId], references: [id])
   orders              Order[] @relation(name: "ordercustomer")
+  pqrs                PQR[] @relation(name: "pqrcustomer")
   createdAt           DateTime @default(now())
   updatedAt           DateTime @updatedAt
 }
@@ -252,6 +253,7 @@ model Items {
   quantityOrderedByCustomers  Float
   arTaxCode                   String?
   itemsWareHouses             ItemsWareHouse[] @relation(name: "itemitemwarehouse")
+  itemsPqrs                   ItemsPQR[] @relation(name: "itemitemspqrs")
   createdAt                   DateTime @default(now())
   updatedAt                   DateTime @updatedAt
 }
@@ -267,3 +269,31 @@ model ItemsWareHouse {
   createdAt                   DateTime @default(now())
   updatedAt                   DateTime @updatedAt
 }
+
+model PQR {
+  id              String @default(uuid()) @id
+  type            String
+  documentType    String
+  identification  String
+  customerId      String? @db.VarChar(100)
+  title           String?
+  name            String?
+  descripction    String? @db.Text
+  celular         String?
+  email           String?
+  customer        Customer? @relation(name: "pqrcustomer", fields: [customerId], references: [id])
+  itemsPqrs       ItemsPQR[] @relation(name: "pqritems")
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+}
+
+model ItemsPQR {
+  id            String @default(uuid()) @id
+  pqrId         String? @db.VarChar(100)
+  pqrs          PQR? @relation(name: "pqritems", fields: [pqrId], references: [id])
+  itemId        String? @db.VarChar(100)
+  items         Items? @relation(name: "itemitemspqrs", fields: [itemId], references: [id])
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+}
+
