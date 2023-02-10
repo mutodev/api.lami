@@ -39,7 +39,7 @@ async function bootstrap() {
 
   app.useGlobalInterceptors(new ErrorsInterceptor(), new ResponseInterceptor());
 
-  await app.listen(1202);
+  await app.listen(process.env.PORT || 1202);
 
   const appMS: INestMicroservice = await NestFactory.createMicroservice<MicroserviceOptions>(IntegrationSapModule, {
     transport: Transport.REDIS,

@@ -37,7 +37,7 @@ async function bootstrap() {
     }),
   );
 
-  await app.listen(1200);
+  await app.listen(process.env.PORT || 1200);
 
   const appMS: INestMicroservice = await NestFactory.createMicroservice<MicroserviceOptions>(AppModule, {
     transport: Transport.REDIS,
