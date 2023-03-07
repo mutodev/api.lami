@@ -237,6 +237,7 @@ model SettingDetail {
   customerIdentificationTypes Customer[] @relation(name: "identificationtypesetting")
   orders                      Order[] @relation(name: "orderstatus")
   userSellerType              User[] @relation(name: "sellertypesetting")
+  pqrs                        PQR[] @relation(name: "pqridentificationtypesetting")
   active                      Boolean? @default(true)
   extendedData                Json?
   createdAt                   DateTime @default(now())
@@ -271,20 +272,21 @@ model ItemsWareHouse {
 }
 
 model PQR {
-  id              String @default(uuid()) @id
-  type            String
-  documentType    String
-  identification  String
-  customerId      String? @db.VarChar(100)
-  title           String?
-  name            String?
-  descripction    String? @db.Text
-  celular         String?
-  email           String?
-  customer        Customer? @relation(name: "pqrcustomer", fields: [customerId], references: [id])
-  itemsPqrs       ItemsPQR[] @relation(name: "pqritems")
-  createdAt       DateTime @default(now())
-  updatedAt       DateTime @updatedAt
+  id                    String @default(uuid()) @id
+  type                  String
+  identificationTypeId  String @db.VarChar(100)
+  identificationType    SettingDetail? @relation(name: "pqridentificationtypesetting", fields: [identificationTypeId], references: [id])
+  identification        String
+  customerId            String? @db.VarChar(100)
+  title                 String?
+  name                  String?
+  descripction          String? @db.Text
+  celular               String?
+  email                 String?
+  customer              Customer? @relation(name: "pqrcustomer", fields: [customerId], references: [id])
+  itemsPqrs             ItemsPQR[] @relation(name: "pqritems")
+  createdAt             DateTime @default(now())
+  updatedAt             DateTime @updatedAt
 }
 
 model ItemsPQR {
