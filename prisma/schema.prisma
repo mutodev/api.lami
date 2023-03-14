@@ -193,6 +193,7 @@ model OrderDetail {
   project             String
   wareHouseCode       String?
   arTaxCode           String?
+  itemsPqrs           OrderDetailPQR[] @relation(name: "orderdetailorderdetailpqrs")
   createdAt           DateTime @default(now())
   updatedAt           DateTime @updatedAt
 }
@@ -254,7 +255,6 @@ model Items {
   quantityOrderedByCustomers  Float
   arTaxCode                   String?
   itemsWareHouses             ItemsWareHouse[] @relation(name: "itemitemwarehouse")
-  itemsPqrs                   ItemsPQR[] @relation(name: "itemitemspqrs")
   createdAt                   DateTime @default(now())
   updatedAt                   DateTime @updatedAt
 }
@@ -284,17 +284,17 @@ model PQR {
   celular               String?
   email                 String?
   customer              Customer? @relation(name: "pqrcustomer", fields: [customerId], references: [id])
-  itemsPqrs             ItemsPQR[] @relation(name: "pqritems")
+  orderDetailPqrs       OrderDetailPQR[] @relation(name: "pqrorderdetail")
   createdAt             DateTime @default(now())
   updatedAt             DateTime @updatedAt
 }
 
-model ItemsPQR {
+model OrderDetailPQR {
   id            String @default(uuid()) @id
   pqrId         String? @db.VarChar(100)
-  pqrs          PQR? @relation(name: "pqritems", fields: [pqrId], references: [id])
-  itemId        String? @db.VarChar(100)
-  items         Items? @relation(name: "itemitemspqrs", fields: [itemId], references: [id])
+  pqrs          PQR? @relation(name: "pqrorderdetail", fields: [pqrId], references: [id])
+  OrderDetailId String? @db.VarChar(100)
+  orderDetail   OrderDetail? @relation(name: "orderdetailorderdetailpqrs", fields: [OrderDetailId], references: [id])
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
 }

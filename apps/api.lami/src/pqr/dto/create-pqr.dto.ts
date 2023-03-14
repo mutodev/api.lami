@@ -1,57 +1,67 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { IsNotEmpty, IsNumber, IsNumberString, IsOptional, IsString } from "class-validator";
+import { Type } from "class-transformer";
+import { IsArray, IsNotEmpty, IsNumber, IsNumberString, IsOptional, IsString } from "class-validator";
+
+
+export class OrderDetailPqrs {
+
+  @ApiProperty()
+  @IsOptional()
+  @IsString()
+  OrderDetailId?: string;
+  
+}
 
 export class CreatePqrDto {
-
-    @ApiProperty()
-    @IsNotEmpty()
-    @IsString()
-  type 
 
   @ApiProperty()
   @IsNotEmpty()
   @IsString()
-  documentType
+  type: string;
 
-  
-  identification
-  customerId
-  title
-  name
-  descripction    String? @db.Text
-  celular         String?
-  email           String?
-  customer        Customer? @relation(name: "pqrcustomer", fields: [customerId], references: [id])
-  itemsPqrs       ItemsPQR[] @relation(name: "pqritems")
-  createdAt       DateTime @default(now())
-  updatedAt       DateTime @updatedAt
-    @ApiProperty()
-    @IsNotEmpty()
-    @IsString()
-    code: string;
+  @ApiProperty()
+  @IsNotEmpty()
+  @IsString()
+  identificationTypeId: string;
 
-    @ApiProperty()
-    @IsNotEmpty()
-    @IsString()
-    name: string;
+  @ApiProperty()
+  @IsNotEmpty()
+  @IsString()
+  identification: string;
 
-    @ApiProperty()
-    @IsNotEmpty()
-    @IsNumber()
-    price: number;
+  @ApiProperty()
+  @IsOptional()
+  @IsString()
+  customerId?: string;
 
-    @ApiProperty()
-    @IsOptional()
-    @IsNumber()
-    quantityOnStock: number;
+  @ApiProperty()
+  @IsNotEmpty()
+  @IsString()
+  title: string;
 
-    @ApiProperty()
-    @IsOptional()
-    @IsNumber()
-    quantityOrderedFromVendors: number;
+  @ApiProperty()
+  @IsNotEmpty()
+  @IsString()
+  name: string;
 
-    @ApiProperty()
-    @IsOptional()
-    @IsNumber()
-    quantityOrderedByCustomers: number;
+  @ApiProperty()
+  @IsNotEmpty()
+  @IsString()
+  descripction: string;
+
+  @ApiProperty()
+  @IsNotEmpty()
+  @IsString()
+  celular: string
+
+  @ApiProperty()
+  @IsNotEmpty()
+  @IsString()
+  email?: string;
+
+  @ApiProperty({ type: OrderDetailPqrs, isArray: true })
+  @IsArray()
+  @Type(() => OrderDetailPqrs)
+  OrderDetailPqrs: OrderDetailPqrs[];
+
 }

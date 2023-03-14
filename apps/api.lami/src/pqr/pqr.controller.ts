@@ -15,7 +15,13 @@ export class PqrController {
 
   @Post()
   async create(@Request() req: Request, @Body() createPqrDto: CreatePqrDto) {
-    const result = await this.pqrService.create({...createPqrDto});
+    const {OrderDetailPqrs, ...pqr} = createPqrDto;
+    const result = await this.pqrService.create({...pqr, 
+      orderDetailPqrs: {
+        create: [
+          ...(OrderDetailPqrs as any[])
+        ]
+      }});
     return successResponse('Registro guardado satisfactoriamente.', result);
   }
 
@@ -24,8 +30,7 @@ export class PqrController {
     const result = await this.pqrService.findAll({
       page: req['query'].page, 
       perPage: req['query'].perPage,
-      where: {OR: [{name: {contains: req['query'].search || '', mode: 'insensitive'}}, {title: {contains: req['query'].search || '', mode: 'insensitive'}}]},
-      wareHouseCode: req['query'].wareHouseCode
+      where: {OR: [{name: {contains: req['query'].search || '', mode: 'insensitive'}}, {title: {contains: req['query'].search || '', mode: 'insensitive'}}]}
     });
     return successResponse('', result);
   }
@@ -38,7 +43,13 @@ export class PqrController {
 
   @Patch(':id')
   async update(@Param('id') id: string, @Body() updatePqrDto: UpdatePqrDto) {
-    const result = await this.pqrService.update({where: {id}, data: {...updateItemDto}});
+    const {OrderDetailPqrs, ...pqr} = updatePqrDto;
+    const result = await this.pqrService.update({where: {id}, data: {...pqr,
+      orderDetailPqrs: {
+        create: [
+          ...(OrderDetailPqrs as any[])
+        ]
+      }}});
     return successResponse('Registro actualizado satisfactoriamente.', result);
   }
 
