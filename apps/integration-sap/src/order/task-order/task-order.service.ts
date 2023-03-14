@@ -103,6 +103,8 @@ export class TaskOrderService {
                             });
 
                             this.clientProxi.emit('order/change-status-sap', order.id);
+                        } else {
+                            await this.prismaService.order.update({ where: { id: order.id }, data: { sendToSap: false, messageError: result.message } });
                         }
 
                     } catch (error) {

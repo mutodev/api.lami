@@ -193,6 +193,7 @@ model OrderDetail {
   project             String
   wareHouseCode       String?
   arTaxCode           String?
+  itemsPqrs           OrderDetailPQR[] @relation(name: "orderdetailorderdetailpqrs")
   createdAt           DateTime @default(now())
   updatedAt           DateTime @updatedAt
 }
@@ -237,6 +238,7 @@ model SettingDetail {
   customerIdentificationTypes Customer[] @relation(name: "identificationtypesetting")
   orders                      Order[] @relation(name: "orderstatus")
   userSellerType              User[] @relation(name: "sellertypesetting")
+  pqrs                        PQR[] @relation(name: "pqridentificationtypesetting")
   active                      Boolean? @default(true)
   extendedData                Json?
   createdAt                   DateTime @default(now())
@@ -253,7 +255,6 @@ model Items {
   quantityOrderedByCustomers  Float
   arTaxCode                   String?
   itemsWareHouses             ItemsWareHouse[] @relation(name: "itemitemwarehouse")
-  itemsPqrs                   ItemsPQR[] @relation(name: "itemitemspqrs")
   createdAt                   DateTime @default(now())
   updatedAt                   DateTime @updatedAt
 }
@@ -271,28 +272,29 @@ model ItemsWareHouse {
 }
 
 model PQR {
-  id              String @default(uuid()) @id
-  type            String
-  documentType    String
-  identification  String
-  customerId      String? @db.VarChar(100)
-  title           String?
-  name            String?
-  descripction    String? @db.Text
-  celular         String?
-  email           String?
-  customer        Customer? @relation(name: "pqrcustomer", fields: [customerId], references: [id])
-  itemsPqrs       ItemsPQR[] @relation(name: "pqritems")
-  createdAt       DateTime @default(now())
-  updatedAt       DateTime @updatedAt
+  id                    String @default(uuid()) @id
+  type                  String
+  identificationTypeId  String @db.VarChar(100)
+  identificationType    SettingDetail? @relation(name: "pqridentificationtypesetting", fields: [identificationTypeId], references: [id])
+  identification        String
+  customerId            String? @db.VarChar(100)
+  title                 String?
+  name                  String?
+  descripction          String? @db.Text
+  celular               String?
+  email                 String?
+  customer              Customer? @relation(name: "pqrcustomer", fields: [customerId], references: [id])
+  orderDetailPqrs       OrderDetailPQR[] @relation(name: "pqrorderdetail")
+  createdAt             DateTime @default(now())
+  updatedAt             DateTime @updatedAt
 }
 
-model ItemsPQR {
+model OrderDetailPQR {
   id            String @default(uuid()) @id
   pqrId         String? @db.VarChar(100)
-  pqrs          PQR? @relation(name: "pqritems", fields: [pqrId], references: [id])
-  itemId        String? @db.VarChar(100)
-  items         Items? @relation(name: "itemitemspqrs", fields: [itemId], references: [id])
+  pqrs          PQR? @relation(name: "pqrorderdetail", fields: [pqrId], references: [id])
+  OrderDetailId String? @db.VarChar(100)
+  orderDetail   OrderDetail? @relation(name: "orderdetailorderdetailpqrs", fields: [OrderDetailId], references: [id])
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
 }

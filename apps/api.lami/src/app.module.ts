@@ -11,6 +11,7 @@ import { SettingModule } from './setting/setting.module';
 import { AuthModule } from './auth/auth.module';
 import { ItemsModule } from './items/items.module';
 import { ClientsModule, Transport } from '@nestjs/microservices';
+import { PqrModule } from './pqr/pqr.module';
 
 @Module({
   imports: [
@@ -31,7 +32,8 @@ import { ClientsModule, Transport } from '@nestjs/microservices';
           port: 6379
         }
       }
-    ])],
+    ]),
+    PqrModule],
   controllers: [AppController],
   providers: [AppService],
   exports: []
