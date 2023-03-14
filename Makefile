@@ -14,14 +14,7 @@ update-web:
 # sudo sh -x /etc/init.d/weblamiService start
 # tail -f /var/log/lamiservice.log
 # tail -f /var/log/weblamiservice.log
-<<<<<<< HEAD
 # pm2 start dist/apps/integration-sap/main.js --watch
 # pm2 start dist/apps/api.lami/main.js --watch
 # pm2 stop dist/apps/integration-sap/main.js
 # pm2 stop dist/apps/api.lami/main.js
-=======
-# pm2 start dist/apps/api.lami/main.js --watch
-# pm2 start dist/apps/integration-sap/main.js --watch
-# pm2 stop dist/apps/api.lami/main.js
-# pm2 stop dist/apps/integration-sap/main.js
->>>>>>> 84be6281f758d14a2fd64255c947f823386ac2cd
