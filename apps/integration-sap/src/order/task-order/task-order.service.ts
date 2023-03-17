@@ -2,6 +2,7 @@ import { Inject, Injectable, Logger } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
 import { Cron, CronExpression } from '@nestjs/schedule';
 import { AuthService } from '../../auth/auth.service';
+import { EnumCustomerType } from '../../commons/enum-customer-type';
 import { PrismaService } from '../../commons/prisma.service';
 import { ProductService } from '../../product/product.service';
 import { OrderService } from '../order.service';
@@ -58,8 +59,10 @@ export class TaskOrderService {
                         const paymentTerm = await this.prismaService.setting.findUnique({where: {name: 'PayTermsGrpCode'}, include: {settingDetail: {where: {active: true, code: order.customer.payTermsGrpCode}}}});
                         await this.authService.login();
                         const codes = (paymentTerm.settingDetail[0].extendedData as any).codes;
+                        const arrayIdentification = order.customer.identification.split('-');
+                        const carcode = order.customer.typeId == EnumCustomerType.PersonaJuridica.toString() && arrayIdentification[1] && arrayIdentification[2] ? `${arrayIdentification[0]}-${arrayIdentification[1]}` : order.customer.identification;
                         const result = await this.orderService.create({
-                            CardCode: order.customer.identification,
+                            CardCode: carcode,
                             Series: +order.serie,
                             DocDate: order.date.toISOString().replace('T', ' ').substring(0, 10),
                             DocDueDate: order.dueDate.toISOString().replace('T', ' ').substring(0, 10),
