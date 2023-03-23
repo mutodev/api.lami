@@ -208,13 +208,15 @@ export class IntegrationSapService {
                 arTaxCode: item.ArTaxCode,
                 itemsWareHouses: {
                   create: item.ItemWarehouseInfoCollection.map((w) => {
-                    const { WarehouseCode, InStock, ItemCode } = w;
+                    const { WarehouseCode, InStock, ItemCode, Ordered, Committed} = w;
                     let wareHouse = wareHouses.find((a) => a.WarehouseCode == w.WarehouseCode);
                     return {
                       warehouseCode: WarehouseCode,
                       warehouseName: wareHouse.WarehouseName,
                       inStock: InStock,
-                      itemCode: ItemCode
+                      itemCode: ItemCode,
+                      committed: Committed,
+                      ordered: Ordered
                     }
                   })
                 }
