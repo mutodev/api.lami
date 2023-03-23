@@ -266,6 +266,8 @@ model ItemsWareHouse {
   warehouseCode               String
   warehouseName               String
   inStock                     Float
+  committed                   Float?
+  ordered                     Float?
   itemCode                    String?
   createdAt                   DateTime @default(now())
   updatedAt                   DateTime @updatedAt
