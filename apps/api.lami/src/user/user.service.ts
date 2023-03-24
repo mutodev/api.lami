@@ -88,4 +88,14 @@ export class UserService {
     return this.prisma.user.findFirst({where: userWhereInput});
   }
 
+  async updatePassword(id: string, password: string): Promise<Model> {
+    try {
+      const salt = await bcrypt.genSalt(10);
+      const passwordCrypt = bcrypt.hashSync(password, salt);
+      return await this.prisma.user.update({where: {id}, data: {password: passwordCrypt}});
+    } catch (error) {
+      throw error;
+    }
+  }
+
 }

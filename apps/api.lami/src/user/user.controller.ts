@@ -5,6 +5,7 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { JwtAuthGuard } from './../commons/guards';
 import { successResponse } from './../commons/functions';
+import { UpdatePasswordDto } from './dto/update-password.dto';
 
 @ApiTags('USER')
 @ApiBearerAuth()
@@ -38,11 +39,11 @@ export class UserController {
     return successResponse('', result);
   }
 
-  @Patch(':id')
-  async updatePassword(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
-    const {password, ...user} = updateUserDto;
-    const result = await this.userService.update({ where: {id}, data: {...user}});
-    return successResponse('', result);
+  @Patch(':id/update-password')
+  async updatePassword(@Param('id') id: string, @Body() updateUserDto: UpdatePasswordDto) {
+    const {password} = updateUserDto;
+    const result = await this.userService.updatePassword(id, password);
+    return successResponse('La contraseña ha sido cambiada con éxito.', result);
   }
 
   @Delete(':id')
