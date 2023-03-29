@@ -81,8 +81,11 @@ export class OrderService {
       const tax = taxes.settingDetail.find((p) => p.code == d.arTaxCode);
       return {...d, taxObj: tax, projectObj: project};
     });
+    let setting = {}; 
+    if (order.salesPersonCode)
+      setting = await this.prisma.settingDetail.findFirst({where: {setting: {name: 'SalesPersonCode',}, code: order.salesPersonCode}});
     const {orderDetails, ...orderObj} = order;
-    return {...orderObj, orderDetails: detail};
+    return {...orderObj, orderDetails: detail, salesPerson: setting};
   }
 
   update(params: {
