@@ -50,7 +50,9 @@ export class UserService {
             include: {role: true}
           });
           result.data = await Promise.all(result.data.map(async (item) => {
-            const setting = await this.prisma.settingDetail.findFirst({where: {setting: {name: 'SalesPersonCode',}, code: item.salesPersonCode}});
+            let setting = {};
+            if (item.salesPersonCode)
+              setting = await this.prisma.settingDetail.findFirst({where: {setting: {name: 'SalesPersonCode',}, code: item.salesPersonCode}});
             return {...item, salesPerson: setting};
           }))
           return result;
@@ -64,7 +66,9 @@ export class UserService {
         include: {role: true}
       });
       return await Promise.all(result.map(async (item) => {
-        const setting = await this.prisma.settingDetail.findFirst({where: {setting: {name: 'SalesPersonCode',}, code: item.salesPersonCode}});
+        let setting = {};
+        if (item.salesPersonCode)
+          setting = await this.prisma.settingDetail.findFirst({where: {setting: {name: 'SalesPersonCode',}, code: item.salesPersonCode}});
         return {...item, salesPerson: setting};
       }));
     }
