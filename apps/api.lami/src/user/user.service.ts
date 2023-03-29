@@ -30,7 +30,7 @@ export class UserService {
     }
   }
 
-  findAll(params: {
+  async findAll(params: {
     skip?: number;
     take?: number;
     cursor?: Prisma.UserWhereUniqueInput;
@@ -42,15 +42,20 @@ export class UserService {
     const { skip, take, cursor, where, orderBy } = params;
     if (params.page > 0) {
       const paginate = this.paginationService.createPaginator({page: params.page, perPage: params.perPage });
-      return paginate<Model, Prisma.UserFindManyArgs>(
+      const result = await paginate<Model, Prisma.UserFindManyArgs>(
         this.prisma.user, {
             cursor,
             where,
             orderBy,
             include: {role: true}
           });
+          result.data = await Promise.all(result.data.map(async (item) => {
+            const setting = await this.prisma.settingDetail.findFirst({where: {setting: {name: 'SalesPersonCode',}, code: item.salesPersonCode}});
+            return {...item, salesPerson: setting};
+          }))
+          return result;
     } else {
-      return this.prisma.user.findMany({
+      let result = await this.prisma.user.findMany({
         skip,
         take,
         cursor,
@@ -58,6 +63,10 @@ export class UserService {
         orderBy,
         include: {role: true}
       });
+      return await Promise.all(result.map(async (item) => {
+        const setting = await this.prisma.settingDetail.findFirst({where: {setting: {name: 'SalesPersonCode',}, code: item.salesPersonCode}});
+        return {...item, salesPerson: setting};
+      }));
     }
   }
 
