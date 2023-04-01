@@ -1,12 +1,15 @@
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
+import { ClientProxy } from '@nestjs/microservices';
 import { Order as Model, Prisma } from '@prisma/client';
+import { firstValueFrom } from 'rxjs';
 import { PaginationService } from './../commons/services/pagination/pagination.service';
 import { PrismaService } from './../commons/services/prisma.service';
 
 @Injectable()
 export class OrderService {
   constructor(public prisma: PrismaService,
-    private paginationService: PaginationService) { }
+    private paginationService: PaginationService,
+    @Inject('CLIENT_SERVICE') private clientProxi: ClientProxy) { }
 
   async create(data: Prisma.OrderUncheckedCreateInput): Promise<Model> {
     console.log({ data: JSON.stringify(data) })
@@ -104,4 +107,48 @@ export class OrderService {
       where
     });
   }
+
+  async updateFromSap(params: {
+    where: Prisma.OrderWhereUniqueInput;
+  }) {
+
+    const { where } = params;
+    const order = await this.prisma.order.findUnique({
+      where,
+      include: {
+        customer: true,
+        orderDetails: true,
+        status: true
+      }
+    });
+    const result = await this.clientProxi.emit('order/findone', order.integrationId);
+    const orderSap = await firstValueFrom(result);
+    let data = {
+      date: orderSap.DocDate,
+      dueDate: orderSap.DocDueDate,
+      vatTotal: orderSap.VatSum,
+      total: orderSap.DocTotal,
+      discount: orderSap.DiscountPercent,
+      comments: orderSap.Comments,
+      serie: ''+orderSap.Series,
+      salesPersonCode: orderSap.SalesPersonCode,
+      orderDetails: orderSap.DocumentLines.map((item) => {
+        return {
+          itemCode: item.ItemCode,
+          description: item.ItemDescription,
+          discount: item.DiscountPercent,
+          amount: item.Quantity,
+          value: item.UnitPrice,
+          wareHouseCode: item.WarehouseCode,
+          arTaxCode: item.ArTaxCode
+        }
+      })
+    }
+  //  return orderSap;
+    return this.prisma.order.update({
+      data: {...data, sendToSap: null},
+      where
+    });
+  }
+  
 }

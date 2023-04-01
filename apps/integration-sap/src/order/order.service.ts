@@ -28,7 +28,7 @@ export class OrderService {
 
   async findOne(orderCode: string) {
     try {
-      const result = await this.apiHttp.get<any>(`${EnumApis.ORDER}('${orderCode}')?$select=*`);
+      const result = await this.apiHttp.get<any>(`${EnumApis.ORDER}(${orderCode})?$select=*`);
       return result;
     } catch (error) {
       throw error;
@@ -37,7 +37,7 @@ export class OrderService {
 
   async update(orderCode: string, updateOrderDto: UpdateOrderDto) {
     try {      
-      const result = await this.apiHttp.patch<any>(`${EnumApis.ORDER}('${orderCode}')`, {...updateOrderDto});
+      const result = await this.apiHttp.patch<any>(`${EnumApis.ORDER}(${orderCode})`, {...updateOrderDto});
       return result;
     } catch (error) {
       throw error;

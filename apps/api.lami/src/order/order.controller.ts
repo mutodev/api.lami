@@ -15,7 +15,7 @@ import { CustomerService } from '../customer/customer.service';
 
 @ApiTags('ORDER')
 @ApiBearerAuth()
-@UseGuards(JwtAuthGuard)
+// @UseGuards(JwtAuthGuard)
 @Controller('order')
 export class OrderController {
   constructor(private readonly orderService: OrderService,
@@ -46,7 +46,8 @@ export class OrderController {
 
   @Get(':id')
   async findOne(@Param('id') id: string) {
-    const result = await this.orderService.findOne({id});
+    return await this.orderService.updateFromSap({where: {id}});
+    const result = await this.orderService.findOne({id});    
     return successResponse('', result);
   }
 
