@@ -15,7 +15,7 @@ import { CustomerService } from '../customer/customer.service';
 
 @ApiTags('ORDER')
 @ApiBearerAuth()
-// @UseGuards(JwtAuthGuard)
+@UseGuards(JwtAuthGuard)
 @Controller('order')
 export class OrderController {
   constructor(private readonly orderService: OrderService,
