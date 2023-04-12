@@ -46,7 +46,7 @@ export class OrderController {
 
   @Get(':id')
   async findOne(@Param('id') id: string) {
-    return await this.orderService.updateFromSap({where: {id}});
+    await this.orderService.updateFromSap({where: {id}});
     const result = await this.orderService.findOne({id});    
     return successResponse('', result);
   }

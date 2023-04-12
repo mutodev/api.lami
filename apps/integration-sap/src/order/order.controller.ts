@@ -2,11 +2,14 @@ import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/commo
 import { OrderService } from './order.service';
 import { CreateOrderDto } from './dto/create-order.dto';
 import { UpdateOrderDto } from './dto/update-order.dto';
-import { Ctx, MessagePattern, Payload, RedisContext } from '@nestjs/microservices';
+import { Ctx, EventPattern, MessagePattern, Payload, RedisContext } from '@nestjs/microservices';
+import { AuthService } from '../auth/auth.service';
+import { from } from 'rxjs';
 
 @Controller('order')
 export class OrderController {
-  constructor(private readonly orderService: OrderService) {}
+  constructor(private readonly orderService: OrderService,
+    private authService: AuthService) {}
 
   @Post()
   create(@Body() createOrderDto: CreateOrderDto) {
@@ -19,8 +22,10 @@ export class OrderController {
   }
 
   @MessagePattern('order/findone')
-  findOne(@Payload() orderCode: string, @Ctx() context: RedisContext) {
-    return this.orderService.findOne(orderCode);
+  async findOne(@Payload() orderCode: string, @Ctx() context: RedisContext) {
+    await this.authService.login();
+    const result = await this.orderService.findOne(orderCode);
+    return result;
   }
 
   @Patch(':id')

@@ -121,34 +121,43 @@ export class OrderService {
         status: true
       }
     });
-    const result = await this.clientProxi.emit('order/findone', order.integrationId);
+    const result = await this.clientProxi.send('order/findone', order.integrationId);    
     const orderSap = await firstValueFrom(result);
+    console.log({orderSap})
     let data = {
-      date: orderSap.DocDate,
-      dueDate: orderSap.DocDueDate,
+      date: new Date(orderSap.DocDate),
+      dueDate: new Date(orderSap.DocDueDate),
       vatTotal: orderSap.VatSum,
       total: orderSap.DocTotal,
       discount: orderSap.DiscountPercent,
       comments: orderSap.Comments,
       serie: ''+orderSap.Series,
-      salesPersonCode: orderSap.SalesPersonCode,
-      orderDetails: orderSap.DocumentLines.map((item) => {
-        return {
-          itemCode: item.ItemCode,
-          description: item.ItemDescription,
-          discount: item.DiscountPercent,
-          amount: item.Quantity,
-          value: item.UnitPrice,
-          wareHouseCode: item.WarehouseCode,
-          arTaxCode: item.ArTaxCode
-        }
-      })
+      salesPersonCode: ''+orderSap.SalesPersonCode,
+      // orderDetails: 
     }
   //  return orderSap;
-    return this.prisma.order.update({
+    await this.prisma.order.update({
       data: {...data, sendToSap: null},
       where
     });
+
+    await Promise.all(orderSap.DocumentLines.map(async (item) => {
+      const data:any = {
+        orderId: order.id,
+        itemCode: item.ItemCode,
+        description: item.ItemDescription,
+        discount: item.DiscountPercent,
+        amount: item.Quantity,
+        value: item.UnitPrice,
+        wareHouseCode: item.WarehouseCode,
+        arTaxCode: item.ArTaxCode || '',
+        vat: item.TaxTotal,
+        project: item.ProjectCode,
+        aditionalInfo: ''
+      };
+      await this.prisma.orderDetail.create({data});
+    }));
+
   }
   
 }
