@@ -141,6 +141,7 @@ export class OrderService {
       where
     });
 
+    await this.prisma.orderDetail.deleteMany({where: {orderId: order.id}});
     await Promise.all(orderSap.DocumentLines.map(async (item) => {
       const data:any = {
         orderId: order.id,
