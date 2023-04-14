@@ -196,32 +196,36 @@ export class IntegrationSapService {
       if (result?.data && result?.data?.value && result?.data?.value?.length > 0)
         await Promise.all(result.data.value.map(async (item) => {
           if (item.SalesItem == 'tYES' && item.Valid === 'tYES') {
-            let price = item.ItemPrices.find((a) => a.PriceList == 1);
-            await this.prismaService.items.create({
-              data: {
-                name: item.ItemName,
-                code: item.ItemCode,
-                price: price ? price.Price : 0,
-                quantityOnStock: item.QuantityOnStock,
-                quantityOrderedFromVendors: item.QuantityOrderedFromVendors,
-                quantityOrderedByCustomers: item.QuantityOrderedByCustomers,
-                arTaxCode: item.ArTaxCode,
-                itemsWareHouses: {
-                  create: item.ItemWarehouseInfoCollection.map((w) => {
-                    const { WarehouseCode, InStock, ItemCode, Ordered, Committed} = w;
-                    let wareHouse = wareHouses.find((a) => a.WarehouseCode == w.WarehouseCode);
-                    return {
-                      warehouseCode: WarehouseCode,
-                      warehouseName: wareHouse.WarehouseName,
-                      inStock: InStock,
-                      itemCode: ItemCode,
-                      committed: Committed,
-                      ordered: Ordered
-                    }
-                  })
+            try {
+              let price = item.ItemPrices.find((a) => a.PriceList == 1);
+              await this.prismaService.items.create({
+                data: {
+                  name: item.ItemName,
+                  code: item.ItemCode,
+                  price: price ? price.Price : 0,
+                  quantityOnStock: item.QuantityOnStock,
+                  quantityOrderedFromVendors: item.QuantityOrderedFromVendors,
+                  quantityOrderedByCustomers: item.QuantityOrderedByCustomers,
+                  arTaxCode: item.ArTaxCode,
+                  itemsWareHouses: {
+                    create: item.ItemWarehouseInfoCollection.map((w) => {
+                      const { WarehouseCode, InStock, ItemCode, Ordered, Committed} = w;
+                      let wareHouse = wareHouses.find((a) => a.WarehouseCode == w.WarehouseCode);
+                      return {
+                        warehouseCode: WarehouseCode,
+                        warehouseName: wareHouse.WarehouseName,
+                        inStock: InStock,
+                        itemCode: ItemCode,
+                        committed: Committed,
+                        ordered: Ordered
+                      }
+                    })
+                  }
                 }
-              }
-            });
+              });
+            } catch (error) {
+              console.error({error});
+            }           
           }
         }));
     }

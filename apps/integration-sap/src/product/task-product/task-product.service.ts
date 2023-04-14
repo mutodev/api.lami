@@ -71,7 +71,7 @@ export class TaskProductService {
         }
     }
 
-    @Cron(CronExpression.EVERY_DAY_AT_4PM)
+    @Cron(CronExpression.EVERY_DAY_AT_9PM)
     // @Cron(CronExpression.EVERY_10_SECONDS)
     async handleCron4PM() {
         try {
