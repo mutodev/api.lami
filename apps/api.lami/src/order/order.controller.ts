@@ -12,6 +12,7 @@ import { Ctx, EventPattern, MessagePattern, Payload, RedisContext } from '@nestj
 import { seeEventOrderStream } from '../commons/streams/actions-order';
 import { filter, Observable } from 'rxjs';
 import { CustomerService } from '../customer/customer.service';
+import { SearchOrderDto } from './dto/search-order.dto';
 
 @ApiTags('ORDER')
 @ApiBearerAuth()
@@ -92,5 +93,15 @@ export class OrderController {
 			console.log({ error });
 		}
 	}
+
+  @Get('get/sales-and-credit-notes')
+  async getSalesAndCreditNotes(@Req() req, @Query() searchOrderDto: SearchOrderDto) {
+    return await this.orderService.getOrdersAndCreditNotes(searchOrderDto.startDate, searchOrderDto.endDate); 
+  }
+
+  @Get('get/open-orders')
+  async getOpenOrders(@Req() req, @Query() searchOrderDto: SearchOrderDto) {
+    return await this.orderService.getOpenOrders(searchOrderDto.startDate, searchOrderDto.endDate);
+  }
 
 }

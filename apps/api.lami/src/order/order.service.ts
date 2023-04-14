@@ -123,7 +123,7 @@ export class OrderService {
     });
     const result = await this.clientProxi.send('order/findone', order.integrationId);    
     const orderSap = await firstValueFrom(result);
-    console.log({orderSap})
+    // console.log({orderSap})
     let data = {
       date: new Date(orderSap.DocDate),
       dueDate: new Date(orderSap.DocDueDate),
@@ -161,4 +161,14 @@ export class OrderService {
 
   }
   
+  async getOrdersAndCreditNotes(startDate: string, endDate: string) {
+    const result = await this.clientProxi.send('order/findopenorders', {startDate, endDate});    
+    return await firstValueFrom(result);    
+  }
+
+  async getOpenOrders(startDate: string, endDate: string) {
+    const result = await this.clientProxi.send('order/findordersandcreditnotes', {startDate, endDate});    
+    return await firstValueFrom(result);
+  }
+
 }

@@ -37,4 +37,19 @@ export class OrderController {
   remove(@Param('id') id: string) {
     return this.orderService.remove(id);
   }
+
+  @MessagePattern('order/findopenorders')
+  async findOpenOrder(@Payload() payload: {startDate: string, endDate: string}, @Ctx() context: RedisContext) {
+    await this.authService.login();
+    const result = await this.orderService.getOpenOrders(payload.startDate, payload.endDate);
+    return result;
+  }
+
+  @MessagePattern('order/findordersandcreditnotes')
+  async findOrdersAndCreditNotes(@Payload() payload: {startDate: string, endDate: string}, @Ctx() context: RedisContext) {
+    await this.authService.login();
+    const result = await this.orderService.getOrdersAndCreditNotes(payload.startDate, payload.endDate);
+    return result;
+  }
+
 }
