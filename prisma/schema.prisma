@@ -190,7 +190,7 @@ model OrderDetail {
   amount              Float
   value               Float
   vat                 Float
-  project             String
+  project             String?
   wareHouseCode       String?
   arTaxCode           String?
   itemsPqrs           OrderDetailPQR[] @relation(name: "orderdetailorderdetailpqrs")
