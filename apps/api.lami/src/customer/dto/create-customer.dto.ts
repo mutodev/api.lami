@@ -76,9 +76,20 @@ export class CreateCustomerDto {
 
     @ApiProperty()
     @IsOptional()
+    @IsString()
+    address2?: string;
+
+    @ApiProperty()
+    @IsOptional()
     @MaxLength(30, {message: 'La cantidad de caracteres maximos permitodos en el telefón son 30.'})
     @IsString()
     phone?: string;
+
+    @ApiProperty()
+    @IsOptional()
+    @MaxLength(30, {message: 'La cantidad de caracteres maximos permitodos en el telefón son 30.'})
+    @IsString()
+    phone2?: string;
 
     @ApiProperty()
     @IsOptional()
