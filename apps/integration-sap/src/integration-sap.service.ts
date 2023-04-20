@@ -274,4 +274,49 @@ export class IntegrationSapService {
     return 'Migrado';
   }
 
+  async migrateSeries() {
+    await this.authService.login();
+    let hasItems = true;
+    let result: any;
+    await this.prismaService.setting.deleteMany({ where: { name: 'SERIES' } });
+    const setting = await this.prismaService.setting.create({
+      data: { name: 'SERIES' }
+    });
+   
+    while (hasItems) {
+      if (!result) {
+        result = await this.apiHttp.post<any>(`/SeriesService_GetDocumentSeries`, {
+          "DocumentTypeParams": {
+              "Document": "17",
+         }
+      });
+      } else {
+        if (result.data["odata.nextLink"]) {
+          result = await this.apiHttp.post<any>(`/${result.data["odata.nextLink"]}`,{
+            "DocumentTypeParams": {
+                "Document": "17",
+           }
+        });
+        } else {
+          hasItems = false;
+          break;
+        }
+      }
+      
+      await Promise.all(result.data.value.map(async (item) => {       
+        const city = item.Remarks.toLowerCase().includes('barranquilla') ? 'Barranquilla' : item.Remarks.toLowerCase().includes('valledupar') ? 'Valledupar' : item.Remarks.toLowerCase().includes('cartagena') ? 'Cartagena' : item.Remarks.toLowerCase();
+        await this.prismaService.settingDetail.create({
+          data: {
+            name: item.Name,
+            code: item.Series + "",
+            settingId: setting.id,
+            extendedData: {cities: [city]},
+            active: true
+          }
+        });        
+      }));
+    }
+    return 'Migrado';
+  }
+
 }

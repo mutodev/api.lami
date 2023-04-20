@@ -4,5 +4,5 @@ export enum EnumApis {
     ORDER = '/Orders',
     ITEM = '/Items',
     WAREHOUSE = '/Warehouses',
-    SERIES = '/CertificateSeries'
+    SERIES = '/SeriesService_GetDocumentSeries'
 }

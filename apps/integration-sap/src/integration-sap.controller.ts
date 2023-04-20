@@ -30,4 +30,9 @@ export class IntegrationSapController {
     return await this.integrationSapService.migrateProject();
   }
 
+  @Get('migrateSeries')
+  async migrateSeries() {
+    return await this.integrationSapService.migrateSeries();
+  }
+
 }
