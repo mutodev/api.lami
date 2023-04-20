@@ -4,5 +4,5 @@ export enum EnumApis {
     ORDER = '/Orders',
     ITEM = '/Items',
     WAREHOUSE = '/Warehouses',
-    SERIES = '/CertificateSeries'
+    SERIES = '/$metadata#Collection(SAPB1.Series)'
 }

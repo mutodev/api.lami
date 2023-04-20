@@ -21,14 +21,14 @@ export class SerieService {
 
   async findAll() {
     await this.authService.login();
-    const result = await this.apiHttp.get<any>(`${EnumApis.SERIES}?$select=*`);
+    const result = await this.apiHttp.get<any>(`${EnumApis.SERIES}`);
     return result;
   }
 
   async findOne(serieCode: string) {
     try {
       await this.authService.login();
-      const result = await this.apiHttp.get<any>(`${EnumApis.SERIES}('${serieCode}')?$select=*`);
+      const result = await this.apiHttp.get<any>(`${EnumApis.SERIES}('${serieCode}')`);
       return result;
     } catch (error) {
       throw error;
