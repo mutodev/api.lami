@@ -285,10 +285,18 @@ export class IntegrationSapService {
    
     while (hasItems) {
       if (!result) {
-        result = await this.getData(`/$metadata#Collection(SAPB1.Series)`);
+        result = await this.apiHttp.post<any>(`/SeriesService_GetDocumentSeries`, {
+          "DocumentTypeParams": {
+              "Document": "17",
+         }
+      });
       } else {
         if (result.data["odata.nextLink"]) {
-          result = await this.getData(`/${result.data["odata.nextLink"]}`);
+          result = await this.apiHttp.post<any>(`/${result.data["odata.nextLink"]}`,{
+            "DocumentTypeParams": {
+                "Document": "17",
+           }
+        });
         } else {
           hasItems = false;
           break;
