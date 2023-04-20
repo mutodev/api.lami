@@ -139,7 +139,7 @@ export class OrderService {
     }
   //  return orderSap;
     await this.prisma.order.update({
-      data: {...data, sendToSap: null},
+      data: {...data, sendToSap: order.sendToSap},
       where
     });
 
