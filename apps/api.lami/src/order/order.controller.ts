@@ -9,7 +9,7 @@ import { ItemsService } from '../items/items.service';
 import { EnumOrderStatus } from '../commons/enums/enum-order-status';
 import { Public } from '../commons/decorators';
 import { Ctx, EventPattern, MessagePattern, Payload, RedisContext } from '@nestjs/microservices';
-import { seeEventOrderStream } from '../commons/streams/actions-order';
+import { seeEventOrderCreatedStream, seeEventOrderStream } from '../commons/streams/actions-order';
 import { filter, Observable } from 'rxjs';
 import { CustomerService } from '../customer/customer.service';
 import { SearchOrderDto } from './dto/search-order.dto';
@@ -47,7 +47,11 @@ export class OrderController {
 
   @Get(':id')
   async findOne(@Param('id') id: string) {
-    await this.orderService.updateFromSap({where: {id}});
+    try {
+      await this.orderService.updateFromSap({where: {id}});
+    } catch (error) {
+      console.log('order/findOne', {error});
+    }    
     const result = await this.orderService.findOne({id});    
     return successResponse('', result);
   }
@@ -105,5 +109,25 @@ export class OrderController {
     const result = await this.orderService.getOpenOrders(searchOrderDto.startDate, searchOrderDto.endDate);
     return successResponse('', result);
   }
+
+  @Public()
+  @EventPattern('order/get-order-created')
+  async getOrderCreated(@Payload() order: any, @Ctx() context: RedisContext): Promise<any> {
+    try {
+      seeEventOrderCreatedStream.next({data: order});
+    return null;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  @Sse('sse/order-created')
+	seeEventOrderCreated(@Req() req, @Query('token') token: string): Observable<MessageEvent> {
+		try {
+      return seeEventOrderCreatedStream.pipe(filter((data) => data.data.userId === req.user.id));
+		} catch (error) {
+			console.log({ error });
+		}
+	}
 
 }

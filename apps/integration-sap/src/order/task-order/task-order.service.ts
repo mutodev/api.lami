@@ -92,7 +92,7 @@ export class TaskOrderService {
                         console.log('respuesta crear order', { result })
                         if (result.status === 201) {
                             order.sendToSap = true;
-                            await this.prismaService.order.update({ where: { id: order.id }, data: { sendToSap: true, docNumber: result.data.DocNum, integrationId: result.data.DocEntry } });
+                            const orderUpdate = await this.prismaService.order.update({ where: { id: order.id }, data: { sendToSap: true, docNumber: result.data.DocNum, integrationId: result.data.DocEntry } });
                              
                             order.orderDetails.map(async (detail) => {
                                 try {
@@ -106,6 +106,7 @@ export class TaskOrderService {
                             });
 
                             this.clientProxi.emit('order/change-status-sap', order.id);
+                            this.clientProxi.emit('order/get-order-created', orderUpdate);
                         } else {
                             await this.prismaService.order.update({ where: { id: order.id }, data: { sendToSap: false, messageError: result.message } });
                         }

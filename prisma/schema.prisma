@@ -93,7 +93,9 @@ model Customer {
   lastNameBilling     String? @db.VarChar(255)
   lastName2Billing    String? @db.VarChar(255)
   address             String? @db.VarChar(255)
+  address2            String? @db.VarChar(255)
   phone               String? @db.VarChar(30)
+  phone2              String? @db.VarChar(30)
   // companyName         String?
   sendToSap           Boolean?
   messageError        String? @db.Text() @default("")
