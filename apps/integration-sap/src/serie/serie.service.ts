@@ -21,7 +21,11 @@ export class SerieService {
 
   async findAll() {
     await this.authService.login();
-    const result = await this.apiHttp.get<any>(`${EnumApis.SERIES}`);
+    const result = await this.apiHttp.post<any>(`${EnumApis.SERIES}`, {
+      "DocumentTypeParams": {
+          "Document": "17",
+     }
+  });
     return result;
   }
 
