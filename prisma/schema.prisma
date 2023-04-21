@@ -303,3 +303,26 @@ model OrderDetailPQR {
   updatedAt     DateTime @updatedAt
 }
 
+
+model Prices {
+  id            String @default(uuid()) @id
+  code          String? @db.VarChar(100)
+  name          String? @db.VarChar(150)
+  value         Float
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+}
+
+model Stores {
+  id            String @default(uuid()) @id
+  code          String? @db.VarChar(100)
+  name          String? @db.VarChar(150)
+  address       String?
+  phoneNumber   String?
+  email         String? @db.VarChar(150)
+  city          String? @db.VarChar(150)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+}
+
+
