@@ -325,4 +325,13 @@ model Stores {
   updatedAt     DateTime @updatedAt
 }
 
+model Neighborhood {
+  id            String @default(uuid()) @id
+  name          String @db.VarChar(150)
+  state         String
+  city          String
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+}
+
 
