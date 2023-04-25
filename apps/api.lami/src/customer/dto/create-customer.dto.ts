@@ -196,6 +196,11 @@ export class CreateCustomerDto {
     @ApiProperty()
     @IsString()
     @ValidateIf((item) => item.typeId === EnumCustomerType.PersonaJuridica)
-    @IsNotEmpty({message: 'La actividad econicmica es requerida.'})
+    @IsNotEmpty({message: 'La actividad economica es requerida.'})
     U_HBT_ActEco?: string;
+
+    @ApiProperty()
+    @IsString()
+    @IsOptional()
+    neighborhoodId?: string;
 }
