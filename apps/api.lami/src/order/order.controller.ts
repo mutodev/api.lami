@@ -100,13 +100,13 @@ export class OrderController {
 
   @Get('get/sales-and-credit-notes')
   async getSalesAndCreditNotes(@Req() req, @Query() searchOrderDto: SearchOrderDto) {
-    const result = await this.orderService.getOrdersAndCreditNotes(searchOrderDto.startDate, searchOrderDto.endDate); 
+    const result = await this.orderService.getOrdersAndCreditNotes(searchOrderDto.startDate, searchOrderDto.endDate, req.user.salesPersonCode); 
     return successResponse('', result);
   }
 
   @Get('get/open-orders')
   async getOpenOrders(@Req() req, @Query() searchOrderDto: SearchOrderDto) {
-    const result = await this.orderService.getOpenOrders(searchOrderDto.startDate, searchOrderDto.endDate);
+    const result = await this.orderService.getOpenOrders(searchOrderDto.startDate, searchOrderDto.endDate, req.user.salesPersonCode);
     return successResponse('', result);
   }
 

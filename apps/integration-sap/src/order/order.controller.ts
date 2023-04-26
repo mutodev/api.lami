@@ -39,16 +39,16 @@ export class OrderController {
   }
 
   @MessagePattern('order/findopenorders')
-  async findOpenOrder(@Payload() payload: {startDate: string, endDate: string}, @Ctx() context: RedisContext) {
+  async findOpenOrder(@Payload() payload: {startDate: string, endDate: string, salesPersonCode: string}, @Ctx() context: RedisContext) {
     await this.authService.login();
-    const result = await this.orderService.getOpenOrders(payload.startDate, payload.endDate);
+    const result = await this.orderService.getOpenOrders(payload.startDate, payload.endDate, payload.salesPersonCode);
     return result;
   }
 
   @MessagePattern('order/findordersandcreditnotes')
-  async findOrdersAndCreditNotes(@Payload() payload: {startDate: string, endDate: string}, @Ctx() context: RedisContext) {
+  async findOrdersAndCreditNotes(@Payload() payload: {startDate: string, endDate: string, salesPersonCode: string}, @Ctx() context: RedisContext) {
     await this.authService.login();
-    const result = await this.orderService.getOrdersAndCreditNotes(payload.startDate, payload.endDate);
+    const result = await this.orderService.getOrdersAndCreditNotes(payload.startDate, payload.endDate, payload.salesPersonCode);
     return result;
   }
 

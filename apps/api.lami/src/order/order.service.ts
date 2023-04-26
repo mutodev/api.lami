@@ -164,13 +164,13 @@ export class OrderService {
 
   }
   
-  async getOrdersAndCreditNotes(startDate: string, endDate: string) {
-    const result = await this.clientProxi.send('order/findordersandcreditnotes', {startDate, endDate});    
+  async getOrdersAndCreditNotes(startDate: string, endDate: string, salesPersonCode: string) {
+    const result = await this.clientProxi.send('order/findordersandcreditnotes', {startDate, endDate, salesPersonCode});    
     return await firstValueFrom(result);    
   }
 
-  async getOpenOrders(startDate: string, endDate: string) {
-    const result = await this.clientProxi.send('order/findopenorders', {startDate, endDate});    
+  async getOpenOrders(startDate: string, endDate: string, salesPersonCode: string) {
+    const result = await this.clientProxi.send('order/findopenorders', {startDate, endDate, salesPersonCode});    
     return await firstValueFrom(result);
   }
 
