@@ -55,7 +55,7 @@ export class OrderService {
     return result;
   }
 
-  async getOrdersAndCreditNotes(startDate: string, endDate: string) {
+  async getOrdersAndCreditNotes(startDate: string, endDate: string, salesPersonCode: string) {
     try {
       
       let hasItems = true;
@@ -65,7 +65,7 @@ export class OrderService {
       while (hasItems) {
         try {
           if (!result) {
-            result = await this.apiHttp.get<any>(`/$crossjoin(Invoices,Invoices/DocumentLines)?$expand=Invoices($select=DocEntry,DocNum,DocNum,DocDate,CardCode,CardName,DocTotal,VatSum,Cancelled,DocumentStatus,Series,SalesPersonCode),Invoices/DocumentLines($select=ItemCode,ItemDescription,LineNum,Quantity)&$filter=Invoices/DocEntry eq Invoices/DocumentLines/DocEntry and Invoices/SalesPersonCode eq 62 and (Invoices/DocDate ge '${startDate}') and (Invoices/DocDate le '${endDate}')`);
+            result = await this.apiHttp.get<any>(`/$crossjoin(Invoices,Invoices/DocumentLines)?$expand=Invoices($select=DocEntry,DocNum,DocNum,DocDate,CardCode,CardName,DocTotal,VatSum,Cancelled,DocumentStatus,Series,SalesPersonCode),Invoices/DocumentLines($select=ItemCode,ItemDescription,LineNum,Quantity)&$filter=Invoices/DocEntry eq Invoices/DocumentLines/DocEntry and Invoices/SalesPersonCode eq ${salesPersonCode} and (Invoices/DocDate ge '${startDate}') and (Invoices/DocDate le '${endDate}')`);
           console.log({result})
           } else {
             if (result.data["odata.nextLink"]) {
@@ -122,7 +122,7 @@ export class OrderService {
       while (hasItems) {
         try {
           if (!result) {
-            result = await this.apiHttp.get<any>(`/CreditNotes?$select=DocNum,DocDate,CardCode,CardName,DocTotal,VatSum,Cancelled,DocumentStatus,Series,SalesPersonCode&$filter=DocDate ge '${startDate}' and DocDate le '${endDate}' and SalesPersonCode eq 62 &$orderby=DocEntry`);
+            result = await this.apiHttp.get<any>(`/CreditNotes?$select=DocNum,DocDate,CardCode,CardName,DocTotal,VatSum,Cancelled,DocumentStatus,Series,SalesPersonCode&$filter=DocDate ge '${startDate}' and DocDate le '${endDate}' and SalesPersonCode eq ${salesPersonCode} &$orderby=DocEntry`);
           } else {
             if (result.data["odata.nextLink"]) {
               result = await this.apiHttp.get<any>(`/${result.data["odata.nextLink"]}`);
@@ -149,7 +149,7 @@ export class OrderService {
     }
   }
 
-  async getOpenOrders(startDate: string, endDate: string) {
+  async getOpenOrders(startDate: string, endDate: string, salesPersonCode: string) {
     try {
       let hasItems = true;
       let result: any;
@@ -157,7 +157,7 @@ export class OrderService {
       while (hasItems) {
         try {
           if (!result) {
-            result = await this.apiHttp.get<any>(`/$crossjoin(Orders,Orders/DocumentLines)?$expand=Orders($select=DocEntry,DocNum,DocDate,CardCode,CardName,DocTotal,VatSum,Cancelled,DocumentStatus,Series,SalesPersonCode),Orders/DocumentLines($select=ItemCode,ItemDescription,LineNum,Quantity)&$filter=Orders/DocEntry eq Orders/DocumentLines/DocEntry and Orders/SalesPersonCode eq 62 and Orders/DocumentStatus eq 'bost_Open'and (Orders/DocDate ge '${startDate}') and (Orders/DocDate le '${endDate}')`);
+            result = await this.apiHttp.get<any>(`/$crossjoin(Orders,Orders/DocumentLines)?$expand=Orders($select=DocEntry,DocNum,DocDate,CardCode,CardName,DocTotal,VatSum,Cancelled,DocumentStatus,Series,SalesPersonCode),Orders/DocumentLines($select=ItemCode,ItemDescription,LineNum,Quantity)&$filter=Orders/DocEntry eq Orders/DocumentLines/DocEntry and Orders/SalesPersonCode eq ${salesPersonCode} and Orders/DocumentStatus eq 'bost_Open'and (Orders/DocDate ge '${startDate}') and (Orders/DocDate le '${endDate}')`);
           } else {
             if (result.data["odata.nextLink"]) {
               result = await this.apiHttp.get<any>(`/${result.data["odata.nextLink"]}`);
@@ -169,7 +169,7 @@ export class OrderService {
 
           if (result?.data && result?.data?.value && result?.data?.value?.length > 0) {
             result.data.value.map(async (item) => {
-              const obj = openOrders.find((ord) => ord.docNum == item.DocNum);
+              const obj = openOrders.find((ord) => ord.docNum?.toString() == item.Orders.DocNum?.toString());
               let itemLines = item["Orders/DocumentLines"];
               if (!obj) {                
                 openOrders.push({

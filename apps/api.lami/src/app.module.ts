@@ -12,6 +12,9 @@ import { AuthModule } from './auth/auth.module';
 import { ItemsModule } from './items/items.module';
 import { ClientsModule, Transport } from '@nestjs/microservices';
 import { PqrModule } from './pqr/pqr.module';
+import { StoreModule } from './store/store.module';
+import { PricesModule } from './prices/prices.module';
+import { NeighborhoodModule } from './neighborhood/neighborhood.module';
 
 @Module({
   imports: [
@@ -33,7 +36,10 @@ import { PqrModule } from './pqr/pqr.module';
         }
       }
     ]),
-    PqrModule],
+    PqrModule,
+    StoreModule,
+    PricesModule,
+    NeighborhoodModule],
   controllers: [AppController],
   providers: [AppService],
   exports: []
