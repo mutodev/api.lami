@@ -169,7 +169,7 @@ export class OrderService {
 
           if (result?.data && result?.data?.value && result?.data?.value?.length > 0) {
             result.data.value.map(async (item) => {
-              const obj = openOrders.find((ord) => ord.docNum == item.DocNum);
+              const obj = openOrders.find((ord) => ord.docNum.toString() == item.DocNum.toString());
               let itemLines = item["Orders/DocumentLines"];
               if (!obj) {                
                 openOrders.push({
