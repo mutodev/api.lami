@@ -202,5 +202,5 @@ export class CreateCustomerDto {
     @ApiProperty()
     @IsString()
     @IsOptional()
-    neighborhoodId?: string;
+    neighborhoodName?: string;
 }

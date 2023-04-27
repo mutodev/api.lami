@@ -122,8 +122,8 @@ model Customer {
   County              String?
   Country             String? @default("CO")
   State               String?
-  neighborhoodId      String?
-  neighborhood        Neighborhood? @relation(name: "neighborhoodcustomer", fields: [neighborhoodId], references: [id])
+  neighborhoodName    String? @default("")
+  // neighborhood        Neighborhood? @relation(name: "neighborhoodcustomer", fields: [neighborhoodId], references: [id])
   AddressType         String? @default("bo_BillTo")
   BPCode              String?
   U_HBT_DirMM         String?
@@ -332,7 +332,7 @@ model Neighborhood {
   name          String @db.VarChar(150)
   state         String
   city          String
-  customers     Customer[] @relation(name: "neighborhoodcustomer")
+  // customers     Customer[] @relation(name: "neighborhoodcustomer")
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
 }
