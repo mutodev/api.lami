@@ -203,4 +203,9 @@ export class CreateCustomerDto {
     @IsString()
     @IsOptional()
     neighborhoodName?: string;
+
+    @ApiProperty()
+    @IsString()
+    @IsOptional()
+    neighborhoodNameBilling?: string;
 }
