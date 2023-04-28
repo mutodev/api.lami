@@ -123,6 +123,7 @@ model Customer {
   Country             String? @default("CO")
   State               String?
   neighborhoodName    String? @default("")
+  neighborhoodNameBilling    String? @default("")
   // neighborhood        Neighborhood? @relation(name: "neighborhoodcustomer", fields: [neighborhoodId], references: [id])
   AddressType         String? @default("bo_BillTo")
   BPCode              String?
