@@ -111,7 +111,7 @@ export class TaskProductService {
                 if (!result) {
                     result = await this.getData(`${EnumApis.ITEM}?$filter=SalesItem eq 'tYES' and Valid eq 'tYES'&$select=ItemCode,ItemName,QuantityOnStock,QuantityOrderedFromVendors,QuantityOrderedByCustomers,ItemPrices,ItemWarehouseInfoCollection,SalesItem,Valid,ArTaxCode`);
                 } else {
-                    if (result.data["odata.nextLink"]) {
+                    if (result?.data && result?.data["odata.nextLink"]) {
                         result = await this.getData(`/${result.data["odata.nextLink"]}`);
                     } else {
                         hasItems = false;

@@ -13,6 +13,7 @@ import { seeEventOrderCreatedStream, seeEventOrderStream } from '../commons/stre
 import { filter, Observable } from 'rxjs';
 import { CustomerService } from '../customer/customer.service';
 import { SearchOrderDto } from './dto/search-order.dto';
+import { EnumCustomerType } from '../commons/enums/enum-customer-type';
 
 @ApiTags('ORDER')
 @ApiBearerAuth()
@@ -26,12 +27,64 @@ export class OrderController {
   @Post()
   async create(@Req() req, @Body() createOrderDto: CreateOrderDto) {
     const {orderDetails, ...order} = createOrderDto;
+    /*let customer = await this.customerService.findOne({id: customerId});
+    if (!customer) {
+      try {
+        const cus = await this.customerService.findFromSap(customerId);
+        const names = cus.CarName.split(' ');
+        const firstName = names[0];
+        const lastName = names[1] || '';
+        const lastName2 = names[2] || '';
+        const address1 = cus.BPAddresses[0];
+        const address2 = cus.BPAddresses[1];
+        customer = await this.customerService.createFromOrder({
+          typeId: EnumCustomerType.PersonaNatural,
+          name: cus.CarName,   
+          identification: cus.CarCode,    
+          email: cus.EmailAddress,
+          firstName: firstName,
+          lastName: lastName,
+          lastName2: lastName2,
+          source: cus.CardType == 'cCustomer' ? 'C' : 'L',
+          address: '',
+          address2: '',
+          phone: cus.Phone1,
+          phone2: cus.Phone2,
+          U_HBT_RegTrib: cus.U_HBT_RegTrib,
+          groupCode: cus.GroupCode,
+          payTermsGrpCode: cus.PayTermsGrpCode,   
+          salesPersonCode: cus.SalesPersonCode,     
+          U_HBT_Nacional: cus.U_HBT_Nacional,
+          U_HBT_RegFis: cus.U_HBT_RegFis,
+          U_HBT_MedPag: cus.U_HBT_MedPag,
+          firstNameBilling: cus.U_HBT_Nombres,
+          lastNameBilling: cus.U_HBT_Apellido1,
+          lastName2Billing: cus.U_HBT_Apellido2,
+          project: '0011',
+          checkSameInfo: false,
+          City: address1?.City,
+          County: address1?.County,
+          addressBilling: address1?.Street,
+          CityBilling: address2?.address2,
+          CountyBilling: address2?.County,
+          checkSameAddress: false,
+          U_HBT_ActEco: cus?.U_HBT_ActEco,
+          neighborhoodName: '',
+          neighborhoodNameBilling: '',
+          userId: req.user.id,
+          sendToSap: true
+        } as any);
+      } catch (error) {
+        console.log({error});
+      }      
+    }
+    createOrderDto.customerId = customer.id;*/
     const customer = await this.customerService.findOne({id: createOrderDto.customerId});
     const details = await Promise.all(orderDetails.map(async (detail) => {
       const item = await this.itemsService.findByCode(detail.itemCode);     
       return {...detail, arTaxCode: item.arTaxCode, project: customer.project || '0022'};
     }));
-    const result = await this.orderService.create({...order, userId: req.user.id, statusId: EnumOrderStatus.PorCobrar, orderDetails: {
+    const result = await this.orderService.create({...order, customerId: createOrderDto.customerId, userId: req.user.id, statusId: EnumOrderStatus.PorCobrar, orderDetails: {
       create: [
         ...(details as any[])
       ]

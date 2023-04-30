@@ -1,7 +1,9 @@
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
+import { ClientProxy } from '@nestjs/microservices';
 import { AuthService } from './auth/auth.service';
 import { ApiHttp } from './commons/api-http.service';
 import { EnumApis } from './commons/enum-apis';
+import { EnumCustomerType } from './commons/enum-customer-type';
 import { convertCity } from './commons/functions';
 import { PrismaService } from './commons/prisma.service';
 
