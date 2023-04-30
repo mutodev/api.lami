@@ -3,6 +3,8 @@ import { ClientProxy } from '@nestjs/microservices';
 import { Cron, CronExpression } from '@nestjs/schedule';
 import { firstValueFrom } from 'rxjs';
 import { AuthService } from '../../auth/auth.service';
+import { ApiHttp } from '../../commons/api-http.service';
+import { EnumApis } from '../../commons/enum-apis';
 import { EnumCustomerType } from '../../commons/enum-customer-type';
 import { PrismaService } from '../../commons/prisma.service';
 import { CustomerService } from '../customer.service';
@@ -15,6 +17,7 @@ export class TaskCustomerService {
     private readonly logger = new Logger(TaskCustomerService.name);
 
     constructor(private prismaService: PrismaService,
+        private apiHttp: ApiHttp,
         private customerService: CustomerService,
         private authService: AuthService,
         @Inject('CLIENT_SERVICE') private clientProxi: ClientProxy) { }
@@ -47,7 +50,7 @@ export class TaskCustomerService {
     async createCustomer() {
         try {
 
-            const customers = await this.prismaService.customer.findMany({ where: {OR: [{sendToSap: false}, {sendToSap: null}] }, include: { type: true, identificationType: true } });
+            const customers = await this.prismaService.customer.findMany({ where: { OR: [{ sendToSap: false }, { sendToSap: null }] }, include: { type: true, identificationType: true } });
 
             if (customers.length > 0) {
                 await Promise.all(customers.map(async (customer) => {
@@ -60,7 +63,7 @@ export class TaskCustomerService {
                         const customerSap = await this.customerService.findOne(carcode);
                         console.log({ customerSap })
                         if (customerSap.status === 404) {
-                           
+
                             const result = await this.customerService.create({
                                 CardCode: carcode,
                                 CardName: customer.typeId == EnumCustomerType.PersonaNatural.toString() ? `${customer.firstName} ${customer.lastName} ${customer.lastName2}` : customer.name,
@@ -199,12 +202,12 @@ export class TaskCustomerService {
                                 carcode,
                                 body
                             );
-                            
-                            console.log({body})
+
+                            console.log({ body })
                             if (result.status === 204) {
                                 customer.sendToSap = true;
                                 await this.prismaService.customer.update({ where: { id: customer.id }, data: { sendToSap: true } });
-                                this.clientProxi.emit('customer/change-status-sap', customer.id);                            
+                                this.clientProxi.emit('customer/change-status-sap', customer.id);
                             }
                         } else {
                             await this.prismaService.customer.update({ where: { id: customer.id }, data: { sendToSap: false, messageError: customerSap.message } });
@@ -225,5 +228,31 @@ export class TaskCustomerService {
         }
     }
 
+
+    @Cron(CronExpression.EVERY_DAY_AT_9PM)
+    // @Cron(CronExpression.EVERY_10_SECONDS)
+    async handleCron4PM() {
+        try {
+            if (!isRunning) {
+                // await this.cacheManager.set('isRunning', 'yes');
+                isRunning = true;
+                console.log({ isRunning });
+                console.log('Start Date handleCron4PM', new Date());
+                await this.customerService.migrateCustomers();
+
+                this.logger.debug('End handleCron4PM queue yet.');
+                console.log('End Date handleCron4PM', new Date());
+                isRunning = false;
+                // await this.cacheManager.set('isRunning', 'no');
+            } else {
+                this.logger.debug('Processing queue yet handleCron4PM.');
+            }
+        } catch (error) {
+            // await this.cacheManager.set('isRunning', 'no');
+            isRunning = false;
+            this.logger.debug('End posting queue yet handleCron4PM.');
+            console.log('End Date handleCron4PM', new Date());
+        }
+    }
 
 }
