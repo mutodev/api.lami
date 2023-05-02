@@ -33,7 +33,7 @@ export class CustomerService {
   async findOne(cardCode: string) {
     try {
       const result = await this.apiHttp.get<any>(`${EnumApis.CUSTOMER}('${cardCode}')?$select=*`);
-      return result.data;
+      return result;
     } catch (error) {
       throw error;
     }
