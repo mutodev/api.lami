@@ -49,7 +49,8 @@ export class CustomerService {
           U_HBT_MunMed,
           codeUpdated: `CL-${identification}`,
           sendToSap: null
-        }
+        },
+        include: {identificationType: true}
       });
     } catch (error) {
       throw error;
