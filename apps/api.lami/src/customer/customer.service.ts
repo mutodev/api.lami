@@ -49,7 +49,8 @@ export class CustomerService {
           U_HBT_MunMed,
           codeUpdated: `CL-${identification}`,
           sendToSap: null
-        }
+        },
+        include: {identificationType: true}
       });
     } catch (error) {
       throw error;
@@ -198,12 +199,12 @@ export class CustomerService {
         await this.prisma.customer.create({
           data: {
             ...customer,
-            identification: identification.includes('CL') ? identification : `CL-${identification}`,
+            identification: identification, //identification.includes('CL') ? identification : `CL-${identification}`,
             cardType: customer.source,
             FederalTaxID: identification?.replace('CL', '')?.replace('-', '')?.trim(),
             name: nameV,
             U_HBT_MunMed: U_HBT_MunMed || '',
-            codeUpdated: identification.includes('CL') ? identification : `CL-${identification}`,
+            codeUpdated: identification//identification.includes('CL') ? identification : `CL-${identification}`,
           }
         });
       }

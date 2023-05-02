@@ -33,7 +33,7 @@ export class CustomerService {
   async findOne(cardCode: string) {
     try {
       const result = await this.apiHttp.get<any>(`${EnumApis.CUSTOMER}('${cardCode}')?$select=*`);
-      return result.data;
+      return result;
     } catch (error) {
       throw error;
     }
@@ -70,7 +70,7 @@ export class CustomerService {
         while (hasItems) {
             try {
                 if (!result) {
-                    result = await this.apiHttp.get<any>(`${EnumApis.CUSTOMER}?$select=CardCode,BPAddresses,CardName,EmailAddress,CardType,Phone1,Phone2,U_HBT_RegTrib,GroupCode,PayTermsGrpCode,SalesPersonCode,U_HBT_Nacional,U_HBT_RegFis,U_HBT_MedPag,U_HBT_Nombres,U_HBT_Apellido1,U_HBT_Apellido2,U_HBT_ActEco`);
+                    result = await this.apiHttp.get<any>(`${EnumApis.CUSTOMER}?$filter=CardType eq 'cLid' or CardType eq 'cCustomer'&$select=CardCode,BPAddresses,CardName,EmailAddress,CardType,Phone1,Phone2,U_HBT_RegTrib,GroupCode,PayTermsGrpCode,SalesPersonCode,U_HBT_Nacional,U_HBT_RegFis,U_HBT_MedPag,U_HBT_Nombres,U_HBT_Apellido1,U_HBT_Apellido2,U_HBT_ActEco`);
                 } else {
                     if (result?.data && result?.data["odata.nextLink"]) {
                         result = await this.apiHttp.get<any>(`/${result.data["odata.nextLink"]}`);

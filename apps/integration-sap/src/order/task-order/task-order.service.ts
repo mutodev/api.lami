@@ -4,6 +4,7 @@ import { Cron, CronExpression } from '@nestjs/schedule';
 import { AuthService } from '../../auth/auth.service';
 import { EnumCustomerType } from '../../commons/enum-customer-type';
 import { PrismaService } from '../../commons/prisma.service';
+import { CustomerService } from '../../customer/customer.service';
 import { ProductService } from '../../product/product.service';
 import { OrderService } from '../order.service';
 
@@ -18,6 +19,7 @@ export class TaskOrderService {
         private orderService: OrderService,
         private productService: ProductService,
         private authService: AuthService,
+        private customerService: CustomerService,
         @Inject('CLIENT_SERVICE') private clientProxi: ClientProxy) { }
 
     @Cron(CronExpression.EVERY_10_SECONDS)
@@ -59,8 +61,20 @@ export class TaskOrderService {
                         const paymentTerm = await this.prismaService.setting.findUnique({where: {name: 'PayTermsGrpCode'}, include: {settingDetail: {where: {active: true, code: order.customer.payTermsGrpCode}}}});
                         await this.authService.login();
                         const codes = (paymentTerm.settingDetail[0].extendedData as any).codes;
-                        const arrayIdentification = order.customer.identification.split('-');
-                        const carcode = order.customer.typeId == EnumCustomerType.PersonaJuridica.toString() && arrayIdentification[1] && arrayIdentification[2] ? `${arrayIdentification[0]}-${arrayIdentification[1]}` : order.customer.identification;
+                        const arrayIdentification = order.customer.identification.split('-');                        
+                        let carcode = order.customer.typeId == EnumCustomerType.PersonaJuridica.toString() && arrayIdentification[1] && arrayIdentification[2] ? `${arrayIdentification[0]}-${arrayIdentification[1]}` : order.customer.identification;
+                        try {
+                            let customerSap = await this.customerService.findOne(carcode);
+                            if (customerSap.status === 200) {
+                                carcode = customerSap.data.CardCode;                                
+                            } else {
+                                let customerSap = await this.customerService.findOne(order.customer.identification);
+                                carcode = customerSap.data.CardCode;
+                            }                            
+                        } catch (error) {
+                            console.log('createOrder', {error});
+                        }
+                        
                         const result = await this.orderService.create({
                             CardCode: carcode,
                             Series: +order.serie,
