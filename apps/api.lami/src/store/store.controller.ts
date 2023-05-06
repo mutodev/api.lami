@@ -37,7 +37,8 @@ export class StoreController {
 
   @Patch(':id')
   async update(@Request() req: Request, @Param('id') id: string, @Body() updateStoreDto: UpdateStoreDto) {
-    const result = this.storeService.update({where: {id}, data: {...updateStoreDto}});
+    console.log({updateStoreDto});
+    const result = await this.storeService.update({where: {id}, data: {...updateStoreDto}});
     return successResponse('Registro actualizado satisfactoriamente.', result);
   }
 

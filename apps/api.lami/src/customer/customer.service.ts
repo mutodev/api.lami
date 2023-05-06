@@ -103,6 +103,7 @@ export class CustomerService {
   async findOne(userWhereUniqueInput: Prisma.CustomerWhereUniqueInput): Promise<Model | null> {
     const result = await this.prisma.customer.findUnique({
       where: userWhereUniqueInput,
+      include: {identificationType: true}
     });
     const { identification, ...data } = result;
     return { ...data, identification: data.source == 'L' ? identification.replace('CL-', '') : identification };
