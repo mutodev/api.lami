@@ -1,7 +1,9 @@
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
+import { ClientProxy } from '@nestjs/microservices';
 import { AuthService } from './auth/auth.service';
 import { ApiHttp } from './commons/api-http.service';
 import { EnumApis } from './commons/enum-apis';
+import { EnumCustomerType } from './commons/enum-customer-type';
 import { convertCity } from './commons/functions';
 import { PrismaService } from './commons/prisma.service';
 
@@ -196,30 +198,36 @@ export class IntegrationSapService {
       if (result?.data && result?.data?.value && result?.data?.value?.length > 0)
         await Promise.all(result.data.value.map(async (item) => {
           if (item.SalesItem == 'tYES' && item.Valid === 'tYES') {
-            let price = item.ItemPrices.find((a) => a.PriceList == 1);
-            await this.prismaService.items.create({
-              data: {
-                name: item.ItemName,
-                code: item.ItemCode,
-                price: price ? price.Price : 0,
-                quantityOnStock: item.QuantityOnStock,
-                quantityOrderedFromVendors: item.QuantityOrderedFromVendors,
-                quantityOrderedByCustomers: item.QuantityOrderedByCustomers,
-                arTaxCode: item.ArTaxCode,
-                itemsWareHouses: {
-                  create: item.ItemWarehouseInfoCollection.map((w) => {
-                    const { WarehouseCode, InStock, ItemCode } = w;
-                    let wareHouse = wareHouses.find((a) => a.WarehouseCode == w.WarehouseCode);
-                    return {
-                      warehouseCode: WarehouseCode,
-                      warehouseName: wareHouse.WarehouseName,
-                      inStock: InStock,
-                      itemCode: ItemCode
-                    }
-                  })
+            try {
+              let price = item.ItemPrices.find((a) => a.PriceList == 1);
+              await this.prismaService.items.create({
+                data: {
+                  name: item.ItemName,
+                  code: item.ItemCode,
+                  price: price ? price.Price : 0,
+                  quantityOnStock: item.QuantityOnStock,
+                  quantityOrderedFromVendors: item.QuantityOrderedFromVendors,
+                  quantityOrderedByCustomers: item.QuantityOrderedByCustomers,
+                  arTaxCode: item.ArTaxCode,
+                  itemsWareHouses: {
+                    create: item.ItemWarehouseInfoCollection.map((w) => {
+                      const { WarehouseCode, InStock, ItemCode, Ordered, Committed} = w;
+                      let wareHouse = wareHouses.find((a) => a.WarehouseCode == w.WarehouseCode);
+                      return {
+                        warehouseCode: WarehouseCode,
+                        warehouseName: wareHouse.WarehouseName,
+                        inStock: InStock,
+                        itemCode: ItemCode,
+                        committed: Committed,
+                        ordered: Ordered
+                      }
+                    })
+                  }
                 }
-              }
-            });
+              });
+            } catch (error) {
+              console.error({error});
+            }           
           }
         }));
     }
@@ -265,6 +273,51 @@ export class IntegrationSapService {
         }
       })
     }));
+    return 'Migrado';
+  }
+
+  async migrateSeries() {
+    await this.authService.login();
+    let hasItems = true;
+    let result: any;
+    await this.prismaService.setting.deleteMany({ where: { name: 'SERIES' } });
+    const setting = await this.prismaService.setting.create({
+      data: { name: 'SERIES' }
+    });
+   
+    while (hasItems) {
+      if (!result) {
+        result = await this.apiHttp.post<any>(`/SeriesService_GetDocumentSeries`, {
+          "DocumentTypeParams": {
+              "Document": "17",
+         }
+      });
+      } else {
+        if (result.data["odata.nextLink"]) {
+          result = await this.apiHttp.post<any>(`/${result.data["odata.nextLink"]}`,{
+            "DocumentTypeParams": {
+                "Document": "17",
+           }
+        });
+        } else {
+          hasItems = false;
+          break;
+        }
+      }
+      
+      await Promise.all(result.data.value.map(async (item) => {       
+        const city = item.Remarks.toLowerCase().includes('barranquilla') ? 'Barranquilla' : item.Remarks.toLowerCase().includes('valledupar') ? 'Valledupar' : item.Remarks.toLowerCase().includes('cartagena') ? 'Cartagena' : item.Remarks.toLowerCase();
+        await this.prismaService.settingDetail.create({
+          data: {
+            name: item.Name,
+            code: item.Series + "",
+            settingId: setting.id,
+            extendedData: {cities: [city]},
+            active: true
+          }
+        });        
+      }));
+    }
     return 'Migrado';
   }
 

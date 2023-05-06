@@ -1,9 +1,11 @@
 import { Controller, Get } from '@nestjs/common';
+import { CustomerService } from './customer/customer.service';
 import { IntegrationSapService } from './integration-sap.service';
 
 @Controller('migration')
 export class IntegrationSapController {
-  constructor(private readonly integrationSapService: IntegrationSapService) {}
+  constructor(private readonly integrationSapService: IntegrationSapService,
+              private readonly customerService: CustomerService) {}
 
   @Get('grupos')
   async migrateGrupos() {
@@ -28,6 +30,16 @@ export class IntegrationSapController {
   @Get('migrateProject')
   async migrateProject() {
     return await this.integrationSapService.migrateProject();
+  }
+
+  @Get('migrateSeries')
+  async migrateSeries() {
+    return await this.integrationSapService.migrateSeries();
+  }
+
+  @Get('migrateCustomers')
+  async migrateCustomers() {
+    return await this.customerService.migrateCustomers();
   }
 
 }

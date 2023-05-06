@@ -5,11 +5,13 @@ import { TaskOrderService } from './task-order/task-order.service';
 import { CommonsModule } from '../commons/commons.module';
 import { AuthModule } from '../auth/auth.module';
 import { ClientsModule, Transport } from '@nestjs/microservices';
+import { CustomerModule } from '../customer/customer.module';
 
 @Module({
   imports: [
     CommonsModule,
     AuthModule,
+    CustomerModule,
     ClientsModule.register([
       {
         name: 'CLIENT_SERVICE',

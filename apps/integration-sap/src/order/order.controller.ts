@@ -2,10 +2,14 @@ import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/commo
 import { OrderService } from './order.service';
 import { CreateOrderDto } from './dto/create-order.dto';
 import { UpdateOrderDto } from './dto/update-order.dto';
+import { Ctx, EventPattern, MessagePattern, Payload, RedisContext } from '@nestjs/microservices';
+import { AuthService } from '../auth/auth.service';
+import { from } from 'rxjs';
 
 @Controller('order')
 export class OrderController {
-  constructor(private readonly orderService: OrderService) {}
+  constructor(private readonly orderService: OrderService,
+    private authService: AuthService) {}
 
   @Post()
   create(@Body() createOrderDto: CreateOrderDto) {
@@ -17,9 +21,11 @@ export class OrderController {
     return this.orderService.findAll();
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.orderService.findOne(id);
+  @MessagePattern('order/findone')
+  async findOne(@Payload() orderCode: string, @Ctx() context: RedisContext) {
+    await this.authService.login();
+    const result = await this.orderService.findOne(orderCode);
+    return result;
   }
 
   @Patch(':id')
@@ -31,4 +37,19 @@ export class OrderController {
   remove(@Param('id') id: string) {
     return this.orderService.remove(id);
   }
+
+  @MessagePattern('order/findopenorders')
+  async findOpenOrder(@Payload() payload: {startDate: string, endDate: string, salesPersonCode: string}, @Ctx() context: RedisContext) {
+    await this.authService.login();
+    const result = await this.orderService.getOpenOrders(payload.startDate, payload.endDate, payload.salesPersonCode);
+    return result;
+  }
+
+  @MessagePattern('order/findordersandcreditnotes')
+  async findOrdersAndCreditNotes(@Payload() payload: {startDate: string, endDate: string, salesPersonCode: string}, @Ctx() context: RedisContext) {
+    await this.authService.login();
+    const result = await this.orderService.getOrdersAndCreditNotes(payload.startDate, payload.endDate, payload.salesPersonCode);
+    return result;
+  }
+
 }

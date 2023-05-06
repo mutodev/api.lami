@@ -10,7 +10,9 @@ export class ApiHttp {
 
     private SessionId: string;
     constructor(private httpService: HttpService,
-        private _env: EasyconfigService) {}
+        private _env: EasyconfigService) {
+          
+        }
 
     async login() {
         const data = JSON.parse(this._env.get('CREDENTIALS_SAP'));

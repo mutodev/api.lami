@@ -76,9 +76,20 @@ export class CreateCustomerDto {
 
     @ApiProperty()
     @IsOptional()
+    @IsString()
+    address2?: string;
+
+    @ApiProperty()
+    @IsOptional()
     @MaxLength(30, {message: 'La cantidad de caracteres maximos permitodos en el telefón son 30.'})
     @IsString()
     phone?: string;
+
+    @ApiProperty()
+    @IsOptional()
+    @MaxLength(30, {message: 'La cantidad de caracteres maximos permitodos en el telefón son 30.'})
+    @IsString()
+    phone2?: string;
 
     @ApiProperty()
     @IsOptional()
@@ -185,6 +196,16 @@ export class CreateCustomerDto {
     @ApiProperty()
     @IsString()
     @ValidateIf((item) => item.typeId === EnumCustomerType.PersonaJuridica)
-    @IsNotEmpty({message: 'La actividad econicmica es requerida.'})
+    @IsNotEmpty({message: 'La actividad economica es requerida.'})
     U_HBT_ActEco?: string;
+
+    @ApiProperty()
+    @IsString()
+    @IsOptional()
+    neighborhoodName?: string;
+
+    @ApiProperty()
+    @IsString()
+    @IsOptional()
+    neighborhoodNameBilling?: string;
 }

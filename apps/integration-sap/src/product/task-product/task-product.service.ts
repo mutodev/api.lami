@@ -71,7 +71,7 @@ export class TaskProductService {
         }
     }
 
-    @Cron(CronExpression.EVERY_DAY_AT_4PM)
+    @Cron(CronExpression.EVERY_DAY_AT_9PM)
     // @Cron(CronExpression.EVERY_10_SECONDS)
     async handleCron4PM() {
         try {
@@ -111,7 +111,7 @@ export class TaskProductService {
                 if (!result) {
                     result = await this.getData(`${EnumApis.ITEM}?$filter=SalesItem eq 'tYES' and Valid eq 'tYES'&$select=ItemCode,ItemName,QuantityOnStock,QuantityOrderedFromVendors,QuantityOrderedByCustomers,ItemPrices,ItemWarehouseInfoCollection,SalesItem,Valid,ArTaxCode`);
                 } else {
-                    if (result.data["odata.nextLink"]) {
+                    if (result?.data && result?.data["odata.nextLink"]) {
                         result = await this.getData(`/${result.data["odata.nextLink"]}`);
                     } else {
                         hasItems = false;
@@ -134,13 +134,15 @@ export class TaskProductService {
                                     arTaxCode: item.ArTaxCode,
                                     itemsWareHouses: {
                                         create: item.ItemWarehouseInfoCollection.map((w) => {
-                                            const { WarehouseCode, InStock, ItemCode } = w;
+                                            const { WarehouseCode, InStock, ItemCode, Committed, Ordered } = w;
                                             let wareHouse = wareHouses.find((a) => a.WarehouseCode == w.WarehouseCode);
                                             return {
                                                 warehouseCode: WarehouseCode,
                                                 warehouseName: wareHouse.WarehouseName,
                                                 inStock: InStock,
-                                                itemCode: ItemCode                                            
+                                                itemCode: ItemCode ,
+                                                committed: Committed,
+                                                ordered: Ordered                                           
                                             }
                                         })
                                     }

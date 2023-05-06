@@ -2,7 +2,9 @@ import { Inject, Injectable, Logger } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
 import { Cron, CronExpression } from '@nestjs/schedule';
 import { AuthService } from '../../auth/auth.service';
+import { EnumCustomerType } from '../../commons/enum-customer-type';
 import { PrismaService } from '../../commons/prisma.service';
+import { CustomerService } from '../../customer/customer.service';
 import { ProductService } from '../../product/product.service';
 import { OrderService } from '../order.service';
 
@@ -17,6 +19,7 @@ export class TaskOrderService {
         private orderService: OrderService,
         private productService: ProductService,
         private authService: AuthService,
+        private customerService: CustomerService,
         @Inject('CLIENT_SERVICE') private clientProxi: ClientProxy) { }
 
     @Cron(CronExpression.EVERY_10_SECONDS)
@@ -58,8 +61,22 @@ export class TaskOrderService {
                         const paymentTerm = await this.prismaService.setting.findUnique({where: {name: 'PayTermsGrpCode'}, include: {settingDetail: {where: {active: true, code: order.customer.payTermsGrpCode}}}});
                         await this.authService.login();
                         const codes = (paymentTerm.settingDetail[0].extendedData as any).codes;
+                        const arrayIdentification = order.customer.identification.split('-');                        
+                        let carcode = order.customer.typeId == EnumCustomerType.PersonaJuridica.toString() && arrayIdentification[1] && arrayIdentification[2] ? `${arrayIdentification[0]}-${arrayIdentification[1]}` : order.customer.identification;
+                        try {
+                            let customerSap = await this.customerService.findOne(carcode);
+                            if (customerSap.status === 200) {
+                                carcode = customerSap.data.CardCode;                                
+                            } else {
+                                let customerSap = await this.customerService.findOne(order.customer.identification);
+                                carcode = customerSap.data.CardCode;
+                            }                            
+                        } catch (error) {
+                            console.log('createOrder', {error});
+                        }
+                        
                         const result = await this.orderService.create({
-                            CardCode: order.customer.identification,
+                            CardCode: carcode,
                             Series: +order.serie,
                             DocDate: order.date.toISOString().replace('T', ' ').substring(0, 10),
                             DocDueDate: order.dueDate.toISOString().replace('T', ' ').substring(0, 10),
@@ -89,7 +106,7 @@ export class TaskOrderService {
                         console.log('respuesta crear order', { result })
                         if (result.status === 201) {
                             order.sendToSap = true;
-                            await this.prismaService.order.update({ where: { id: order.id }, data: { sendToSap: true, docNumber: result.data.DocNum, integrationId: result.data.DocEntry } });
+                            const orderUpdate = await this.prismaService.order.update({ where: { id: order.id }, data: { sendToSap: true, docNumber: result.data.DocNum, integrationId: result.data.DocEntry } });
                              
                             order.orderDetails.map(async (detail) => {
                                 try {
@@ -103,6 +120,7 @@ export class TaskOrderService {
                             });
 
                             this.clientProxi.emit('order/change-status-sap', order.id);
+                            this.clientProxi.emit('order/get-order-created', orderUpdate);
                         } else {
                             await this.prismaService.order.update({ where: { id: order.id }, data: { sendToSap: false, messageError: result.message } });
                         }

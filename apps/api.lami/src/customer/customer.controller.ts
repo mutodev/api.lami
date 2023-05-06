@@ -87,6 +87,12 @@ export class CustomerController {
 		}
 	}
 
+  @Public()
+  @EventPattern('customer/create-from-sap')
+  async createFromIntegration(@Payload() customerData: any, @Ctx() context: RedisContext) {
+    await this.customerService.createFromIntegration(customerData);
+  }
+
   // @Public()
   // @Sse('sse/sse')
   // sse(): Observable<MessageEvent> {

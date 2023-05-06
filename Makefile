@@ -1,5 +1,5 @@
 connect-dev:
-	sudo ssh -i "ssh/lami-dev.pem" ubuntu@52.33.82.104
+	sudo ssh -i "ssh/lami.pem" ubuntu@52.33.82.104
 
 update-api:
 	ssh -i "ssh/Ubuntu-LAMI.pem" ubuntu@52.3.32.125 -y "cd /opt/api.lami ; sudo pkill node ; sudo git pull ; sudo yarn mg ; sudo sh -x /etc/init.d/lamiService start ; tail -f /var/log/lamiservice.log"
