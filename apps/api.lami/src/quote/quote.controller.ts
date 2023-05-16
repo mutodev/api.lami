@@ -56,7 +56,7 @@ export class QuoteController {
     }));
     const result = await this.quoteService.update({
       where: { id }, data: {
-        ...order, userId: req.user.id, orderDetails: {
+        ...order, userId: req.user.id, quoteDetails: {
           create: [
             ...(details as any[])
           ]
