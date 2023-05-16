@@ -12,7 +12,7 @@ export class QuoteService {
   async create(data: Prisma.QuoteUncheckedCreateInput): Promise<Model> {
     console.log({ data: JSON.stringify(data) });
     const quote = await this.prisma.quote.findFirst({
-      orderBy: {createdAt: 'desc'}
+      orderBy: {docNumber: 'desc'}
     });
     let docNumber = quote ? quote.docNumber + 1 : 1;
     return await this.prisma.quote.create({
