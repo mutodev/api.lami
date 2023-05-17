@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>Cotización Lami</title>
+  <style>
+    body {
+      font-family: "Inter var", ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+    }
+
+    h1 {
+      color: blue;
+    }
+
+    p {
+      line-height: 0.5;
+    }
+
+    .Continer {
+      background-color: #fff;
+      border-radius: 25px;
+      margin: auto;
+      max-width: 850px;
+      margin-top: 5%;
+      min-height: 500px;
+      padding: 2%;
+      box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+    }
+
+    .estado {
+      background: #ff00b1;
+      max-width: 106px;
+      text-align: center;
+      margin: -28px -9px -2px -28px;
+      border-top-left-radius: 25px 25px;
+      padding: 1%;
+      border-bottom-right-radius: 25px 25px;
+    }
+
+    #Doc_Info {
+      width: 90%;
+      /* padding: 2%; */
+    }
+
+    .info_r {
+      width: 90%;
+      border-top-left-radius: 25px 25px;
+      border-bottom-left-radius: 25px 25px;
+      background: rgba(128, 128, 128, 0.32); /*#80808052;*/
+      padding: 2%;
+      min-width: 250px;
+      margin-top: 34px;
+      margin-right: -21px;
+      margin-bottom: 20px;
+      color: #1b2674;
+    }
+
+    .info_l, .datos_cliente {
+      font-size: 14px;
+    }
+
+    table.Lista {
+      width: 100%;
+      margin: auto;
+      text-align: center;
+      text-align: left;
+      border-spacing: 0;
+      font-size: 13px;
+    }
+
+    thead {
+      background: grey;
+      color: #fff;
+    }
+
+    thead td {
+      border-bottom: 0px;
+    }
+
+    table.Lista tr,
+    table.Lista {
+      border-bottom: 1px solid;
+    }
+
+    .totales {
+      float: right;
+      font-size: 15px;
+    }
+
+    .Sede {
+      margin-left: 15%;
+      border-left-color: red;
+      border-left: solid 1px white;
+      padding: 2%;
+      padding-left: 14px;
+      font-size: 12px;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="Continer">
+    <div class="estado">Cotización</div>
+
+    <table id="Headerinfo">
+      <tr>
+        <td id="Doc_Info">
+          <div class="info_l">
+            <p style="
+    font-size: 2rem!important;
+">No. <%= data.docNumber %>
+            </p>
+            <p>Fecha de Creación <%=new Intl.DateTimeFormat('es-CO').format(data.date)%>
+            </p>
+            <p>Fecha de vigencia <%=new Intl.DateTimeFormat('es-CO').format(data.dueDate)%>
+            </p>
+            <% if (data.estimatedDate) { %>
+            <p>Fecha de Aprox. Entrega <%=new Intl.DateTimeFormat('es-CO').format(data.estimatedDate)%>
+            </p>
+            <%}%>
+            <br />
+            <p>TOTAL $<%=new Intl.NumberFormat().format(data.total) %>
+            </p>
+          </div>
+          <div class="datos_cliente">
+            <% if(data.customer.typeId=='87345bca-46c0-11ed-88f1-7b765a5d50e1' ) {%>
+              <p>
+                <%= data.customer.firstName + ' ' + data.customer.lastName %>
+              </p>
+              <%}%>
+                <% if(data.customer.typeId=='87345bcb-46c0-11ed-88f1-7b765a5d50e1' ) {%>
+                  <p>
+                    <%= data.customer.name %>
+                  </p>
+                  <%}%>
+                    <p>
+                      <%=data.customer.address %>
+                    </p>
+                    <p>
+                      <%=data.customer.email %>
+                    </p>
+                    <p>
+                      <%=data.customer.phone %>
+                    </p>
+          </div>
+        </td>
+        <td id="Store_Info">
+          <div class="info_r">
+            <img src="https://lami.com.co/wp-content/uploads/2023/05/Marca-Lami.svg" alt="lami" height="60"
+              width="auto" />
+            <div class="Sede">
+              <p>Lami SAS</p>
+              <% if(data.store) {%>
+                <p>
+                  <%=data.store.name%>
+                </p>
+                <p>
+                  <%= data.store.city +', '+ data.store.address %></p>            
+              <p><%= data.email %></p>
+              <%}%>
+            </div>
+          </div>
+        </td>
+      </tr>
+    </table>
+
+    <table class="Lista">
+      <thead>
+        <tr>
+          <td style="width:195px;">Descripción</td>
+          <td>Desc%</td>
+          <td>Cant.</td>
+          <td>Proyecto</td>
+          <td>Imp.</td>
+          <td>Precio</td>
+          <td>Total</td>
+        </tr>
+      </thead>
+      <tbody>
+        <% data.quoteDetails.forEach(item => { %>
+        <tr>
+          <td style="width:195px;">
+            <%=item.description%>
+          </td>
+        <td><%=item.discount || 0%></td>
+        <td><%=item.amount%></td>
+        <td><%=item.projectObj.name%></td>
+        <% if (item.taxObj) { %>
+        <td><%=item.taxObj.value%></td>
+        <%} else {%>
+          <td></td>
+        <%}%>
+        <td>
+          $<%=new Intl.NumberFormat().format(item.value)%>
+        </td>
+        <td>$<%=new Intl.NumberFormat().format(item.value * item.amount) %></td>
+        </tr>
+        <%});%>
+      </tbody>
+    </table>
+
+    <div class="totales">
+      <p>SUBTOTAL $<%=new Intl.NumberFormat().format(data.subTotal)%></p>
+      <p>IMPUESTOS $<%=new Intl.NumberFormat().format(data.vatTotal)%></p>
+      <hr>
+      <p style="
+    font-weight: 500!important;
+">TOTAL $<%=new Intl.NumberFormat().format(data.total)%></p>
+    </div>
+  </div>
+</body>
+
+</html>

@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Req, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Req, UseGuards, Res } from '@nestjs/common';
 import { QuoteService } from './quote.service';
 import { CreateQuoteDto } from './dto/create-quote.dto';
 import { UpdateQuoteDto } from './dto/update-quote.dto';
@@ -7,6 +7,7 @@ import { ItemsService } from '../items/items.service';
 import { CustomerService } from '../customer/customer.service';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { JwtAuthGuard } from '../commons/guards';
+import { Public } from '../commons/decorators';
 
 @ApiTags('QUOTE')
 @ApiBearerAuth()
@@ -72,4 +73,19 @@ export class QuoteController {
     return successResponse('', result);
   }
 
+  @Public()
+  @Get('generate/pdf/:id')
+  async generatePdf(@Param('id') id, @Res() res) {
+    const buffer = await this.quoteService.generatePdf({id});
+    res.set({
+      'Content-Type': 'application/pdf',
+      'Content-Disposition': `inline; filename=quote.pdf`,
+      'Content-Length': buffer.length,
+      // prevent cache
+      'Cache-Control': 'no-cache, no-store, must-revalidate',
+      Pragma: 'no-cache',
+      Expires: 0,
+    });
+    res.end(buffer);
+  }
 }

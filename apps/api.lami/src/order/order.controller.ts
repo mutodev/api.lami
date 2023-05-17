@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, Request, Sse, Req, Query } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, Request, Sse, Req, Query, Res } from '@nestjs/common';
 import { OrderService } from './order.service';
 import { CreateOrderDto } from './dto/create-order.dto';
 import { UpdateOrderDto } from './dto/update-order.dto';
@@ -182,5 +182,22 @@ export class OrderController {
 			console.log({ error });
 		}
 	}
+
+
+  @Public()
+  @Get('generate/pdf/:id')
+  async generatePdf(@Param('id') id, @Res() res) {
+    const buffer = await this.orderService.generatePdf({id});
+    res.set({
+      'Content-Type': 'application/pdf',
+      'Content-Disposition': `inline; filename=order.pdf`,
+      'Content-Length': buffer.length,
+      // prevent cache
+      'Cache-Control': 'no-cache, no-store, must-revalidate',
+      Pragma: 'no-cache',
+      Expires: 0,
+    });
+    res.end(buffer);
+  }
 
 }

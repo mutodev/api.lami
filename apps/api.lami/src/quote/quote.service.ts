@@ -2,6 +2,8 @@ import { Inject, Injectable } from '@nestjs/common';
 import { Quote as Model, Prisma } from '@prisma/client';
 import { PaginationService } from '../commons/services/pagination/pagination.service';
 import { PrismaService } from '../commons/services/prisma.service';
+import { createPdf } from './../commons/functions';
+import { join } from 'path';
 
 @Injectable()
 export class QuoteService {
@@ -107,6 +109,42 @@ export class QuoteService {
     return this.prisma.quote.delete({
       where
     });
+  }
+
+  async generatePdf(where: Prisma.QuoteWhereUniqueInput) {
+    const quote = await this.prisma.quote.findUnique({
+      where,
+      include: {
+        customer: true,
+        quoteDetails: true,
+      }
+    });
+    const projects = await this.prisma.setting.findUnique({
+      where: {
+        name: 'Project'
+      },
+      include: {
+        settingDetail: true
+      }
+    });
+
+    const taxes = await this.prisma.setting.findUnique({
+      where: {
+        name: 'TAX'
+      },
+      include: {
+        settingDetail: true
+      }
+    });
+    const detail = quote.quoteDetails.map((d) => {
+      const project = projects.settingDetail.find((p) => p.code == d.project);
+      const tax = taxes.settingDetail.find((p) => p.code == d.arTaxCode);
+      return {...d, taxObj: tax, projectObj: project};
+    });
+
+    let setting = await this.prisma.settingDetail.findFirst({where: {setting: {name: 'SalesPersonCode',}, code: quote.salesPersonCode}});
+    const {quoteDetails, ...quoteObj} = quote;
+    return await createPdf(join(__dirname, "./templates/quote.ejs"), {...quoteObj, quoteDetails: detail, salesPerson: setting});
   }
 
 }
