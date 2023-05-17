@@ -73,7 +73,7 @@ export class QuoteController {
     return successResponse('', result);
   }
 
-  @Public()
+  // @Public()
   @Get('generate/pdf/:id')
   async generatePdf(@Param('id') id, @Res() res) {
     const buffer = await this.quoteService.generatePdf({id});

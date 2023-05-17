@@ -184,7 +184,7 @@ export class OrderController {
 	}
 
 
-  @Public()
+  // @Public()
   @Get('generate/pdf/:id')
   async generatePdf(@Param('id') id, @Res() res) {
     const buffer = await this.orderService.generatePdf({id});
