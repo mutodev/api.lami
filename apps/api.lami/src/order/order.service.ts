@@ -156,7 +156,7 @@ export class OrderService {
         amount: item.Quantity,
         value: item.UnitPrice,
         wareHouseCode: item.WarehouseCode,
-        arTaxCode: item.ArTaxCode || '',
+        arTaxCode: item.TaxCode || '',
         vat: item.TaxTotal,
         project: customer.project,
         aditionalInfo: ''
