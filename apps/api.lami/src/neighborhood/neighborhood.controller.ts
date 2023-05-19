@@ -52,7 +52,7 @@ export class NeighborhoodController {
   @Delete(':id')
   async remove(@Param('id') id: string) {
     const result = await this.neighborhoodService.remove({id});
-    return successResponse('El barrio borrado satisfactoriamente.', result);
+    return successResponse('El barrio se ha eliminado satisfactoriamente.', result);
   }
 
   @Get('find-by-city-and-state/:state/:city')
