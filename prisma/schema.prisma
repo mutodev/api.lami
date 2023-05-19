@@ -63,6 +63,7 @@ model User {
   sellerType      SettingDetail? @relation(name: "sellertypesetting", fields: [sellerTypeId], references: [id])
   customers       Customer[] @relation(name: "usercustomer")
   orders          Order[] @relation(name: "userorder")
+  quotes          Quote[] @relation(name: "userquote")
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
 }
@@ -141,6 +142,7 @@ model Customer {
   user                User? @relation(name: "usercustomer", fields: [userId], references: [id])
   orders              Order[] @relation(name: "ordercustomer")
   pqrs                PQR[] @relation(name: "pqrcustomer")
+  quotes              Quote[] @relation(name: "quotecustomer")
   createdAt           DateTime @default(now())
   updatedAt           DateTime @updatedAt
 }
@@ -338,4 +340,43 @@ model Neighborhood {
   updatedAt     DateTime @updatedAt
 }
 
+model Quote {
+  id                  String @default(uuid()) @id
+  customerId          String @db.VarChar(100)
+  customer            Customer? @relation(name: "quotecustomer", fields: [customerId], references: [id])
+  date                DateTime @db.Date
+  dueDate             DateTime? @db.Date
+  vatTotal            Float?
+  subTotal            Float
+  total               Float
+  discount            Float?
+  docNumber           Int?
+  comments            String? @db.Text
+  serie               String?
+  salesPersonCode     String?
+  messageError        String? @db.Text() @default("")
+  userId              String?
+  user                User? @relation(name: "userquote", fields: [userId], references: [id])
+  estimatedDate       DateTime? @db.Date
+  createdAt           DateTime @default(now())
+  updatedAt           DateTime @updatedAt
+  quoteDetails        QuoteDetail[] @relation(name: "quotedetailquote")
+}
 
+model QuoteDetail {
+  id                  String @default(uuid()) @id
+  quoteId             String @db.VarChar(100)
+  quote               Quote? @relation(name: "quotedetailquote", fields: [quoteId], references: [id], onDelete: Cascade)
+  itemCode            String
+  description         String
+  aditionalInfo       String
+  discount            Float
+  amount              Float
+  value               Float
+  vat                 Float
+  project             String?
+  wareHouseCode       String?
+  arTaxCode           String?
+  createdAt           DateTime @default(now())
+  updatedAt           DateTime @updatedAt
+}
