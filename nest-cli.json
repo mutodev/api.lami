@@ -8,7 +8,8 @@
     "webpack": true,
     "tsConfigPath": "apps/api.lami/tsconfig.app.json",
     "assets": [
-      { "include": "templates/**/*", "watchAssets": true }
+      { "include": "templates/**/*", "watchAssets": true },
+      { "include": "web.config", "watchAssets": true }
     ]
   },
   "projects": {
