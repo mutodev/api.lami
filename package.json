@@ -9,7 +9,7 @@
     "dev": "nest start api.lami --watch & nest start integration-sap --watch",
     "prisma": "prisma",
     "prebuild": "rimraf dist",
-    "build": "nest build",
+    "build": "nest build api.lami & nest build integration-sap",
     "build-api": "nest build api.lami",
     "build-sap": "nest build integration-sap",
     "format": "prettier --write \"apps/**/*.ts\" \"libs/**/*.ts\"",
