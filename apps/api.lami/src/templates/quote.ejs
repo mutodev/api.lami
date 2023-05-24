@@ -109,7 +109,7 @@
           <div class="info_l">
             <p style="
     font-size: 2rem!important;
-">No. <%= data.docNumber %>
+">No. <%= data.docNumber.toString().padStart(6, '0') %>
             </p>
             <p>Fecha de Creación <%=new Intl.DateTimeFormat('es-CO').format(data.date)%>
             </p>
@@ -126,22 +126,22 @@
           <div class="datos_cliente">
             <% if(data.customer.typeId=='87345bca-46c0-11ed-88f1-7b765a5d50e1' ) {%>
               <p>
-                <%= data.customer.firstName + ' ' + data.customer.lastName %>
+                Nombre: <%= data.customer.firstName + ' ' + data.customer.lastName %>
               </p>
               <%}%>
                 <% if(data.customer.typeId=='87345bcb-46c0-11ed-88f1-7b765a5d50e1' ) {%>
                   <p>
-                    <%= data.customer.name %>
+                    Nombre: <%= data.customer.name %>
                   </p>
                   <%}%>
                     <p>
-                      <%=data.customer.address %>
+                      Direeción: <%=data.customer.address %>
                     </p>
                     <p>
-                      <%=data.customer.email %>
+                      Correo: <%=data.customer.email %>
                     </p>
                     <p>
-                      <%=data.customer.phone %>
+                      Teléfono: <%=data.customer.phone %>
                     </p>
           </div>
         </td>
