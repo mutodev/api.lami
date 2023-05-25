@@ -1,7 +1,9 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
 import { Order as Model, Prisma } from '@prisma/client';
+import { join } from 'path';
 import { firstValueFrom } from 'rxjs';
+import { createPdf } from '../commons/functions';
 import { CustomerService } from '../customer/customer.service';
 import { PaginationService } from './../commons/services/pagination/pagination.service';
 import { PrismaService } from './../commons/services/prisma.service';
@@ -154,7 +156,7 @@ export class OrderService {
         amount: item.Quantity,
         value: item.UnitPrice,
         wareHouseCode: item.WarehouseCode,
-        arTaxCode: item.ArTaxCode || '',
+        arTaxCode: item.TaxCode || '',
         vat: item.TaxTotal,
         project: customer.project,
         aditionalInfo: ''
@@ -173,5 +175,51 @@ export class OrderService {
     const result = await this.clientProxi.send('order/findopenorders', {startDate, endDate, salesPersonCode});    
     return await firstValueFrom(result);
   }
+
+  async generatePdf(where: Prisma.QuoteWhereUniqueInput) {
+    try {
+      const order = await this.prisma.order.findUnique({
+        where,
+        include: {
+          customer: true,
+          orderDetails: true,
+        }
+      });
+      const projects = await this.prisma.setting.findUnique({
+        where: {
+          name: 'Project'
+        },
+        include: {
+          settingDetail: true
+        }
+      });
+  
+      const taxes = await this.prisma.setting.findUnique({
+        where: {
+          name: 'TAX'
+        },
+        include: {
+          settingDetail: true
+        }
+      });
+      const detail = order.orderDetails.map((d) => {
+        const project = projects.settingDetail.find((p) => p.code == d.project);
+        const tax = taxes.settingDetail.find((p) => p.code == d.arTaxCode);
+        return {...d, taxObj: tax, projectObj: project};
+      });
+
+      let setting = await this.prisma.settingDetail.findFirst({where: {setting: {name: 'SalesPersonCode',}, code: order.salesPersonCode}});
+      let city: string = (setting?.extendedData as any)?.cities[0]
+      let store = await this.prisma.stores.findFirst({
+        where: {name: {contains: city.toLowerCase(), mode: 'insensitive'}}
+      }); console.log({store})
+      const {orderDetails, ...orderObj} = order;
+      return await createPdf(join(__dirname, "./templates/order.ejs"), {...orderObj, store, orderDetails: detail, salesPerson: setting});
+    } catch (error) {
+      console.log({error});
+      throw error;
+    }
+  }
+
 
 }

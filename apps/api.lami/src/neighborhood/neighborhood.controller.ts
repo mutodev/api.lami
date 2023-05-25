@@ -1,10 +1,11 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, Request } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, Request, UseInterceptors, UploadedFile, HttpStatus, HttpCode } from '@nestjs/common';
 import { NeighborhoodService } from './neighborhood.service';
 import { CreateNeighborhoodDto } from './dto/create-neighborhood.dto';
 import { UpdateNeighborhoodDto } from './dto/update-neighborhood.dto';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { JwtAuthGuard } from '../commons/guards';
 import { successResponse } from '../commons/functions';
+import { FileInterceptor } from '@nestjs/platform-express';
 
 @ApiTags('NEIGHBORHOOD')
 @ApiBearerAuth()
@@ -17,6 +18,14 @@ export class NeighborhoodController {
   async create(@Request() req: Request, @Body() createNeighborhoodDto: CreateNeighborhoodDto) {
     const result = await this.neighborhoodService.create(createNeighborhoodDto);
     return successResponse('Registro guardado satisfactoriamente.', result);
+  }
+
+  @Post('import')
+  @HttpCode(HttpStatus.OK)
+  @UseInterceptors(FileInterceptor('file', { limits: { fileSize: 3145728 } }))
+  async importNeigborhoood(@Request() req: Request, @UploadedFile() file: Express.Multer.File,) {
+    await this.neighborhoodService.importNeigborhoood(file.buffer);
+    return successResponse('Los barrios fueron importados satisfactoriamente.', null);
   }
 
   @Get()
@@ -43,7 +52,7 @@ export class NeighborhoodController {
   @Delete(':id')
   async remove(@Param('id') id: string) {
     const result = await this.neighborhoodService.remove({id});
-    return successResponse('', result);
+    return successResponse('El barrio se ha eliminado satisfactoriamente.', result);
   }
 
   @Get('find-by-city-and-state/:state/:city')

@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, Request, Sse, Req, Query } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, Request, Sse, Req, Query, Res } from '@nestjs/common';
 import { OrderService } from './order.service';
 import { CreateOrderDto } from './dto/create-order.dto';
 import { UpdateOrderDto } from './dto/update-order.dto';
@@ -94,7 +94,21 @@ export class OrderController {
 
   @Get()
   async findAll(@Request() req: Request) {
-    const result = await this.orderService.findAll({page: req['query'].page, perPage: req['query'].perPage, orderBy: {createdAt: 'desc'}});
+    const search = req['query'].search || '';
+    const isNum =  !!isNaN(search.trim());
+    const result = await this.orderService.findAll({
+      page: req['query'].page, 
+      perPage: req['query'].perPage, 
+      orderBy: {createdAt: 'desc'},
+      where: {
+        OR: [
+          { docNumber: isNum ? +search : null },
+          { customer: {identification: {contains: search, mode: 'insensitive'}}},
+          { customer: {firstName: {contains: search, mode: 'insensitive'}}},
+          { customer: {lastName: {contains: search, mode: 'insensitive'}}}
+        ]
+      }
+    });
     return successResponse('', result);
   }
 
@@ -182,5 +196,22 @@ export class OrderController {
 			console.log({ error });
 		}
 	}
+
+
+  // @Public()
+  @Get('generate/pdf/:id')
+  async generatePdf(@Param('id') id, @Res() res) {
+    const buffer = await this.orderService.generatePdf({id});
+    res.set({
+      'Content-Type': 'application/pdf',
+      'Content-Disposition': `inline; filename=order.pdf`,
+      'Content-Length': buffer.length,
+      // prevent cache
+      'Cache-Control': 'no-cache, no-store, must-revalidate',
+      Pragma: 'no-cache',
+      Expires: 0,
+    });
+    res.end(buffer);
+  }
 
 }

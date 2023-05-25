@@ -6,7 +6,12 @@
   "root": "apps/api.lami",
   "compilerOptions": {
     "webpack": true,
-    "tsConfigPath": "apps/api.lami/tsconfig.app.json"
+    "tsConfigPath": "apps/api.lami/tsconfig.app.json",
+    "assets": [
+      { "include": "templates/**/*", "watchAssets": true },
+      "web.config",
+      ".env"
+    ]
   },
   "projects": {
     "api.lami": {

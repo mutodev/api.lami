@@ -10,6 +10,9 @@ install:
 update-web:
 	ssh -i "ssh/Ubuntu-LAMI.pem" ubuntu@52.3.32.125 -y "cd /opt/web.lami ; sudo git pull ; sudo yarn build"
 
+build:
+	yarn build-app && yarn build-sap
+
 # sudo sh -x /etc/init.d/lamiService start
 # sudo sh -x /etc/init.d/weblamiService start
 # tail -f /var/log/lamiservice.log

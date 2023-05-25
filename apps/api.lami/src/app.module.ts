@@ -15,6 +15,7 @@ import { PqrModule } from './pqr/pqr.module';
 import { StoreModule } from './store/store.module';
 import { PricesModule } from './prices/prices.module';
 import { NeighborhoodModule } from './neighborhood/neighborhood.module';
+import { QuoteModule } from './quote/quote.module';
 
 @Module({
   imports: [
@@ -39,7 +40,8 @@ import { NeighborhoodModule } from './neighborhood/neighborhood.module';
     PqrModule,
     StoreModule,
     PricesModule,
-    NeighborhoodModule],
+    NeighborhoodModule,
+    QuoteModule],
   controllers: [AppController],
   providers: [AppService],
   exports: []
