@@ -26,7 +26,8 @@ export class ItemsController {
       page: req['query'].page, 
       perPage: req['query'].perPage,
       where: {OR: [{code: {contains: req['query'].search || '', mode: 'insensitive'}}, {name: {contains: req['query'].search || '', mode: 'insensitive'}}]},
-      wareHouseCode: req['query'].wareHouseCode
+      wareHouseCode: req['query'].wareHouseCode,
+      orderBy: { name: 'asc'}
     });
     return successResponse('', result);
   }

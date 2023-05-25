@@ -38,7 +38,21 @@ export class QuoteController {
 
   @Get()
   async findAll(@Req() req: Request) {
-    const result = await this.quoteService.findAll({ page: req['query'].page, perPage: req['query'].perPage, orderBy: { createdAt: 'desc' } });
+    const search = req['query'].search || '';
+    const isNum = !!isNaN(search.trim());
+    const result = await this.quoteService.findAll({
+      page: req['query'].page,
+      perPage: req['query'].perPage,
+      orderBy: { createdAt: 'desc' },
+      where: {
+        OR: [
+          { docNumber: isNum ? +search : null },
+          { customer: { identification: { contains: search, mode: 'insensitive' } } },
+          { customer: { firstName: { contains: search, mode: 'insensitive' } } },
+          { customer: { lastName: { contains: search, mode: 'insensitive' } } }
+        ]
+      }
+    });
     return successResponse('', result);
   }
 
@@ -76,7 +90,7 @@ export class QuoteController {
   // @Public()
   @Get('generate/pdf/:id')
   async generatePdf(@Param('id') id, @Res() res) {
-    const buffer = await this.quoteService.generatePdf({id});
+    const buffer = await this.quoteService.generatePdf({ id });
     res.set({
       'Content-Type': 'application/pdf',
       'Content-Disposition': `inline; filename=quote.pdf`,

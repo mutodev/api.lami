@@ -94,7 +94,21 @@ export class OrderController {
 
   @Get()
   async findAll(@Request() req: Request) {
-    const result = await this.orderService.findAll({page: req['query'].page, perPage: req['query'].perPage, orderBy: {createdAt: 'desc'}});
+    const search = req['query'].search || '';
+    const isNum =  !!isNaN(search.trim());
+    const result = await this.orderService.findAll({
+      page: req['query'].page, 
+      perPage: req['query'].perPage, 
+      orderBy: {createdAt: 'desc'},
+      where: {
+        OR: [
+          { docNumber: isNum ? +search : null },
+          { customer: {identification: {contains: search, mode: 'insensitive'}}},
+          { customer: {firstName: {contains: search, mode: 'insensitive'}}},
+          { customer: {lastName: {contains: search, mode: 'insensitive'}}}
+        ]
+      }
+    });
     return successResponse('', result);
   }
 
