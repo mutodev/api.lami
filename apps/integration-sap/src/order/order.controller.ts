@@ -142,9 +142,9 @@ export class OrderController {
       let payloadOrder = {
         CardCode: carcode,
         Series: +order.serie,
-        DocDate: order.date.toISOString().replace('T', ' ').substring(0, 10),
-        DocDueDate: order.dueDate.toISOString().replace('T', ' ').substring(0, 10),
-        SalesPersonCode: order.salesPersonCode || '',
+        // DocDate: order.date.toISOString().replace('T', ' ').substring(0, 10),
+        // DocDueDate: order.dueDate.toISOString().replace('T', ' ').substring(0, 10),
+        // SalesPersonCode: order.salesPersonCode || '',
         Comments: `${order.comments}\n\n${order.orderDetails.map((d) => `${d.aditionalInfo}\n\n`)}`,
         DiscountPercent: order.discount || 0,
         VatSum: order.vatTotal || 0,

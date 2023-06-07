@@ -142,9 +142,9 @@ export class TaskOrderService {
                             const result = await this.orderService.update(order.integrationId.toString(), {
                                 CardCode: carcode,
                                 Series: +order.serie,
-                                DocDate: order.date.toISOString().replace('T', ' ').substring(0, 10),
-                                DocDueDate: order.dueDate.toISOString().replace('T', ' ').substring(0, 10),
-                                SalesPersonCode: order.salesPersonCode || '',
+                                // DocDate: order.date.toISOString().replace('T', ' ').substring(0, 10),
+                                // DocDueDate: order.dueDate.toISOString().replace('T', ' ').substring(0, 10),
+                                // SalesPersonCode: order.salesPersonCode || '',
                                 Comments: order.comments,//`${order.comments}\n\n${order.orderDetails.map((d) => `${d.aditionalInfo}\n\n`)}`,
                                 DiscountPercent: order.discount || 0,    
                                 VatSum: order.vatTotal || 0,
