@@ -8,14 +8,14 @@ import { firstValueFrom } from 'rxjs';
 
 @Injectable()
 export class ItemsService {
-  
+
   constructor(public prisma: PrismaService,
     @Inject('CLIENT_SERVICE') private clientProxi: ClientProxy,
-    private paginationService: PaginationService) {}
-  
+    private paginationService: PaginationService) { }
+
   async create(data: Prisma.ItemsUncheckedCreateInput): Promise<Model> {
     return this.prisma.items.create({
-      data 
+      data
     });
   }
 
@@ -31,29 +31,29 @@ export class ItemsService {
   }): Promise<Model[] | any> {
     const { skip, take, cursor, where, orderBy, wareHouseCode } = params;
     if (params.page > 0) {
-      const paginate = this.paginationService.createPaginator({page: params.page, perPage: params.perPage });
+      const paginate = this.paginationService.createPaginator({ page: params.page, perPage: params.perPage });
       const result = await paginate<Model, Prisma.ItemsFindManyArgs>(
         this.prisma.items, {
-            cursor,
-            where,
-            orderBy,
-            include: {
-              itemsWareHouses: {where: {warehouseCode: wareHouseCode}}
-            },
-          });
-          let list = [];
-          let today = new Date();
-          result.data.map((item) => {
-            const isEspecial = !!item.name.toLowerCase().includes('especial');
-            let totalStock = (item.quantityOnStock - (item.quantityOrderedByCustomers || 0)) -3;
-            let estimatedDate = calculateEstimateDate(today, totalStock, isEspecial);
-            list.push({
-              ...item,
-              estimatedDate: `${estimatedDate.getFullYear()}-${estimatedDate.getMonth() + 1}-${estimatedDate.getDate()}`
-            });
-          });
-      const {data, ...items} = result    
-      return {...items, data: list};
+        cursor,
+        where,
+        orderBy,
+        include: {
+          itemsWareHouses: { where: { warehouseCode: wareHouseCode } }
+        },
+      });
+      let list = [];
+      let today = new Date();
+      result.data.map((item) => {
+        const isEspecial = !!item.name.toLowerCase().includes('especial');
+        let totalStock = (item.quantityOnStock - (item.quantityOrderedByCustomers || 0)) - 3;
+        let estimatedDate = calculateEstimateDate(today, totalStock, isEspecial);
+        list.push({
+          ...item,
+          estimatedDate: `${estimatedDate.getFullYear()}-${estimatedDate.getMonth() + 1}-${estimatedDate.getDate()}`
+        });
+      });
+      const { data, ...items } = result
+      return { ...items, data: list };
     } else {
       const result = await this.prisma.items.findMany({
         skip,
@@ -62,21 +62,21 @@ export class ItemsService {
         where,
         orderBy,
         include: {
-          itemsWareHouses: {where: {warehouseCode: wareHouseCode}}
+          itemsWareHouses: { where: { warehouseCode: wareHouseCode } }
         },
       });
       let list = [];
       let today = new Date();
       result.map((item) => {
         const isEspecial = !!item.name.toLowerCase().includes('especial');
-        let totalStock = (item.quantityOnStock - (item.quantityOrderedByCustomers || 0)) -3;
+        let totalStock = (item.quantityOnStock - (item.quantityOrderedByCustomers || 0)) - 3;
         let estimatedDate = calculateEstimateDate(today, totalStock, isEspecial);
         list.push({
           ...item,
           estimatedDate: `${estimatedDate.getFullYear()}-${estimatedDate.getMonth() + 1}-${estimatedDate.getDate()}`
         });
       });
-      
+
       return list;
     }
   }
@@ -112,11 +112,14 @@ export class ItemsService {
 
   async findAllFromSap(search: string, stop: number) {
     try {
-
-      const result = this.clientProxi.send('product/find-from-sap', {search, stop});
+      const result = this.clientProxi.send('product/find-from-sap', { search, stop });
       const data = await firstValueFrom(result);
       return data.map((item) => {
         let price = item.ItemPrices.find((a) => a.PriceList == 1);
+        let today = new Date();
+        const isEspecial = !!item.ItemName.toLowerCase().includes('especial');
+        let totalStock = (item.QuantityOnStock - (item.QuantityOrderedByCustomers || 0)) - 3;
+        let estimatedDate = calculateEstimateDate(today, totalStock, isEspecial);
         return {
           name: item.ItemName,
           code: item.ItemCode,
@@ -124,7 +127,8 @@ export class ItemsService {
           quantityOnStock: item.QuantityOnStock,
           quantityOrderedFromVendors: item.QuantityOrderedFromVendors,
           quantityOrderedByCustomers: item.QuantityOrderedByCustomers,
-          arTaxCode: item.ArTaxCode
+          arTaxCode: item.ArTaxCode,
+          estimatedDate: `${estimatedDate.getFullYear()}-${estimatedDate.getMonth() + 1}-${estimatedDate.getDate()}`
           // itemsWareHouses: {
           //     create: item.ItemWarehouseInfoCollection.map((w) => {
           //         const { WarehouseCode, InStock, ItemCode, Committed, Ordered } = w;
@@ -139,12 +143,46 @@ export class ItemsService {
           //         }
           //     })
           // }
-      }
+        }
 
       })
     } catch (error) {
-      
+
     }
   }
+
+  async findAllStockFromSap(search: string, stop: number) {
+    try {
+      const result = this.clientProxi.send('product/find-from-sap', { search, stop });
+      const data = await firstValueFrom(result);
+      return data.map((item) => {
+        let price = item.ItemPrices.find((a) => a.PriceList == 1);
+        return {
+          name: item.ItemName,
+          code: item.ItemCode,
+          price: price ? price.Price : 0,
+          quantityOnStock: item.QuantityOnStock,
+          quantityOrderedFromVendors: item.QuantityOrderedFromVendors,
+          quantityOrderedByCustomers: item.QuantityOrderedByCustomers,
+          arTaxCode: item.ArTaxCode,
+          itemsWareHouses: item.ItemWarehouseInfoCollection.map((w) => {
+            const { WarehouseCode, InStock, ItemCode, Committed, Ordered } = w;
+            // let wareHouse = wareHouses.find((a) => a.WarehouseCode == w.WarehouseCode);
+            return {
+              warehouseCode: WarehouseCode,
+              // warehouseName: wareHouse.WarehouseName,
+              inStock: InStock,
+              itemCode: ItemCode,
+              committed: Committed,
+              ordered: Ordered
+            }
+          })
+        }
+      });
+    } catch (error) {
+
+    }
+  }
+
 
 }

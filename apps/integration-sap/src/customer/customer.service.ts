@@ -139,5 +139,14 @@ export class CustomerService {
         // console.log('migrateItems', error)
     }
 }
-  
+
+async findAllFromSap(search: string, stop: number) {
+  try {
+    const result = await this.apiHttp.get<any>(`${EnumApis.CUSTOMER}?$select=CardCode,CardName,Phone1,EmailAddress&$orderby=CardName&$filter=contains(CardCode,'${search}')&$top=${stop}`);
+    return result;
+  } catch (error) {
+    throw error;
+  }
+}
+
 }

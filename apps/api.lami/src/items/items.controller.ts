@@ -54,10 +54,21 @@ export class ItemsController {
   @Get('find-all/from-sap')
   async findAllFromSap(@Req() req, @Query() searchItemDto: SearchItemDto) {
     try {
-      return await this.itemsService.findAllFromSap(searchItemDto.search, searchItemDto.stop);
+      const result = await this.itemsService.findAllFromSap(searchItemDto.search, searchItemDto.stop);
+      return successResponse('', result);
     } catch (error) {
       throw error;
     }
   }
+
+  @Get('find-all/stock-from-sap')
+  async findAllStockFromSap(@Req() req, @Query() searchItemDto: SearchItemDto) {
+    try {
+      const result = await this.itemsService.findAllStockFromSap(searchItemDto.search, searchItemDto.stop);
+      return successResponse('', result);
+    } catch (error) {
+      throw error;
+    }
+  }  
 
 }

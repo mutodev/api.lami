@@ -22,7 +22,7 @@ export class TaskOrderService {
         private customerService: CustomerService,
         @Inject('CLIENT_SERVICE') private clientProxi: ClientProxy) { }
 
-    @Cron(CronExpression.EVERY_10_SECONDS)
+    // @Cron(CronExpression.EVERY_10_SECONDS)
     async handleCron() {
         try {
             if (!isRunning) {

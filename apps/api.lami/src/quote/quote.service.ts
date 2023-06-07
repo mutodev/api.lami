@@ -147,4 +147,20 @@ export class QuoteService {
     return await createPdf(join(__dirname, "./templates/quote.ejs"), {...quoteObj, quoteDetails: detail, salesPerson: setting});
   }
 
+  async findCustomerByOrder(userWhereUniqueInput: Prisma.QuoteWhereUniqueInput): Promise<any> {
+    const order = await this.prisma.quote.findUnique({
+      where: userWhereUniqueInput,
+      select: {id: true, customer: true}
+    });
+    return order.customer;
+  }
+
+  async findDetailByOrder(userWhereUniqueInput: Prisma.QuoteWhereUniqueInput): Promise<any> {
+    const order = await this.prisma.quote.findUnique({
+      where: userWhereUniqueInput,
+      select: {id: true, quoteDetails: true}
+    });
+    return order.quoteDetails;
+  }
+
 }

@@ -53,14 +53,14 @@ export class OrderController {
   @Get()
   async findAll(@Request() req: Request) {
     const search = req['query'].search || '';
-    const isNum = !!isNaN(search.trim());
+    const isNum = !isNaN(search.trim());
     const result = await this.orderService.findAll({
       page: req['query'].page,
       perPage: req['query'].perPage,
       orderBy: { createdAt: 'desc' },
       where: {
         OR: [
-          { docNumber: isNum ? +search : null },
+          { docNumber: isNum ? +search : 0 },
           { customer: { identification: { contains: search, mode: 'insensitive' } } },
           { customer: { firstName: { contains: search, mode: 'insensitive' } } },
           { customer: { lastName: { contains: search, mode: 'insensitive' } } }
@@ -174,6 +174,18 @@ export class OrderController {
       Expires: 0,
     });
     res.end(buffer);
+  }
+
+  @Get('get-customer/by-order/:id')
+  async findCustomerByOrder(@Req() req, @Param('id') id) {
+    const customer = await this.orderService.findCustomerByOrder({id});
+    return successResponse('', customer);
+  }
+
+  @Get('get-order-detail/by-order/:id')
+  async findDetailByOrder(@Req() req, @Param('id') id) {
+    const result = await this.orderService.findDetailByOrder({id});
+    return successResponse('', result);
   }
 
 }

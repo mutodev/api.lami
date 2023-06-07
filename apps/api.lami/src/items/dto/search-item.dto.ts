@@ -10,7 +10,7 @@ export class SearchItemDto {
 
     @ApiProperty()
     @IsNotEmpty()
-    @IsString()
+    @IsNumber()
     stop: number;
 
 }

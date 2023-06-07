@@ -102,4 +102,17 @@ export class QuoteController {
     });
     res.end(buffer);
   }
+
+  @Get('get-customer/by-order/:id')
+  async findCustomerByOrder(@Req() req, @Param('id') id): Promise<any> {
+    const customer = await this.quoteService.findCustomerByOrder({id});
+    return successResponse('', customer );
+  }
+
+  @Get('get-order-detail/by-order/:id')
+  async findDetailByOrder(@Req() req, @Param('id') id) {
+    const result = await this.quoteService.findDetailByOrder({id});
+    return successResponse('', result);
+  }
+
 }
