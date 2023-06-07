@@ -95,14 +95,15 @@ export class OrderService {
     return {...orderObj, orderDetails: detail, salesPerson: setting};
   }
 
-  update(params: {
+  async update(params: {
     where: Prisma.OrderWhereUniqueInput;
     data: Prisma.OrderUncheckedUpdateInput;
   }): Promise<Model> {
     const { where, data } = params;
+    await this.prisma.orderDetail.deleteMany({where: {orderId: where.id}});
     return this.prisma.order.update({
       data: {...data, sendToSap: null},
-      where,
+      where
     });
   }
 

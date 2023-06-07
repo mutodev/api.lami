@@ -97,6 +97,9 @@ export class OrderController {
         }
       }
     });
+    this.clientProxi.send('order/update', {id: result.id}).subscribe((result) => {
+      console.log({result});
+    });
     return successResponse('Registro actualizado satisfactoriamente.', result);
   }
 

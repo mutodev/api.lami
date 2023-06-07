@@ -22,7 +22,7 @@ export class TaskCustomerService {
         private authService: AuthService,
         @Inject('CLIENT_SERVICE') private clientProxi: ClientProxy) { }
 
-    // @Cron(CronExpression.EVERY_10_SECONDS)
+    @Cron(CronExpression.EVERY_10_SECONDS)
     async handleCron() {
         try {
             if (!isRunning) {
@@ -229,7 +229,7 @@ export class TaskCustomerService {
     }
 
 
-    // @Cron(CronExpression.EVERY_DAY_AT_9PM)
+    @Cron(CronExpression.EVERY_DAY_AT_9PM)
     // @Cron(CronExpression.EVERY_10_SECONDS)
     async handleCron4PM() {
         try {
