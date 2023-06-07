@@ -17,7 +17,7 @@ build:
 # sudo sh -x /etc/init.d/weblamiService start
 # tail -f /var/log/lamiservice.log
 # tail -f /var/log/weblamiservice.log
-# pm2 start dist/apps/api.lami/main.js --watch
-# pm2 start dist/apps/integration-sap/main.js --watch
+# pm2 start dist/apps/api.lami/main.js -o "/dev/null" -e "/dev/null" --watch
+# pm2 start dist/apps/integration-sap/main.js -o "/dev/null" -e "/dev/null" --watch
 # pm2 stop dist/apps/api.lami/main.js
 # pm2 stop dist/apps/integration-sap/main.js

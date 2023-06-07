@@ -1,13 +1,16 @@
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import { Items as Model, Prisma } from '@prisma/client';
 import { PaginationService } from '../commons/services/pagination/pagination.service';
 import { PrismaService } from '../commons/services/prisma.service';
 import { calculateEstimateDate } from '../commons/functions';
+import { ClientProxy } from '@nestjs/microservices';
+import { firstValueFrom } from 'rxjs';
 
 @Injectable()
 export class ItemsService {
   
   constructor(public prisma: PrismaService,
+    @Inject('CLIENT_SERVICE') private clientProxi: ClientProxy,
     private paginationService: PaginationService) {}
   
   async create(data: Prisma.ItemsUncheckedCreateInput): Promise<Model> {
@@ -105,6 +108,43 @@ export class ItemsService {
     return this.prisma.items.findFirst({
       where: { code }
     });
+  }
+
+  async findAllFromSap(search: string, stop: number) {
+    try {
+
+      const result = this.clientProxi.send('product/find-from-sap', {search, stop});
+      const data = await firstValueFrom(result);
+      return data.map((item) => {
+        let price = item.ItemPrices.find((a) => a.PriceList == 1);
+        return {
+          name: item.ItemName,
+          code: item.ItemCode,
+          price: price ? price.Price : 0,
+          quantityOnStock: item.QuantityOnStock,
+          quantityOrderedFromVendors: item.QuantityOrderedFromVendors,
+          quantityOrderedByCustomers: item.QuantityOrderedByCustomers,
+          arTaxCode: item.ArTaxCode
+          // itemsWareHouses: {
+          //     create: item.ItemWarehouseInfoCollection.map((w) => {
+          //         const { WarehouseCode, InStock, ItemCode, Committed, Ordered } = w;
+          //         // let wareHouse = wareHouses.find((a) => a.WarehouseCode == w.WarehouseCode);
+          //         return {
+          //             warehouseCode: WarehouseCode,
+          //             warehouseName: wareHouse.WarehouseName,
+          //             inStock: InStock,
+          //             itemCode: ItemCode ,
+          //             committed: Committed,
+          //             ordered: Ordered                                           
+          //         }
+          //     })
+          // }
+      }
+
+      })
+    } catch (error) {
+      
+    }
   }
 
 }

@@ -1,10 +1,11 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Request, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Request, UseGuards, Req, Query } from '@nestjs/common';
 import { ItemsService } from './items.service';
 import { CreateItemDto } from './dto/create-item.dto';
 import { UpdateItemDto } from './dto/update-item.dto';
 import { successResponse } from '../commons/functions';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { JwtAuthGuard } from '../commons/guards';
+import { SearchItemDto } from './dto/search-item.dto';
 
 @ApiTags('ITEMS')
 @ApiBearerAuth()
@@ -49,4 +50,14 @@ export class ItemsController {
     const result = await this.itemsService.remove({id});
     return successResponse('', result);
   }
+
+  @Get('find-all/from-sap')
+  async findAllFromSap(@Req() req, @Query() searchItemDto: SearchItemDto) {
+    try {
+      return await this.itemsService.findAllFromSap(searchItemDto.search, searchItemDto.stop);
+    } catch (error) {
+      throw error;
+    }
+  }
+
 }
