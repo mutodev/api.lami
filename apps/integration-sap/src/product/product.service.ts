@@ -48,4 +48,17 @@ export class ProductService {
     const result = await this.apiHttp.delete<any>(`${EnumApis.ITEM}('${itemCode}')`);
     return result;
   }
+
+  async findAllFromSap(search: string, stop: number) {
+    try {
+      await this.authService.login();
+      const result = await this.apiHttp.get<any>(`${EnumApis.ITEM}?$select=ItemCode,ItemName,ArTaxCode,QuantityOnStock,ItemPrices,QuantityOrderedFromVendors,QuantityOrderedByCustomers,ItemWarehouseInfoCollection&$orderby=ItemName&$filter=contains(ItemName,'${search}') and Valid eq 'tYES'&$top=${stop}`);
+      console.log({result})
+      return result.data.value;
+    return result;
+    } catch (error) {
+      throw error;
+    }   
+  }
+
 }

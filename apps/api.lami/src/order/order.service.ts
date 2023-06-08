@@ -95,14 +95,15 @@ export class OrderService {
     return {...orderObj, orderDetails: detail, salesPerson: setting};
   }
 
-  update(params: {
+  async update(params: {
     where: Prisma.OrderWhereUniqueInput;
     data: Prisma.OrderUncheckedUpdateInput;
   }): Promise<Model> {
     const { where, data } = params;
+    await this.prisma.orderDetail.deleteMany({where: {orderId: where.id}});
     return this.prisma.order.update({
       data: {...data, sendToSap: null},
-      where,
+      where
     });
   }
 
@@ -125,6 +126,7 @@ export class OrderService {
         status: true
       }
     });
+    
     const result = await this.clientProxi.send('order/findone', order.integrationId);    
     const orderSap = await firstValueFrom(result);
     // console.log({orderSap})
@@ -221,5 +223,23 @@ export class OrderService {
     }
   }
 
+  async findCustomerByOrder(userWhereUniqueInput: Prisma.OrderWhereUniqueInput): Promise<any> {
+    const order = await this.prisma.order.findUnique({
+      where: userWhereUniqueInput,
+      select: {id: true, customer: true},
+      // include: {
+      //   customer: true
+      // }
+    });
+    return order.customer;
+  }
+
+  async findDetailByOrder(userWhereUniqueInput: Prisma.OrderWhereUniqueInput): Promise<any> {
+    const order = await this.prisma.order.findUnique({
+      where: userWhereUniqueInput,
+      select: {id: true, orderDetails: true}
+    });
+    return order.orderDetails;
+  }
 
 }

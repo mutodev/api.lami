@@ -18,13 +18,11 @@ export class CustomerController {
     return await this.customerService.findOne(id);
   }
 
-
   @Get()
   async all(@Request() req, @Param('id') id: string) {
     await this.authService.login();
     return await this.customerService.findAll(req['query']?.dato, req['query']?.skip);
   }
-
 
   @Get('migrate/:id')
   async migrate(@Request() req, @Param('id') id: string) {
@@ -65,6 +63,15 @@ export class CustomerController {
   async findAllSelect(@Payload() payload: {dato: string, skip: number}, @Ctx() context: RedisContext) {
     await this.authService.login();
     return await this.customerService.findAllSelect(payload.dato, payload.skip);
+  }
+
+  @MessagePattern('customer/find-from-sap')
+  async findAllFromSap(@Payload() payload: { search: string, stop: number }, @Ctx() context: RedisContext) {
+    try {
+        return await this.customerService.findAllFromSap(payload.search, payload.stop);
+    } catch (error) {
+      console.log({error});
+    }
   }
 
 }

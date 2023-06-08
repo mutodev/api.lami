@@ -1,10 +1,11 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Request, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Request, UseGuards, Req, Query } from '@nestjs/common';
 import { ItemsService } from './items.service';
 import { CreateItemDto } from './dto/create-item.dto';
 import { UpdateItemDto } from './dto/update-item.dto';
 import { successResponse } from '../commons/functions';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { JwtAuthGuard } from '../commons/guards';
+import { SearchItemDto } from './dto/search-item.dto';
 
 @ApiTags('ITEMS')
 @ApiBearerAuth()
@@ -26,7 +27,8 @@ export class ItemsController {
       page: req['query'].page, 
       perPage: req['query'].perPage,
       where: {OR: [{code: {contains: req['query'].search || '', mode: 'insensitive'}}, {name: {contains: req['query'].search || '', mode: 'insensitive'}}]},
-      wareHouseCode: req['query'].wareHouseCode
+      wareHouseCode: req['query'].wareHouseCode,
+      orderBy: { name: 'asc'}
     });
     return successResponse('', result);
   }
@@ -48,4 +50,25 @@ export class ItemsController {
     const result = await this.itemsService.remove({id});
     return successResponse('', result);
   }
+
+  @Get('find-all/from-sap')
+  async findAllFromSap(@Req() req, @Query() searchItemDto: SearchItemDto) {
+    try {
+      const result = await this.itemsService.findAllFromSap(searchItemDto.search, searchItemDto.stop);
+      return successResponse('', result);
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  @Get('find-all/stock-from-sap')
+  async findAllStockFromSap(@Req() req, @Query() searchItemDto: SearchItemDto) {
+    try {
+      const result = await this.itemsService.findAllStockFromSap(searchItemDto.search, searchItemDto.stop);
+      return successResponse('', result);
+    } catch (error) {
+      throw error;
+    }
+  }  
+
 }

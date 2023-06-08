@@ -13,7 +13,7 @@ export class OrderService {
   async create(createOrderDto: CreateOrderDto) {
     try {
       const { ...order } = createOrderDto;
-      console.log('json order', JSON.stringify(createOrderDto))
+      // console.log('json order', JSON.stringify(createOrderDto))
       const result = await this.apiHttp.post<any>(EnumApis.ORDER, { ...order });
       return result;
     } catch (error) {
@@ -30,7 +30,7 @@ export class OrderService {
     try {
       const result = await this.apiHttp.get<any>(`${EnumApis.ORDER}(${orderCode})?$select=*`);
       // console.log({result})
-      return result.data;
+      return result;
     } catch (error) {
       throw error;
     }

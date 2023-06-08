@@ -26,7 +26,7 @@ export class CustomerController {
   @Get()
   async findAll(@Request() req: Request) {
     let source;
-    let where: any = {AND: {OR: [{identification: {contains: req['query'].search || '', mode: 'insensitive'}}, {name: {contains: req['query'].search || '', mode: 'insensitive'}}]}, source};
+    let where: any = {AND: {OR: [{identification: {contains: req['query'].search || '', mode: 'insensitive'}}, {name: {contains: req['query'].search || '', mode: 'insensitive'}}]} };
  
     if (req['query'].source) {
       where = {AND: [{OR: [{identification: {contains: req['query'].search || '', mode: 'insensitive'}}, {name: {contains: req['query'].search || '', mode: 'insensitive'}}]}, {source: req['query'].source}]};

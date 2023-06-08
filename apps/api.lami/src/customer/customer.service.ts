@@ -214,4 +214,22 @@ export class CustomerService {
     }
   }
 
+  async findAllFromSap(search: string, stop: number) {
+    try {
+      const result = this.clientProxi.send('customer/find-from-sap', { search, stop });
+      const data = await firstValueFrom(result);
+      if (data && data?.length > 0)
+      await Promise.all(data.map(async (cus) => {
+          return {
+            identification: cus.CardCode,
+            name: cus.CardName,
+            address: cus.EmailAddress,
+            phone: cus.Phone1
+          }
+      }));     
+    } catch (error) {
+      throw error;
+    }
+  }
+
 }
