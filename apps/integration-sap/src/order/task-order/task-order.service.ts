@@ -169,7 +169,7 @@ export class TaskOrderService {
                                 })
                             });
                             console.log('respuesta crear order', { result })
-                            if (result.status === 200) {
+                            if (result.status === 204) {
                                 order.sendToSap = true;
                                 const orderUpdate = await this.prismaService.order.update({ where: { id: order.id }, data: { sendToSap: true } });
                                 
