@@ -62,7 +62,7 @@ export class OrderController {
     }
     
     let conditionVendedor = null;
-    if (user.role == 'VENDEDOR') {
+    if (user.role.code == 'VENDEDOR') {
       conditionVendedor = {useId: user.id};
     }
     

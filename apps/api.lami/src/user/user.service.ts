@@ -77,6 +77,9 @@ export class UserService {
   findOne(userWhereUniqueInput: Prisma.UserWhereUniqueInput): Promise<Model | null> {
     return this.prisma.user.findUnique({
       where: userWhereUniqueInput,
+      include: {
+        role: true
+      }
     });
   }
 
@@ -98,7 +101,7 @@ export class UserService {
   }
 
   findFirst(userWhereInput: Prisma.UserWhereInput): Promise<Model | null> {
-    return this.prisma.user.findFirst({where: userWhereInput});
+    return this.prisma.user.findFirst({where: userWhereInput, include: {role: true}});
   }
 
   async updatePassword(id: string, password: string): Promise<Model> {
