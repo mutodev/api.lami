@@ -89,10 +89,11 @@ export class OrderService {
       return {...d, taxObj: tax, projectObj: project};
     });
     let setting = {}; 
+    const serie = await this.prisma.settingDetail.findFirst({where: {setting: {name: 'SERIES'}, code: order.serie}});
     if (order.salesPersonCode)
       setting = await this.prisma.settingDetail.findFirst({where: {setting: {name: 'SalesPersonCode',}, code: order.salesPersonCode}});
     const {orderDetails, ...orderObj} = order;
-    return {...orderObj, orderDetails: detail, salesPerson: setting};
+    return {...orderObj, orderDetails: detail, salesPerson: setting, serieObj: serie};
   }
 
   async update(params: {
