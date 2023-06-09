@@ -51,7 +51,8 @@ export class OrderController {
   }
 
   @Get()
-  async findAll(@Request() req: Request) {
+  async findAll(@Request() req) {
+    const user = req.user;
     const search = req['query'].search || '';
     const isNum = !isNaN(search.trim());
     let where: any = {};    
@@ -60,6 +61,10 @@ export class OrderController {
       condition.push({ docNumber: +search})
     }
     
+    let conditionVendedor = null;
+    if (user.role == 'VENDEDOR') {
+      conditionVendedor = {useId: user.id};
+    }
     
     const result = await this.orderService.findAll({
       page: req['query'].page,
@@ -71,7 +76,8 @@ export class OrderController {
           { customer: { identification: { contains: search, mode: 'insensitive' } } },
           { customer: { firstName: { contains: search, mode: 'insensitive' } } },
           { customer: { lastName: { contains: search, mode: 'insensitive' } } }
-        ]
+        ],
+        ...conditionVendedor
       }
     });
     return successResponse('', result);
