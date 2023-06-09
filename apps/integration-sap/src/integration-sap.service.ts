@@ -88,7 +88,7 @@ export class IntegrationSapService {
       { name: 'Obsequio', cities: ['Valledupar' ], codes: {factorCode: 'VAL', factorCode2: ''} },
       { name: 'Plan Separe Barranquilla', cities: ['Barranquilla'], codes: {factorCode: 'BAQ', factorCode2: 'CREDITO'} },
       { name: 'Plan Separe Cartagena', cities: ['Cartagena'], codes: {factorCode: 'CAR', factorCode2: 'CREDITO'} },
-      // { name: 'Plan Separe Cartegena', cities: ['Cartagena'], codes: {factorCode: 'CAR', factorCode2: 'CREDITO'} },
+      { name: 'Plan Separe Cartegena', cities: ['Cartagena'], codes: {factorCode: 'CAR', factorCode2: 'CREDITO'} },
       { name: 'Plan Separe Valledupar', cities: ['Valledupar'], codes: {factorCode: 'VAL', factorCode2: 'CREDITO'} },
       { name: 'CREDITOS A EMPLEADOS', cities: ['Barranquilla'], codes: {factorCode: 'BAQ', factorCode2: 'CREDITO'} },
       { name: 'CREDITOS A EMPLEADOS', cities: ['Cartagena'], codes: {factorCode: 'CAR', factorCode2: 'CREDITO'} },
