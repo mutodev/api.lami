@@ -108,11 +108,9 @@ export class TaskOrderService {
                             });
                             console.log('respuesta crear order', { result })
                             if (result.status === 200) {
-                                order.sendToSap = true;
-                                const orderUpdate = await this.prismaService.order.update({ where: { id: order.id }, data: { sendToSap: true } });
-                                                              
-                                this.clientProxi.emit('order/change-status-sap', order.id);
-                                this.clientProxi.emit('order/get-order-created', orderUpdate);
+                                const orderUpdate = await this.prismaService.order.update({ where: { id: order.id }, data: { sendToSap: true, docNumber: result.data.DocNum, integrationId: result.data.DocEntry } });                                      
+                                this.clientProxi.send('order/change-status-sap', order.id);
+                                this.clientProxi.send('order/get-order-created', orderUpdate);
                             } else {
                                 await this.prismaService.order.update({ where: { id: order.id }, data: { sendToSap: false, messageError: result.message } });
                             }
@@ -173,21 +171,10 @@ export class TaskOrderService {
                             console.log('respuesta crear order', { result })
                             if (result.status === 201) {
                                 order.sendToSap = true;
-                                const orderUpdate = await this.prismaService.order.update({ where: { id: order.id }, data: { sendToSap: true, docNumber: result.data.DocNum, integrationId: result.data.DocEntry } });
+                                const orderUpdate = await this.prismaService.order.update({ where: { id: order.id }, data: { sendToSap: true } });
                                 
-                                order.orderDetails.map(async (detail) => {
-                                    try {
-                                        const item = await this.productService.findOne(detail.itemCode, 'QuantityOnStock,QuantityOrderedFromVendors,QuantityOrderedByCustomers');
-                                        await this.prismaService.items.updateMany({where: {code: detail.itemCode}, data: {quantityOnStock: item.data.QuantityOnStock,
-                                                                                                        quantityOrderedFromVendors: item.data.QuantityOrderedFromVendors,
-                                                                                                        quantityOrderedByCustomers: item.data.QuantityOrderedByCustomers}});
-                                    } catch (error) {
-                                        console.log('update item', error);
-                                    }                               
-                                });
-
-                                this.clientProxi.emit('order/change-status-sap', order.id);
-                                this.clientProxi.emit('order/get-order-created', orderUpdate);
+                                this.clientProxi.send('order/change-status-sap', order.id);
+                                this.clientProxi.send('order/get-order-created', orderUpdate);
                             } else {
                                 await this.prismaService.order.update({ where: { id: order.id }, data: { sendToSap: false, messageError: result.message } });
                             }

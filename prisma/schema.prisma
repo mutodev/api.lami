@@ -308,7 +308,6 @@ model OrderDetailPQR {
   updatedAt     DateTime @updatedAt
 }
 
-
 model Prices {
   id            String @default(uuid()) @id
   code          String? @db.VarChar(100)

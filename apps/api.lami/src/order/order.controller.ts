@@ -103,7 +103,9 @@ export class OrderController {
     }));
     const result = await this.orderService.update({
       where: { id }, data: {
-        ...order, userId: req.user.id, orderDetails: {
+        ...order, 
+        userId: req.user.id, 
+        orderDetails: {
           create: [
             ...(details as any[])
           ]
@@ -123,7 +125,7 @@ export class OrderController {
   }
 
   @Public()
-  @EventPattern('order/change-status-sap')
+  @MessagePattern('order/change-status-sap')
   async changeStatusSap(@Payload() orderId: string, @Ctx() context: RedisContext): Promise<any> {
     try {
       const order = await this.orderService.findOne({ id: orderId });
@@ -156,7 +158,7 @@ export class OrderController {
   }
 
   @Public()
-  @EventPattern('order/get-order-created')
+  @MessagePattern('order/get-order-created')
   async getOrderCreated(@Payload() order: any, @Ctx() context: RedisContext): Promise<any> {
     try {
       seeEventOrderCreatedStream.next({ data: order });
