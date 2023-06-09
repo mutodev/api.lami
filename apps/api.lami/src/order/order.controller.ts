@@ -54,11 +54,9 @@ export class OrderController {
   async findAll(@Request() req: Request) {
     const search = req['query'].search || '';
     const isNum = !isNaN(search.trim());
-    const result = await this.orderService.findAll({
-      page: req['query'].page,
-      perPage: req['query'].perPage,
-      orderBy: { createdAt: 'desc' },
-      where: {
+    let where = null;
+    if (search) {
+      where = {
         OR: [
           { docNumber: isNum ? +search : 0 },
           { customer: { identification: { contains: search, mode: 'insensitive' } } },
@@ -66,6 +64,12 @@ export class OrderController {
           { customer: { lastName: { contains: search, mode: 'insensitive' } } }
         ]
       }
+    }
+    const result = await this.orderService.findAll({
+      page: req['query'].page,
+      perPage: req['query'].perPage,
+      orderBy: { createdAt: 'desc' },
+      where    
     });
     return successResponse('', result);
   }
