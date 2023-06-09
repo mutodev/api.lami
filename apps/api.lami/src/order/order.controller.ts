@@ -54,11 +54,15 @@ export class OrderController {
   async findAll(@Request() req: Request) {
     const search = req['query'].search || '';
     const isNum = !isNaN(search.trim());
-    let where = null;
+    let where: any = {};
     if (search) {
+      let condition = [];
+      if (isNum) {
+        condition.push({ docNumber: +search})
+      }
       where = {
         OR: [
-          { docNumber: isNum ? +search : 0 },
+          ...condition,
           { customer: { identification: { contains: search, mode: 'insensitive' } } },
           { customer: { firstName: { contains: search, mode: 'insensitive' } } },
           { customer: { lastName: { contains: search, mode: 'insensitive' } } }
