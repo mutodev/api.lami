@@ -78,7 +78,7 @@ export class IntegrationSapService {
       { name: 'Brilla Valledupar', cities: ['Valledupar'], codes: {factorCode: 'VAL', factorCode2: 'BRILLA'} },
       { name: 'Contado Barranquilla', cities: ['Barranquilla'], codes: {factorCode: 'BAQ', factorCode2: 'CONTADO'} },
       { name: 'Contado Cartagena', cities: ['Cartagena'], codes: {factorCode: 'CAR', factorCode2: 'CONTADO'} },
-      // { name: 'Contado Cartegena', cities: ['Cartagena'], codes: {factorCode: 'CAR', factorCode2: 'CONTADO'} },
+      { name: 'Contado Cartegena', cities: ['Cartagena'], codes: {factorCode: 'CAR', factorCode2: 'CONTADO'} },
       { name: 'Contado Valledupar', cities: ['Valledupar'], codes: {factorCode: 'VAL', factorCode2: 'CONTADO'} },
       { name: 'Contraentrega Barranquilla', cities: ['Barranquilla'], codes: {factorCode: 'BAQ', factorCode2: 'CONTADO'} },
       { name: 'Contraentrega Cartagena', cities: ['Cartagena'], codes: {factorCode: 'CAR', factorCode2: 'CONTADO'} },
