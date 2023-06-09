@@ -1,6 +1,7 @@
 import { Inject, Injectable, Logger } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
 import { Cron, CronExpression } from '@nestjs/schedule';
+import { EasyconfigService } from 'nestjs-easyconfig';
 import { firstValueFrom } from 'rxjs';
 import { AuthService } from '../../auth/auth.service';
 import { ApiHttp } from '../../commons/api-http.service';
@@ -20,11 +21,13 @@ export class TaskCustomerService {
         private apiHttp: ApiHttp,
         private customerService: CustomerService,
         private authService: AuthService,
+        private _env: EasyconfigService,
         @Inject('CLIENT_SERVICE') private clientProxi: ClientProxy) { }
 
     @Cron(CronExpression.EVERY_10_SECONDS)
     async handleCron() {
         try {
+            if (this._env.get('RUN_CRON') === 'no') return;
             if (!isRunning) {
                 // await this.cacheManager.set('isRunning', 'yes');
                 isRunning = true;

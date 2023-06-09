@@ -41,9 +41,9 @@ export class OrderController {
           ]
         }
       });
-      this.clientProxi.send('order/create', {id: result.id}).subscribe((result) => {
-        console.log({result});
-      });
+      // this.clientProxi.send('order/create', {id: result.id}).subscribe((result) => {
+      //   console.log({result});
+      // });
       return successResponse('Registro guardado satisfactoriamente.', result);
     } catch (error) {
       throw error;
@@ -110,9 +110,9 @@ export class OrderController {
         }
       }
     });
-    this.clientProxi.send('order/update', {id: result.id}).subscribe((result) => {
-      console.log({result});
-    });
+    // this.clientProxi.send('order/update', {id: result.id}).subscribe((result) => {
+    //   console.log({result});
+    // });
     return successResponse('Registro actualizado satisfactoriamente.', result);
   }
 

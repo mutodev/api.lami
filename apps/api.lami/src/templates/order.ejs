@@ -109,7 +109,7 @@
           <div class="info_l">
             <p style="
     font-size: 2rem!important;
-">No. <%= data.docNumber.toString().padStart(6, '0') %>
+">No. <%= (data.docNumber || '0').toString().padStart(6, '0') %>
             </p>
             <p>Fecha de Creación <%=new Intl.DateTimeFormat('es-CO').format(data.date)%>
             </p>

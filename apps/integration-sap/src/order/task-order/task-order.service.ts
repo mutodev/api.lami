@@ -1,6 +1,7 @@
 import { Inject, Injectable, Logger } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
 import { Cron, CronExpression } from '@nestjs/schedule';
+import { EasyconfigService } from 'nestjs-easyconfig';
 import { AuthService } from '../../auth/auth.service';
 import { EnumCustomerType } from '../../commons/enum-customer-type';
 import { PrismaService } from '../../commons/prisma.service';
@@ -20,11 +21,13 @@ export class TaskOrderService {
         private productService: ProductService,
         private authService: AuthService,
         private customerService: CustomerService,
+        private _env: EasyconfigService,
         @Inject('CLIENT_SERVICE') private clientProxi: ClientProxy) { }
 
     @Cron(CronExpression.EVERY_10_SECONDS)
     async handleCron() {
         try {
+            if (this._env.get('RUN_CRON') === 'no') return;
             if (!isRunning) {
                 // await this.cacheManager.set('isRunning', 'yes');
                 isRunning = true;
@@ -50,7 +53,7 @@ export class TaskOrderService {
     async createOrder() {
         try {
 
-            const orders = await this.prismaService.order.findMany({ where: { sendToSap: false }, include: { customer: true, orderDetails: true } });
+            const orders = await this.prismaService.order.findMany({ where: {OR: [{ sendToSap: false }, { sendToSap: null }]}, include: { customer: true, orderDetails: true } });
 
             if (orders.length > 0) {
                 const setting = await this.prismaService.setting.findFirst({where: {name: 'Project'}, include: {settingDetail: true}});
