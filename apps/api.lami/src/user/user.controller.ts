@@ -22,7 +22,14 @@ export class UserController {
 
   @Get()
   async findAll(@Request() req: Request) {
-    const result = await this.userService.findAll({page: req['query'].page, perPage: req['query'].perPage});
+    const result = await this.userService.findAll({
+      page: req['query'].page, 
+      perPage: req['query'].perPage,
+      where: {OR: [{userName: {contains: req['query'].search || '', mode: 'insensitive'}}, 
+      {firstName: {contains: req['query'].search || '', mode: 'insensitive'}}, 
+      {lastName: {contains: req['query'].search || '', mode: 'insensitive'}},
+      {salesPersonCode: {contains: req['query'].search || '', mode: 'insensitive'}}]}
+    });
     return successResponse('', result);
   }
 
