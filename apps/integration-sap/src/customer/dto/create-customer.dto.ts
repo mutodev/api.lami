@@ -23,6 +23,7 @@ export class CreateCustomerDto {
     U_HBT_Nacional?: string;
     U_HBT_RegFis?: string;
     U_HBT_ResFis?: string;
+    U_HBT_ResFis1?: string;
     U_HBT_MedPag?: string;
     U_HBT_ActEco?: string;
     U_HBT_Residente: string;

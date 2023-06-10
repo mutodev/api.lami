@@ -25,6 +25,7 @@ export class SettingController {
 
   @Get(':name')
   findOne(@Req() req, @Param('name') name: string) {
+    console.log(req.user)
     return this.settingService.findOne({name}, req.user?.salesPersonCode);
   }
 
