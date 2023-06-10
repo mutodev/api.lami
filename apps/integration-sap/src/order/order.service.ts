@@ -213,4 +213,14 @@ export class OrderService {
     }
   }
 
+  async findAllByCustomer(cardCode: string) {
+    const result = await this.apiHttp.get<any>(`${EnumApis.ORDER}?$filter=CardCode eq '${cardCode}'&$select=DocEntry`);
+    return result;
+  }
+
+  async cancel(orderCode: string) {
+    const result = await this.apiHttp.post<any>(`${EnumApis.ORDER}('${orderCode}/Cancel')`);
+    return result;
+  }
+
 }

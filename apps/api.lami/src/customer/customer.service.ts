@@ -45,6 +45,7 @@ export class CustomerService {
           identification: `CL-${identification}`,
           cardType: customer.source,
           FederalTaxID: identification,
+          U_HBT_ResFis: 'R-99-PN',
           name: nameV,
           U_HBT_MunMed,
           codeUpdated: `CL-${identification}`,

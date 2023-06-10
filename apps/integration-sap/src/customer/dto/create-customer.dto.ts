@@ -25,6 +25,7 @@ export class CreateCustomerDto {
     U_HBT_ResFis?: string;
     U_HBT_MedPag?: string;
     U_HBT_ActEco?: string;
+    U_HBT_Residente: string;
     BPAddresses?: {
         AddressName?: string;
         Street?: string;

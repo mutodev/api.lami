@@ -323,4 +323,32 @@ export class IntegrationSapService {
     return 'Migrado';
   }
 
+  async cancelOrders(cardCode: string) {
+    await this.authService.login();
+    let hasItems = true;
+    let result: any;
+    
+   
+    while (hasItems) {
+      if (!result) {
+        result = await this.apiHttp.get<any>(`${EnumApis.ORDER}?$filter=CardCode eq '${cardCode}'&$select=DocEntry`);
+      } else {
+        if (result.data["odata.nextLink"]) {
+          result = await this.apiHttp.get<any>(`/${result.data["odata.nextLink"]}`);
+        } else {
+          hasItems = false;
+          break;
+        }
+      }
+      
+      await Promise.all(result.data.value.map(async (item) => {     
+        if (item.CardCode == cardCode) {
+          const result = await this.apiHttp.post<any>(`${EnumApis.ORDER}(${item.DocEntry})/Cancel`);
+          console.log('cancle', {result});
+        }
+      }));
+    }
+    return 'Canceladas';
+  }
+
 }

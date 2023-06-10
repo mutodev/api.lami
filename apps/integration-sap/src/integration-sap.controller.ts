@@ -1,4 +1,4 @@
-import { Controller, Get } from '@nestjs/common';
+import { Body, Controller, Get, Post } from '@nestjs/common';
 import { CustomerService } from './customer/customer.service';
 import { IntegrationSapService } from './integration-sap.service';
 
@@ -41,5 +41,10 @@ export class IntegrationSapController {
   async migrateCustomers() {
     return await this.customerService.migrateCustomers();
   }
+
+  // @Post('cancel/order')
+  // async cancelOrder(@Body() payload: {CardCode:  string}) {
+  //   return await this.integrationSapService.cancelOrders(payload.CardCode);
+  // }
 
 }
