@@ -153,6 +153,7 @@ export class TaskOrderService {
                                 DocumentLines: order.orderDetails.map((item) => {
                                     const project = setting.settingDetail.find((d) => d.code == item.project);
                                     return {
+                                        LiineNum: item.lineNumber,
                                         ItemCode: item.itemCode,
                                         Quantity: item.amount,
                                         UnitPrice: item.value,

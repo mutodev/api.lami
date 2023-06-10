@@ -162,7 +162,8 @@ export class OrderService {
         arTaxCode: item.TaxCode || '',
         vat: item.TaxTotal,
         project: customer.project,
-        aditionalInfo: ''
+        aditionalInfo: '',
+        lineNumber: item.LineNum
       };
       await this.prisma.orderDetail.create({data});
     }));

@@ -30,9 +30,9 @@ export class OrderController {
     try {
       const { orderDetails, ...order } = createOrderDto;
       const customer = await this.customerService.findOne({ id: createOrderDto.customerId });
-      const details = await Promise.all(orderDetails.map(async (detail) => {
+      const details = await Promise.all(orderDetails.map(async (detail, i) => {
         const item = await this.itemsService.findByCode(detail.itemCode);
-        return { ...detail, arTaxCode: item.arTaxCode, project: customer.project || '0022' };
+        return { ...detail, arTaxCode: item.arTaxCode, project: customer.project || '0022', lineNumber: i };
       }));
       const result = await this.orderService.create({
         ...order, customerId: createOrderDto.customerId, userId: req.user.id, statusId: EnumOrderStatus.PorCobrar, orderDetails: {
@@ -97,9 +97,9 @@ export class OrderController {
   @Patch(':id')
   async update(@Req() req, @Param('id') id: string, @Body() updateOrderDto: UpdateOrderDto) {
     const { orderDetails, ...order } = updateOrderDto;
-    const details = await Promise.all(orderDetails.map(async (detail) => {
+    const details = await Promise.all(orderDetails.map(async (detail, i) => {
       const item = await this.itemsService.findByCode(detail.itemCode);
-      return { ...detail, arTaxCode: item.arTaxCode }
+      return { ...detail, arTaxCode: item.arTaxCode, lineNumber: i };
     }));
     const result = await this.orderService.update({
       where: { id }, data: {
