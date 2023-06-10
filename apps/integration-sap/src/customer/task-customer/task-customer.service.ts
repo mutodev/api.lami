@@ -92,6 +92,7 @@ export class TaskCustomerService {
                                 U_HBT_Nacional: customer.U_HBT_Nacional,
                                 U_HBT_RegFis: customer.U_HBT_RegFis || null,
                                 U_HBT_ResFis: customer.U_HBT_ResFis || null,
+                                U_HBT_ResFis1: customer.U_HBT_ResFis || null,
                                 U_HBT_MedPag: customer.U_HBT_MedPag,
                                 U_HBT_ActEco: customer.U_HBT_ActEco || null,
                                 U_HBT_Residente: 'SI',
