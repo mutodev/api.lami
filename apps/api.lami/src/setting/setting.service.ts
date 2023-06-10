@@ -52,7 +52,7 @@ export class SettingService {
     }
   }
 
-  async findOne(settingWhereUniqueInput: Prisma.SettingWhereUniqueInput, salesPersonCode: string): Promise<Model | null> {
+  async findOne(settingWhereUniqueInput: Prisma.SettingWhereUniqueInput, salesPersonCode: string) {
     // los que se deben mostrar por ciudad
     if (['PayTermsGrpCode', 'SalesPersonCode', 'CUSTOMER_GROUP', 'SERIES'].includes(settingWhereUniqueInput.name)) {
       const salesCode = await this.prisma.settingDetail.findFirst({ where: {code: salesPersonCode, setting: {name: 'SalesPersonCode'}}});
@@ -97,15 +97,52 @@ export class SettingService {
     });
   }
 
-  async findSalesPersonCode(): Promise<Model | null> {
+  async findSalesPersonCode() {
    
-    return await this.prisma.setting.findUnique({
-      where: {name: 'SalesPersonCode'}, 
-      include: {
-        settingDetail: { where: {active: true}, orderBy: {name: 'asc'}}
-      }
-    });
+    // return await this.prisma.setting.findUnique({
+    //   where: {name: 'SalesPersonCode'}, 
+    //   include: {
+    //     settingDetail: { where: {active: true}, orderBy: {name: 'asc'}}
+    //   }
+    // });
+    return await this.prisma.settingDetail.findMany({
+      where: {
+        setting: {name: 'SalesPersonCode'},
+        active: true
+      },
+      orderBy: {name: 'asc'}
+    })
     
+  }
+
+  async findAllDetails(settingWhereUniqueInput: Prisma.SettingWhereUniqueInput, salesPersonCode: string) {
+    // los que se deben mostrar por ciudad
+    if (['PayTermsGrpCode', 'SalesPersonCode', 'CUSTOMER_GROUP', 'SERIES'].includes(settingWhereUniqueInput.name)) {
+      const salesCode = await this.prisma.settingDetail.findFirst({ where: {code: salesPersonCode, setting: {name: 'SalesPersonCode'}}});
+      let cities = (salesCode.extendedData as Prisma.JsonObject)?.cities as any[];
+      return await this.prisma.settingDetail.findMany({
+        where: {
+          setting: {
+            name: settingWhereUniqueInput.name
+          },
+          extendedData: {
+            path: ['cities'],
+            array_contains: cities
+          },
+          active: true
+        },
+        orderBy: {name: settingWhereUniqueInput.name == 'Project' ? 'desc' : 'asc'}
+      })
+    } else {
+      return await this.prisma.settingDetail.findMany({
+        where: {setting: {
+          name: settingWhereUniqueInput.name
+        },
+        active: true
+        },
+        orderBy: {name: settingWhereUniqueInput.name == 'Project' ? 'desc' : 'asc'}
+      });
+    }
   }
 
 }

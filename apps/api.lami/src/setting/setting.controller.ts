@@ -4,6 +4,7 @@ import { CreateSettingDto } from './dto/create-setting.dto';
 import { UpdateSettingDto } from './dto/update-setting.dto';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { JwtAuthGuard } from './../commons/guards';
+import { successResponse } from '../commons/functions';
 
 @ApiTags('SETTING')
 @ApiBearerAuth()
@@ -24,9 +25,10 @@ export class SettingController {
   }
 
   @Get(':name')
-  findOne(@Req() req, @Param('name') name: string) {
+  async findOne(@Req() req, @Param('name') name: string) {
     console.log(req.user)
-    return this.settingService.findOne({name}, req.user?.salesPersonCode);
+    const result = await this.settingService.findOne({name}, req.user?.salesPersonCode);
+    return successResponse('', result);
   }
 
   @Patch(':id')
@@ -39,9 +41,22 @@ export class SettingController {
     return this.settingService.remove({id});
   }
 
-  @Get('sales/personcode')
-  findSalesPersonCode() {
-    return this.settingService.findSalesPersonCode();
+  @Get('all/details/sales/personcode')
+  async findSalesPersonCode() {
+    const result = await this.settingService.findSalesPersonCode();
+    return successResponse('', result);
   }
+
+  @Get('all/details/:name')
+  async findAllDetails(@Req() req, @Param('name') name: string) {
+    const result = await this.settingService.findAllDetails({name}, req.user?.salesPersonCode);
+    return successResponse('', result);
+  }
+
+  @Get('all/details/by-city/:name/:salesperson')
+  async findAllDetailsByCity(@Req() req, @Param('name') name: string, @Param('salesperson') salesperson: string) {
+    const result = await this.settingService.findAllDetails({name}, salesperson);
+    return successResponse('', result);
+  }  
 
 }
