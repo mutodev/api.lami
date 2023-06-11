@@ -56,7 +56,7 @@ export class TaskOrderService {
             const orders = await this.prismaService.order.findMany({ where: {OR: [{ sendToSap: false }, { sendToSap: null }]}, include: { customer: true, orderDetails: true } });
 
             if (orders.length > 0) {
-                const setting = await this.prismaService.setting.findFirst({where: {name: 'Project'}, include: {settingDetail: true}});
+                const settingDetail = await this.prismaService.settingDetail.findMany({where: {setting: { name: 'Project'}}});
                 await Promise.all(orders.map(async (order) => {
                     if (!order.integrationId) {
                         try {       
@@ -89,7 +89,7 @@ export class TaskOrderService {
                                 VatSum: order.vatTotal || 0,
                                 DocTotal: order.total || 0,
                                 DocumentLines: order.orderDetails.map((item) => {
-                                    const project = setting.settingDetail.find((d) => d.code == item.project);
+                                    const project = settingDetail.find((d) => d.code == item.project);
                                     return {
                                         ItemCode: item.itemCode,
                                         Quantity: item.amount,
@@ -151,7 +151,7 @@ export class TaskOrderService {
                                 VatSum: order.vatTotal || 0,
                                 DocTotal: order.total || 0,
                                 DocumentLines: order.orderDetails.map((item) => {
-                                    const project = setting.settingDetail.find((d) => d.code == item.project);
+                                    const project = settingDetail.find((d) => d.code == item.project);
                                     return {
                                         LiineNum: item.lineNumber,
                                         ItemCode: item.itemCode,

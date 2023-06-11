@@ -97,9 +97,14 @@ export class OrderController {
   @Patch(':id')
   async update(@Req() req, @Param('id') id: string, @Body() updateOrderDto: UpdateOrderDto) {
     const { orderDetails, ...order } = updateOrderDto;
+    // const details = await Promise.all(orderDetails.map(async (detail, i) => {
+    //   const item = await this.itemsService.findByCode(detail.itemCode);
+    //   return { ...detail, arTaxCode: item.arTaxCode, lineNumber: i };
+    // }));
+    const customer = await this.customerService.findOne({ id: updateOrderDto.customerId });
     const details = await Promise.all(orderDetails.map(async (detail, i) => {
       const item = await this.itemsService.findByCode(detail.itemCode);
-      return { ...detail, arTaxCode: item.arTaxCode, lineNumber: i };
+      return { ...detail, arTaxCode: item.arTaxCode, project: customer.project || '0022', lineNumber: i };
     }));
     const result = await this.orderService.update({
       where: { id }, data: {

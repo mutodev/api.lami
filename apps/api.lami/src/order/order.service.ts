@@ -128,7 +128,7 @@ export class OrderService {
       }
     });
     
-    const result = await this.clientProxi.send('order/findone', order.integrationId);    
+    const result = await this.clientProxi.send('order/findone', {orderCode: order.integrationId});    
     const orderSap = await firstValueFrom(result);
     // console.log({orderSap})
     let data = {
@@ -151,11 +151,11 @@ export class OrderService {
     await this.prisma.orderDetail.deleteMany({where: {orderId: order.id}});
     await Promise.all(orderSap.DocumentLines.map(async (item) => {
       const customer = await this.customerService.findOne({id: order.customerId});
-      const data:any = {
+      const data = {
         orderId: order.id,
         itemCode: item.ItemCode,
         description: item.ItemDescription,
-        discount: item.DiscountPercent,
+        discount: item.DiscountPercent || 0,
         amount: item.Quantity,
         value: item.UnitPrice,
         wareHouseCode: item.WarehouseCode,
@@ -165,7 +165,10 @@ export class OrderService {
         aditionalInfo: '',
         lineNumber: item.LineNum
       };
-      await this.prisma.orderDetail.create({data});
+      await this.prisma.orderDetail.create({
+        data: {...data}
+      });
+      // console.log({data})
     }));
 
   }

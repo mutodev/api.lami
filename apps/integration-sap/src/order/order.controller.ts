@@ -111,10 +111,10 @@ export class OrderController {
   }
 
   @MessagePattern('order/findone')
-  async findOne(@Payload() orderCode: string, @Ctx() context: RedisContext) {
+  async findOne(@Payload() payload: { orderCode: string}, @Ctx() context: RedisContext) {
     await this.authService.login();
-    const result = await this.orderService.findOne(orderCode);
-    return result;
+    const result = await this.orderService.findOne(payload.orderCode);
+    return result.data;
   }
 
   @MessagePattern('order/update')

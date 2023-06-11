@@ -29,7 +29,7 @@ export class OrderService {
   async findOne(orderCode: string) {
     try {
       const result = await this.apiHttp.get<any>(`${EnumApis.ORDER}(${orderCode})?$select=*`);
-      // console.log({result})
+      // console.log({result: result.data})
       return result;
     } catch (error) {
       throw error;
