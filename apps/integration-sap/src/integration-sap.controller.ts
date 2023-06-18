@@ -21,8 +21,9 @@ export class IntegrationSapController {
     return await this.integrationSapService.migratePayTermsGrpCodes();
   }
 
-  @Get('migrateSalesPersonCode')
-  async migrateSalesPersonCode() {
+  // @Get('migrateSalesPersonCode')
+  @MessagePattern('integration-salesperson/migrate')
+  async migrateSalesPersonCode(@Ctx() context: RedisContext) {
     return await this.integrationSapService.migrateSalesPersonCode();
   }
 

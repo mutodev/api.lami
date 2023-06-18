@@ -24,13 +24,15 @@ export class CustomerController {
     return await this.customerService.findAll(req['query']?.dato, req['query']?.skip);
   }
 
-  @Get('migrate/:id')
-  async migrate(@Request() req, @Param('id') id: string) {
+  // @Get('migrate/:id')
+  @MessagePattern('customer/migrate')
+  async migrate(@Ctx() context: RedisContext) {
     await this.authService.login();
-    const result = await this.customerService.findAll(req['query']?.dato, req['query']?.skip);
-    result.data.value.map(async (c) => {
-      this.prismaService.customer.findFirst({where: {identification: c.CardCode}});
-    })
+    return await this.customerService.migrateCustomers();
+    // const result = await this.customerService.findAll(req['query']?.dato, req['query']?.skip);
+    // result.data.value.map(async (c) => {
+    //   this.prismaService.customer.findFirst({where: {identification: c.CardCode}});
+    // })
   }
 
   @MessagePattern('customer/create')

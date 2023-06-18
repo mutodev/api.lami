@@ -155,4 +155,9 @@ export class SettingService {
     return await firstValueFrom(result);
   }
 
+  async migrateSalesPerson() {
+    const result = this.clientProxi.send('integration-salesperson/migrate', null);
+    return await firstValueFrom(result);
+  }
+
 }

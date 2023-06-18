@@ -71,4 +71,10 @@ export class SettingController {
     return successResponse('', result);
   }
 
+  @Post('migrate-sales-person')
+  async migrateSalesPerson() {
+    const result = await this.settingService.migrateSalesPerson();
+    return successResponse(result, null);
+  }
+
 }

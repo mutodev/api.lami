@@ -99,4 +99,10 @@ export class CustomerController {
   //   return interval(1000).pipe(map((_) => ({ data: { hello: 'world' } } as any)));
   // }
 
+  @Post('migrate-customer')
+  async migrateCustomer(@Param('id') id: string) {
+    const result = await this.customerService.migrateCustomer();
+    return successResponse(result, null);
+  }
+
 }

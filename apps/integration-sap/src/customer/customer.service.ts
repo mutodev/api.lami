@@ -133,7 +133,7 @@ export class CustomerService {
                 throw error;
             }
         }
-        return 'Migrado.';
+        return 'Clientes migrado.';
     } catch (error) {
         throw error;
         // console.log('migrateItems', error)

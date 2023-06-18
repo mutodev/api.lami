@@ -165,7 +165,7 @@ export class IntegrationSapService {
         })
       }));
     }
-    return 'Migrado';
+    return 'Vendedores migrados.';
   }
 
   async getSalesPersons(url: string) {
