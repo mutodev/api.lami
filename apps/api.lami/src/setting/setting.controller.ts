@@ -59,4 +59,16 @@ export class SettingController {
     return successResponse('', result);
   }  
 
+  @Get('get-sales-person/from-sap/')
+  async getSalesPersonFromSap(@Req() req, @Param('city') city: string) {
+    const result = await this.settingService.getSalesPersonFromSap(city);
+    return successResponse('', result);
+  }
+
+  @Get('get-sales-person/from-sap/:city')
+  async getAllSalesPersonFromSap(@Req() req, @Param('city') city: string) {
+    const result = await this.settingService.getSalesPersonFromSap(city);
+    return successResponse('', result);
+  }
+
 }
