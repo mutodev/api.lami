@@ -234,7 +234,7 @@ export class CustomerService {
   }
 
   async migrateCustomer() {
-    const result = this.clientProxi.send('customer/migrate', null);
+    const result = this.clientProxi.send('customer/migrate', {});
     return await firstValueFrom(result);
   }
 

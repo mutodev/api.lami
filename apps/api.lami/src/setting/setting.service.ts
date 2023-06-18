@@ -156,7 +156,7 @@ export class SettingService {
   }
 
   async migrateSalesPerson() {
-    const result = this.clientProxi.send('integration-salesperson/migrate', null);
+    const result = this.clientProxi.send('integration-salesperson/migrate', {});
     return await firstValueFrom(result);
   }
 
