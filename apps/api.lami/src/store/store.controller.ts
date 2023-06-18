@@ -17,7 +17,7 @@ export class StoreController {
   @Post()
   async create(@Request() req: Request, @Body() createStoreDto: CreateStoreDto) {
     const result = await this.storeService.create(createStoreDto);
-    return successResponse('', result);
+    return successResponse('Registro guardado satisfactoriamente.', result);
   }
 
   @Get()

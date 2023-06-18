@@ -10,7 +10,7 @@ import { ProductModule } from './product/product.module';
 import { WarehoureModule } from './warehoure/warehoure.module';
 import { SerieModule } from './serie/serie.module';
 import { CommonsModule } from './commons/commons.module';
-import { ClientsModule, Transport } from '@nestjs/microservices';
+import { CacheModule } from '@nestjs/cache-manager';
 
 @Module({
   imports: [
@@ -21,7 +21,8 @@ import { ClientsModule, Transport } from '@nestjs/microservices';
     OrderModule,
     ProductModule,
     WarehoureModule,
-    SerieModule
+    SerieModule,
+    CacheModule.register(),
     ],
   controllers: [IntegrationSapController],
   providers: [IntegrationSapService],

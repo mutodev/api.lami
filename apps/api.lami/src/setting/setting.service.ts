@@ -1,15 +1,16 @@
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
+import { ClientProxy } from '@nestjs/microservices';
 import { Setting as Model, Prisma } from '@prisma/client';
+import { firstValueFrom } from 'rxjs';
 import { PaginationService } from './../commons/services/pagination/pagination.service';
 import { PrismaService } from './../commons/services/prisma.service';
-import { CreateSettingDto } from './dto/create-setting.dto';
-import { UpdateSettingDto } from './dto/update-setting.dto';
 
 @Injectable()
 export class SettingService {
 
   constructor(public prisma: PrismaService,
-    private paginationService: PaginationService) { }
+    private paginationService: PaginationService,
+    @Inject('CLIENT_SERVICE') private clientProxi: ClientProxy) { }
 
   async create(data: Prisma.SettingCreateInput): Promise<Model> {
     return this.prisma.setting.create({
@@ -147,6 +148,11 @@ export class SettingService {
         orderBy: { name: settingWhereUniqueInput.name == 'Project' ? 'desc' : 'asc' }
       });
     }
+  }
+
+  async getSalesPersonFromSap(city: string = '') {
+    const result = this.clientProxi.send('integration/get-sales-person-code', {city});
+    return await firstValueFrom(result);
   }
 
 }

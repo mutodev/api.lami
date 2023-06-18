@@ -13,7 +13,7 @@ export class AuthService {
   async login() {
     try {
       const result = await this.apiHttp.login();
-      console.log({result})
+      // console.log({result})
       return result;
     } catch (error) {
       console.log(error)

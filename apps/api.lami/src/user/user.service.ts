@@ -6,13 +6,15 @@ import {
 } from '@prisma/client';
 import * as bcrypt from 'bcrypt';
 import { PaginationService } from './../commons/services/pagination/pagination.service';
+import { SettingService } from '../setting/setting.service';
 
 @Global()
 @Injectable()
 export class UserService {
   
   constructor(public prisma: PrismaService,
-              private paginationService: PaginationService) {}
+              private paginationService: PaginationService,
+              private settingService: SettingService) {}
   
   async create(data: Prisma.UserUncheckedCreateInput): Promise<Model> {
     try {
@@ -40,6 +42,8 @@ export class UserService {
     perPage?: number
   }): Promise<Model[] | any> {
     const { skip, take, cursor, where, orderBy } = params;
+    const salesPersons = await this.settingService.getSalesPersonFromSap('Todos');
+    console.log({salesPersons})
     if (params.page > 0) {
       const paginate = this.paginationService.createPaginator({page: params.page, perPage: params.perPage });
       const result = await paginate<Model, Prisma.UserFindManyArgs>(
@@ -52,6 +56,7 @@ export class UserService {
           result.data = await Promise.all(result.data.map(async (item) => {
             let setting = {};
             if (item.salesPersonCode)
+              // setting = salesPersons.find((sp) => sp.code?.toString() == item.salesPersonCode?.toString());
               setting = await this.prisma.settingDetail.findFirst({where: {setting: {name: 'SalesPersonCode',}, code: item.salesPersonCode}});
             return {...item, salesPerson: setting};
           }))
@@ -68,6 +73,7 @@ export class UserService {
       return await Promise.all(result.map(async (item) => {
         let setting = {};
         if (item.salesPersonCode)
+          // setting = salesPersons.find((sp) => sp.code?.toString() == item.salesPersonCode.toString());
           setting = await this.prisma.settingDetail.findFirst({where: {setting: {name: 'SalesPersonCode',}, code: item.salesPersonCode}});
         return {...item, salesPerson: setting};
       }));

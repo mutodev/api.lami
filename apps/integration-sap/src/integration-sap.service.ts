@@ -1,10 +1,11 @@
+import { CacheKey, CacheTTL, CACHE_MANAGER } from '@nestjs/cache-manager';
 import { Inject, Injectable } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
+import { Cache } from 'cache-manager';
 import { AuthService } from './auth/auth.service';
 import { ApiHttp } from './commons/api-http.service';
 import { EnumApis } from './commons/enum-apis';
-import { EnumCustomerType } from './commons/enum-customer-type';
-import { convertCity } from './commons/functions';
+import { convertCity, convertCityToSap } from './commons/functions';
 import { PrismaService } from './commons/prisma.service';
 
 @Injectable()
@@ -12,7 +13,8 @@ export class IntegrationSapService {
 
   constructor(private apiHttp: ApiHttp,
     private prismaService: PrismaService,
-    private authService: AuthService) { }
+    private authService: AuthService,
+    @Inject(CACHE_MANAGER) private cacheManager: Cache) { }
 
   async migrateGrupos() {
     await this.authService.login();
@@ -22,7 +24,7 @@ export class IntegrationSapService {
     const setting = await this.prismaService.setting.create({
       data: { name: 'CUSTOMER_GROUP' }
     });
-    let data =  [{ name: 'CLCONTADOBAQ', cities: ['Barranquilla'] },
+    let data = [{ name: 'CLCONTADOBAQ', cities: ['Barranquilla'] },
     { name: 'CLCONTADOVALLE', cities: ['Valledupar'] },
     { name: 'CLCONTADOCART', cities: ['Cartagena'] },
     { name: 'CLBRILLABAQ', cities: ['Barranquilla'] },
@@ -54,7 +56,7 @@ export class IntegrationSapService {
               name: item.Name,
               code: item.Code + "",
               settingId: setting.id,
-              extendedData: {cities: obj.cities},
+              extendedData: { cities: obj.cities },
               active: !!obj
             }
           });
@@ -72,27 +74,27 @@ export class IntegrationSapService {
     const setting = await this.prismaService.setting.create({
       data: { name: 'PayTermsGrpCode' }
     });
-    const data =  [
-      { name: 'Brilla Barranquilla', cities: ['Barranquilla'], codes: {factorCode: 'BAQ', factorCode2: 'BRILLA'} },
-      { name: 'Brilla Cartagena', cities: ['Cartagena'], codes: {factorCode: 'CAR', factorCode2: 'BRILLA'} },
-      { name: 'Brilla Valledupar', cities: ['Valledupar'], codes: {factorCode: 'VAL', factorCode2: 'BRILLA'} },
-      { name: 'Contado Barranquilla', cities: ['Barranquilla'], codes: {factorCode: 'BAQ', factorCode2: 'CONTADO'} },
-      { name: 'Contado Cartagena', cities: ['Cartagena'], codes: {factorCode: 'CAR', factorCode2: 'CONTADO'} },
-      { name: 'Contado Cartegena', cities: ['Cartagena'], codes: {factorCode: 'CAR', factorCode2: 'CONTADO'} },
-      { name: 'Contado Valledupar', cities: ['Valledupar'], codes: {factorCode: 'VAL', factorCode2: 'CONTADO'} },
-      { name: 'Contraentrega Barranquilla', cities: ['Barranquilla'], codes: {factorCode: 'BAQ', factorCode2: 'CONTADO'} },
-      { name: 'Contraentrega Cartagena', cities: ['Cartagena'], codes: {factorCode: 'CAR', factorCode2: 'CONTADO'} },
-      { name: 'Contraentrega Valledupar', cities: ['Valledupar'], codes: {factorCode: 'VAL', factorCode2: 'CONTADO'} },
-      { name: 'Obsequio', cities: ['Barranquilla'], codes: {factorCode: 'BAQ', factorCode2: ''} },
-      { name: 'Obsequio', cities: ['Cartagena' ], codes: {factorCode: 'CAR', factorCode2: ''} },
-      { name: 'Obsequio', cities: ['Valledupar' ], codes: {factorCode: 'VAL', factorCode2: ''} },
-      { name: 'Plan Separe Barranquilla', cities: ['Barranquilla'], codes: {factorCode: 'BAQ', factorCode2: 'CREDITO'} },
-      { name: 'Plan Separe Cartagena', cities: ['Cartagena'], codes: {factorCode: 'CAR', factorCode2: 'CREDITO'} },
-      { name: 'Plan Separe Cartegena', cities: ['Cartagena'], codes: {factorCode: 'CAR', factorCode2: 'CREDITO'} },
-      { name: 'Plan Separe Valledupar', cities: ['Valledupar'], codes: {factorCode: 'VAL', factorCode2: 'CREDITO'} },
-      { name: 'CREDITOS A EMPLEADOS', cities: ['Barranquilla'], codes: {factorCode: 'BAQ', factorCode2: 'CREDITO'} },
-      { name: 'CREDITOS A EMPLEADOS', cities: ['Cartagena'], codes: {factorCode: 'CAR', factorCode2: 'CREDITO'} },
-      { name: 'CREDITOS A EMPLEADOS', cities: ['Valledupar'], codes: {factorCode: 'VAL', factorCode2: 'CREDITO'} }
+    const data = [
+      { name: 'Brilla Barranquilla', cities: ['Barranquilla'], codes: { factorCode: 'BAQ', factorCode2: 'BRILLA' } },
+      { name: 'Brilla Cartagena', cities: ['Cartagena'], codes: { factorCode: 'CAR', factorCode2: 'BRILLA' } },
+      { name: 'Brilla Valledupar', cities: ['Valledupar'], codes: { factorCode: 'VAL', factorCode2: 'BRILLA' } },
+      { name: 'Contado Barranquilla', cities: ['Barranquilla'], codes: { factorCode: 'BAQ', factorCode2: 'CONTADO' } },
+      { name: 'Contado Cartagena', cities: ['Cartagena'], codes: { factorCode: 'CAR', factorCode2: 'CONTADO' } },
+      { name: 'Contado Cartegena', cities: ['Cartagena'], codes: { factorCode: 'CAR', factorCode2: 'CONTADO' } },
+      { name: 'Contado Valledupar', cities: ['Valledupar'], codes: { factorCode: 'VAL', factorCode2: 'CONTADO' } },
+      { name: 'Contraentrega Barranquilla', cities: ['Barranquilla'], codes: { factorCode: 'BAQ', factorCode2: 'CONTADO' } },
+      { name: 'Contraentrega Cartagena', cities: ['Cartagena'], codes: { factorCode: 'CAR', factorCode2: 'CONTADO' } },
+      { name: 'Contraentrega Valledupar', cities: ['Valledupar'], codes: { factorCode: 'VAL', factorCode2: 'CONTADO' } },
+      { name: 'Obsequio', cities: ['Barranquilla'], codes: { factorCode: 'BAQ', factorCode2: '' } },
+      { name: 'Obsequio', cities: ['Cartagena'], codes: { factorCode: 'CAR', factorCode2: '' } },
+      { name: 'Obsequio', cities: ['Valledupar'], codes: { factorCode: 'VAL', factorCode2: '' } },
+      { name: 'Plan Separe Barranquilla', cities: ['Barranquilla'], codes: { factorCode: 'BAQ', factorCode2: 'CREDITO' } },
+      { name: 'Plan Separe Cartagena', cities: ['Cartagena'], codes: { factorCode: 'CAR', factorCode2: 'CREDITO' } },
+      { name: 'Plan Separe Cartegena', cities: ['Cartagena'], codes: { factorCode: 'CAR', factorCode2: 'CREDITO' } },
+      { name: 'Plan Separe Valledupar', cities: ['Valledupar'], codes: { factorCode: 'VAL', factorCode2: 'CREDITO' } },
+      { name: 'CREDITOS A EMPLEADOS', cities: ['Barranquilla'], codes: { factorCode: 'BAQ', factorCode2: 'CREDITO' } },
+      { name: 'CREDITOS A EMPLEADOS', cities: ['Cartagena'], codes: { factorCode: 'CAR', factorCode2: 'CREDITO' } },
+      { name: 'CREDITOS A EMPLEADOS', cities: ['Valledupar'], codes: { factorCode: 'VAL', factorCode2: 'CREDITO' } }
     ];
     while (hasItems) {
       if (!result) {
@@ -117,7 +119,7 @@ export class IntegrationSapService {
                   name: item.PaymentTermsGroupName,
                   code: item.GroupNumber + "",
                   settingId: setting.id,
-                  extendedData: {cities: obj.cities, codes: obj.codes}
+                  extendedData: { cities: obj.cities, codes: obj.codes }
                 }
               });
             }));
@@ -131,7 +133,7 @@ export class IntegrationSapService {
     await this.authService.login();
     let hasItems = true;
     let result: any;
-    await this.prismaService.setting.deleteMany({ where: { name: 'SalesPersonCode' } });
+    await this.prismaService.setting.delete({ where: { name: 'SalesPersonCode' } });
     const setting = await this.prismaService.setting.create({
       data: { name: 'SalesPersonCode' }
     });
@@ -150,7 +152,7 @@ export class IntegrationSapService {
       console.log({ result });
       await Promise.all(result.data.value.map(async (item) => {
         // if (item.Type === 'bbpgt_CustomerGroup')
-       let city = convertCity(item.Remarks);
+        let city = convertCity(item.Remarks);
         await this.prismaService.settingDetail.create({
           data: {
             name: item.SalesEmployeeName,
@@ -213,7 +215,7 @@ export class IntegrationSapService {
                   arTaxCode: item.ArTaxCode,
                   itemsWareHouses: {
                     create: item.ItemWarehouseInfoCollection.map((w) => {
-                      const { WarehouseCode, InStock, ItemCode, Ordered, Committed} = w;
+                      const { WarehouseCode, InStock, ItemCode, Ordered, Committed } = w;
                       let wareHouse = wareHouses.find((a) => a.WarehouseCode == w.WarehouseCode);
                       return {
                         warehouseCode: WarehouseCode,
@@ -228,8 +230,8 @@ export class IntegrationSapService {
                 }
               });
             } catch (error) {
-              console.error({error});
-            }           
+              console.error({ error });
+            }
           }
         }));
     }
@@ -253,15 +255,15 @@ export class IntegrationSapService {
       data: { name: 'Project' }
     });
     console.log({ result })
-    let projects =   [
-      { code:"0011", name: "Retail TV-Radio", field: 'retail'} ,
-      { code:"0012", name: "Retail Tienda", field: 'retail'} ,
-      { code:"0013", name: "Retail Referido", field: 'retail'} ,
-      { code:"0014", name: "Retail Volanteo", field: 'retail'} ,
-      { code:"0015", name: "Retail Aliados", field: 'retail'} ,
-      { code:"0021", name: "Digital Instagram", field: 'digital'} ,
-      { code:"0022", name: "Digital Facebook", field: 'digital'} ,
-      { code:"0023", name: "Digital Google", field: 'digital'}
+    let projects = [
+      { code: "0011", name: "Retail TV-Radio", field: 'retail' },
+      { code: "0012", name: "Retail Tienda", field: 'retail' },
+      { code: "0013", name: "Retail Referido", field: 'retail' },
+      { code: "0014", name: "Retail Volanteo", field: 'retail' },
+      { code: "0015", name: "Retail Aliados", field: 'retail' },
+      { code: "0021", name: "Digital Instagram", field: 'digital' },
+      { code: "0022", name: "Digital Facebook", field: 'digital' },
+      { code: "0023", name: "Digital Google", field: 'digital' }
     ];
     let sapProjects = result.data.value;
     await Promise.all(projects.map(async (item) => {
@@ -286,38 +288,38 @@ export class IntegrationSapService {
     const setting = await this.prismaService.setting.create({
       data: { name: 'SERIES' }
     });
-   
+
     while (hasItems) {
       if (!result) {
         result = await this.apiHttp.post<any>(`/SeriesService_GetDocumentSeries`, {
           "DocumentTypeParams": {
-              "Document": "17",
-         }
-      });
+            "Document": "17",
+          }
+        });
       } else {
         if (result.data["odata.nextLink"]) {
-          result = await this.apiHttp.post<any>(`/${result.data["odata.nextLink"]}`,{
+          result = await this.apiHttp.post<any>(`/${result.data["odata.nextLink"]}`, {
             "DocumentTypeParams": {
-                "Document": "17",
-           }
-        });
+              "Document": "17",
+            }
+          });
         } else {
           hasItems = false;
           break;
         }
       }
-      
-      await Promise.all(result.data.value.map(async (item) => {       
+
+      await Promise.all(result.data.value.map(async (item) => {
         const city = item.Remarks.toLowerCase().includes('barranquilla') ? 'Barranquilla' : item.Remarks.toLowerCase().includes('valledupar') ? 'Valledupar' : item.Remarks.toLowerCase().includes('cartagena') ? 'Cartagena' : item.Remarks.toLowerCase();
         await this.prismaService.settingDetail.create({
           data: {
             name: item.Name,
             code: item.Series + "",
             settingId: setting.id,
-            extendedData: {cities: [city]},
+            extendedData: { cities: [city] },
             active: true
           }
-        });        
+        });
       }));
     }
     return 'Migrado';
@@ -327,8 +329,8 @@ export class IntegrationSapService {
     await this.authService.login();
     let hasItems = true;
     let result: any;
-    
-   
+
+
     while (hasItems) {
       if (!result) {
         result = await this.apiHttp.get<any>(`${EnumApis.ORDER}?$filter=CardCode eq '${cardCode}'&$select=DocEntry`);
@@ -340,15 +342,62 @@ export class IntegrationSapService {
           break;
         }
       }
-      
-      await Promise.all(result.data.value.map(async (item) => {     
+
+      await Promise.all(result.data.value.map(async (item) => {
         if (item.CardCode == cardCode) {
           const result = await this.apiHttp.post<any>(`${EnumApis.ORDER}(${item.DocEntry})/Cancel`);
-          console.log('cancle', {result});
+          console.log('cancle', { result });
         }
       }));
     }
     return 'Canceladas';
   }
+
+  async getSalesPersonCode(city: string) {
+    try {
+      let data = await this.cacheManager.get<any[]>(`salesperson${city}`);
+      // console.log({data})
+      if (!data || data.length === 0) {
+        data = [];
+        await this.authService.login();
+        let hasItems = true;
+        let result: any;
+        const condition = convertCityToSap(city);
+        while (hasItems) {
+          if (!result) {
+            if (condition) {
+              result = await this.getData(`/SalesPersons?$filter=${condition} and Active eq 'tYES'&$select=Remarks,SalesEmployeeName,SalesEmployeeCode&$orderby=SalesEmployeeName asc`);
+            } else {
+              result = await this.getData(`/SalesPersons?$filter=Active eq 'tYES'&$select=Remarks,SalesEmployeeName,SalesEmployeeCode&$orderby=SalesEmployeeName asc`);
+            }
+
+          } else {
+            if (result.data["odata.nextLink"]) {
+              result = await this.getData(`/${result.data["odata.nextLink"]}`);
+            } else {
+              hasItems = false;
+              break;
+            }
+          }
+          await Promise.all(result.data.value.map(async (item) => {
+            let city = convertCity(item.Remarks);
+            data.push({
+              name: item.SalesEmployeeName,
+              code: item.SalesEmployeeCode + "",
+              city: city
+            });
+          }));
+        }
+        // console.log('jhjhj', {data})
+        let minuto = 60000;
+        await this.cacheManager.set(`salesperson${city}`, data,  minuto * 60);
+      }
+      return data;
+    } catch (error) {
+      console.log(error);
+      throw error;
+    }
+  }
+
 
 }
