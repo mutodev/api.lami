@@ -67,11 +67,11 @@ export class CustomerController {
   }
 
   @Public()
-  @EventPattern('customer/change-status-sap')
-  async changeStatusSap(@Payload() customerId: string, @Ctx() context: RedisContext): Promise<any> {
+  @MessagePattern('customer/change-status-sap')
+  async changeStatusSap(@Payload() payload: {customerId: string}, @Ctx() context: RedisContext): Promise<any> {
     try {
-      console.log({customerId});
-      const customer = await this.customerService.findOne({id: customerId});
+      console.log({payload});
+      const customer = await this.customerService.findOne({id: payload.customerId});
       seeEventCustomerStream.next({ data: customer });
     } catch (error) {
       throw error;
