@@ -127,7 +127,7 @@ export class TaskCustomerService {
                             if (result.status === 201) {
                                 customer.sendToSap = true;
                                 await this.prismaService.customer.update({ where: { id: customer.id }, data: { sendToSap: true } });
-                                this.clientProxi.emit('customer/change-status-sap', customer.id);
+                                this.clientProxi.send('customer/change-status-sap', customer.id);
                             }
                         } else if (customerSap.status === 200) {
                             console.log('entro a update customer');
@@ -212,7 +212,7 @@ export class TaskCustomerService {
                             if (result.status === 204) {
                                 customer.sendToSap = true;
                                 await this.prismaService.customer.update({ where: { id: customer.id }, data: { sendToSap: true } });
-                                this.clientProxi.emit('customer/change-status-sap', customer.id);
+                                this.clientProxi.send('customer/change-status-sap', customer.id);
                             }
                         } else {
                             await this.prismaService.customer.update({ where: { id: customer.id }, data: { sendToSap: false, messageError: customerSap.message } });

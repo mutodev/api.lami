@@ -9,7 +9,7 @@ import { ItemsService } from '../items/items.service';
 import { EnumOrderStatus } from '../commons/enums/enum-order-status';
 import { Public } from '../commons/decorators';
 import { ClientProxy, Ctx, EventPattern, MessagePattern, Payload, RedisContext } from '@nestjs/microservices';
-import { seeEventOrderCreatedStream, seeEventOrderStream } from '../commons/streams/actions-order';
+import { seeEventOrderCreatedStream, seeEventOrderStream, seeEventOrderUpdatedStream } from '../commons/streams/actions-order';
 import { filter, Observable } from 'rxjs';
 import { CustomerService } from '../customer/customer.service';
 import { SearchOrderDto } from './dto/search-order.dto';
@@ -131,9 +131,9 @@ export class OrderController {
 
   @Public()
   @MessagePattern('order/change-status-sap')
-  async changeStatusSap(@Payload() orderId: string, @Ctx() context: RedisContext): Promise<any> {
+  async changeStatusSap(@Payload() payload: { orderId: string}, @Ctx() context: RedisContext): Promise<any> {
     try {
-      const order = await this.orderService.findOne({ id: orderId });
+      const order = await this.orderService.findOne({ id: payload.orderId });
       seeEventOrderStream.next({ data: order });
       return null;
     } catch (error) {
@@ -164,9 +164,9 @@ export class OrderController {
 
   @Public()
   @MessagePattern('order/get-order-created')
-  async getOrderCreated(@Payload() order: any, @Ctx() context: RedisContext): Promise<any> {
+  async getOrderCreated(@Payload() payload:{order: any}, @Ctx() context: RedisContext): Promise<any> {
     try {
-      seeEventOrderCreatedStream.next({ data: order });
+      seeEventOrderCreatedStream.next({ data: payload.order });
       return null;
     } catch (error) {
       throw error;
@@ -182,6 +182,25 @@ export class OrderController {
     }
   }
 
+  @Public()
+  @MessagePattern('order/get-order-updated')
+  async getOrderUpdated(@Payload() payload:{order: any}, @Ctx() context: RedisContext): Promise<any> {
+    try {
+      seeEventOrderUpdatedStream.next({ data: payload.order });
+      return null;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  @Sse('sse/order-updated')
+  seeEventOrderUpdated(@Req() req, @Query('token') token: string): Observable<MessageEvent> {
+    try {
+      return seeEventOrderUpdatedStream.pipe(filter((data) => data.data.userId === req.user.id));
+    } catch (error) {
+      console.log({ error });
+    }
+  }
 
   // @Public()
   @Get('generate/pdf/:id')
