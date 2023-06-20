@@ -55,17 +55,17 @@ export class OrderController {
     const user = req.user;
     const search = req['query'].search || '';
     const isNum = !isNaN(search.trim());
-    let where: any = {};    
+    let where: any = {};
     let condition = [];
     if (isNum) {
-      condition.push({ docNumber: +search})
+      condition.push({ docNumber: +search })
     }
-    
+
     let conditionVendedor = null;
     if (user.role.code == 'VENDEDOR') {
-      conditionVendedor = {useId: user.id};
+      conditionVendedor = { useId: user.id };
     }
-    
+
     const result = await this.orderService.findAll({
       page: req['query'].page,
       perPage: req['query'].perPage,
@@ -108,8 +108,8 @@ export class OrderController {
     }));
     const result = await this.orderService.update({
       where: { id }, data: {
-        ...order, 
-        userId: req.user.id, 
+        ...order,
+        userId: req.user.id,
         orderDetails: {
           create: [
             ...(details as any[])
@@ -131,7 +131,7 @@ export class OrderController {
 
   @Public()
   @MessagePattern('order/change-status-sap')
-  async changeStatusSap(@Payload() payload: { orderId: string}, @Ctx() context: RedisContext): Promise<any> {
+  async changeStatusSap(@Payload() payload: { orderId: string }, @Ctx() context: RedisContext): Promise<any> {
     try {
       const order = await this.orderService.findOne({ id: payload.orderId });
       seeEventOrderStream.next({ data: order });
@@ -164,8 +164,9 @@ export class OrderController {
 
   @Public()
   @MessagePattern('order/get-order-created')
-  async getOrderCreated(@Payload() payload:{order: any}, @Ctx() context: RedisContext): Promise<any> {
+  async getOrderCreated(@Payload() payload: { order: any }, @Ctx() context: RedisContext): Promise<any> {
     try {
+      console.log('getOrderCreated', {payload})
       seeEventOrderCreatedStream.next({ data: payload.order });
       return null;
     } catch (error) {
@@ -184,8 +185,9 @@ export class OrderController {
 
   @Public()
   @MessagePattern('order/get-order-updated')
-  async getOrderUpdated(@Payload() payload:{order: any}, @Ctx() context: RedisContext): Promise<any> {
+  async getOrderUpdated(@Payload() payload: { order: any }, @Ctx() context: RedisContext): Promise<any> {
     try {
+      console.log('getOrderUpdated', {payload});
       seeEventOrderUpdatedStream.next({ data: payload.order });
       return null;
     } catch (error) {
@@ -220,13 +222,13 @@ export class OrderController {
 
   @Get('get-customer/by-order/:id')
   async findCustomerByOrder(@Req() req, @Param('id') id) {
-    const customer = await this.orderService.findCustomerByOrder({id});
+    const customer = await this.orderService.findCustomerByOrder({ id });
     return successResponse('', customer);
   }
 
   @Get('get-order-detail/by-order/:id')
   async findDetailByOrder(@Req() req, @Param('id') id) {
-    const result = await this.orderService.findDetailByOrder({id});
+    const result = await this.orderService.findDetailByOrder({ id });
     return successResponse('', result);
   }
 
