@@ -2,6 +2,7 @@ import { Inject, Injectable, Logger } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
 import { Cron, CronExpression } from '@nestjs/schedule';
 import { EasyconfigService } from 'nestjs-easyconfig';
+import { firstValueFrom } from 'rxjs';
 import { AuthService } from '../../auth/auth.service';
 import { EnumCustomerType } from '../../commons/enum-customer-type';
 import { PrismaService } from '../../commons/prisma.service';
@@ -109,8 +110,8 @@ export class TaskOrderService {
                             console.log('respuesta crear order', { result })
                             if (result.status === 201) {
                                 const orderUpdate = await this.prismaService.order.update({ where: { id: order.id }, data: { sendToSap: true, docNumber: result.data.DocNum, integrationId: result.data.DocEntry } });
-                                this.clientProxi.send('order/change-status-sap', {orderId: order.id});
-                                this.clientProxi.send('order/get-order-created', {order: orderUpdate});
+                                this.clientProxi.send('order/change-status-sap', {orderId: order.id}).subscribe();
+                                this.clientProxi.send('order/get-order-created', {order: orderUpdate}).subscribe();
                             } else {
                                 await this.prismaService.order.update({ where: { id: order.id }, data: { sendToSap: false, messageError: result.message } });
                             }
@@ -173,9 +174,9 @@ export class TaskOrderService {
                             if (result.status === 204) {
                                 order.sendToSap = true;
                                 const orderUpdate = await this.prismaService.order.update({ where: { id: order.id }, data: { sendToSap: true } });
-
-                                this.clientProxi.send('order/change-status-sap', { orderId: order.id });
-                                this.clientProxi.send('order/get-order-updated', { order: orderUpdate });
+                                console.log('jsdjkhsdkjlfh entroi')
+                                this.clientProxi.send('order/change-status-sap', { orderId: order.id }).subscribe();
+                                this.clientProxi.send('order/get-order-updated', { order: orderUpdate }).subscribe();
                             } else {
                                 await this.prismaService.order.update({ where: { id: order.id }, data: { sendToSap: false, messageError: result.message } });
                             }

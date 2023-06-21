@@ -4,7 +4,7 @@ import { CreateOrderDto } from './dto/create-order.dto';
 import { UpdateOrderDto } from './dto/update-order.dto';
 import { ClientProxy, Ctx, EventPattern, MessagePattern, Payload, RedisContext } from '@nestjs/microservices';
 import { AuthService } from '../auth/auth.service';
-import { from } from 'rxjs';
+import { firstValueFrom, from } from 'rxjs';
 import { PrismaService } from '../commons/prisma.service';
 import { EnumCustomerType } from '../commons/enum-customer-type';
 import { ProductService } from '../product/product.service';
@@ -106,8 +106,11 @@ export class OrderController {
   }
 
   @Get()
-  findAll() {
-    return this.orderService.findAll();
+  async findAll() {
+    const order = await this.prismaService.order.findUnique({where: {id: "8d8c0997-0f96-4e4d-95b8-23294ae25708"}})
+    const r = await this.clientProxi.send('order/get-order-created', { order });
+    return await firstValueFrom(r);
+    //return this.orderService.findAll();
   }
 
   @MessagePattern('order/findone')

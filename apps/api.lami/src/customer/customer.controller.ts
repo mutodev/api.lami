@@ -73,6 +73,7 @@ export class CustomerController {
       console.log({payload});
       const customer = await this.customerService.findOne({id: payload.customerId});
       seeEventCustomerStream.next({ data: customer });
+      return customer;
     } catch (error) {
       throw error;
     }

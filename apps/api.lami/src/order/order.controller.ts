@@ -133,10 +133,12 @@ export class OrderController {
   @MessagePattern('order/change-status-sap')
   async changeStatusSap(@Payload() payload: { orderId: string }, @Ctx() context: RedisContext): Promise<any> {
     try {
+      console.log('order/change-status-sap', {payload})
       const order = await this.orderService.findOne({ id: payload.orderId });
-      seeEventOrderStream.next({ data: order });
-      return null;
+      seeEventOrderStream.next({ data: {...order} });
+      return order;
     } catch (error) {
+      console.log({error});
       throw error;
     }
   }
@@ -144,7 +146,7 @@ export class OrderController {
   @Sse('sse/change-status-sap')
   seeEventChangeStatus(@Req() req, @Query('token') token: string): Observable<MessageEvent> {
     try {
-      return seeEventOrderStream.pipe(filter((data) => data.data.userId === req.user.id));
+      return seeEventOrderStream;//.pipe(filter((data) => data.data.userId === req.user.id));
     } catch (error) {
       console.log({ error });
     }
@@ -168,7 +170,7 @@ export class OrderController {
     try {
       console.log('getOrderCreated', {payload})
       seeEventOrderCreatedStream.next({ data: payload.order });
-      return null;
+      return payload.order;
     } catch (error) {
       throw error;
     }
