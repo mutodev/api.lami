@@ -42,7 +42,7 @@ export class OrderService {
         cursor,
         where,
         orderBy,
-        include: { customer: {include: {identificationType: true}}, status: true }
+        include: { customer: { include: { identificationType: true } }, status: true }
       });
     } else {
       return this.prisma.order.findMany({
@@ -51,7 +51,7 @@ export class OrderService {
         cursor,
         where,
         orderBy,
-        include: { customer: {include: {identificationType: true}}, status: true }
+        include: { customer: { include: { identificationType: true } }, status: true }
       });
     }
   }
@@ -86,14 +86,14 @@ export class OrderService {
     const detail = order.orderDetails.map((d) => {
       const project = projects.settingDetail.find((p) => p.code == d.project);
       const tax = taxes.settingDetail.find((p) => p.code == d.arTaxCode);
-      return {...d, taxObj: tax, projectObj: project};
+      return { ...d, taxObj: tax, projectObj: project };
     });
-    let setting = {}; 
-    const serie = await this.prisma.settingDetail.findFirst({where: {setting: {name: 'SERIES'}, code: order.serie}});
+    let setting = {};
+    const serie = await this.prisma.settingDetail.findFirst({ where: { setting: { name: 'SERIES' }, code: order.serie } });
     if (order.salesPersonCode)
-      setting = await this.prisma.settingDetail.findFirst({where: {setting: {name: 'SalesPersonCode',}, code: order.salesPersonCode}});
-    const {orderDetails, ...orderObj} = order;
-    return {...orderObj, orderDetails: detail, salesPerson: setting, serieObj: serie};
+      setting = await this.prisma.settingDetail.findFirst({ where: { setting: { name: 'SalesPersonCode', }, code: order.salesPersonCode } });
+    const { orderDetails, ...orderObj } = order;
+    return { ...orderObj, orderDetails: detail, salesPerson: setting, serieObj: serie };
   }
 
   async update(params: {
@@ -101,9 +101,9 @@ export class OrderService {
     data: Prisma.OrderUncheckedUpdateInput;
   }): Promise<Model> {
     const { where, data } = params;
-    await this.prisma.orderDetail.deleteMany({where: {orderId: where.id}});
+    await this.prisma.orderDetail.deleteMany({ where: { orderId: where.id } });
     return this.prisma.order.update({
-      data: {...data, sendToSap: null},
+      data: { ...data, sendToSap: null },
       where
     });
   }
@@ -127,60 +127,61 @@ export class OrderService {
         status: true
       }
     });
-    
-    const result = await this.clientProxi.send('order/findone', {orderCode: order.integrationId});    
-    const orderSap = await firstValueFrom(result);
-    // if ('bost_Open')
-    console.log({orderSap})
-    let data = {
-      date: new Date(orderSap.DocDate),
-      dueDate: new Date(orderSap.DocDueDate),
-      vatTotal: orderSap.VatSum,
-      total: orderSap.DocTotal,
-      discount: orderSap.DiscountPercent,
-      comments: orderSap.Comments,
-      serie: ''+orderSap.Series,
-      salesPersonCode: ''+orderSap.SalesPersonCode,
-      // orderDetails: 
-    }
-  //  return orderSap;
-    await this.prisma.order.update({
-      data: {...data, sendToSap: order.sendToSap},
-      where
-    });
 
-    await this.prisma.orderDetail.deleteMany({where: {orderId: order.id}});
-    await Promise.all(orderSap.DocumentLines.map(async (item) => {
-      const customer = await this.customerService.findOne({id: order.customerId});
-      const data = {
-        orderId: order.id,
-        itemCode: item.ItemCode,
-        description: item.ItemDescription,
-        discount: item.DiscountPercent || 0,
-        amount: item.Quantity,
-        value: item.UnitPrice,
-        wareHouseCode: item.WarehouseCode,
-        arTaxCode: item.TaxCode || '',
-        vat: item.TaxTotal,
-        project: customer.project,
-        aditionalInfo: '',
-        lineNumber: item.LineNum
-      };
-      await this.prisma.orderDetail.create({
-        data: {...data}
+    const result = await this.clientProxi.send('order/findone', { orderCode: order.integrationId });
+    const orderSap = await firstValueFrom(result);
+    if (orderSap && orderSap.DocumentStatus === 'bost_Open') {
+
+      let data = {
+        date: new Date(orderSap.DocDate),
+        dueDate: new Date(orderSap.DocDueDate),
+        vatTotal: orderSap.VatSum,
+        total: orderSap.DocTotal,
+        discount: orderSap.DiscountPercent,
+        comments: orderSap.Comments,
+        serie: '' + orderSap.Series,
+        salesPersonCode: '' + orderSap.SalesPersonCode,
+        // orderDetails: 
+      }
+      //  return orderSap;
+      await this.prisma.order.update({
+        data: { ...data, sendToSap: order.sendToSap },
+        where
       });
-      // console.log({data})
-    }));
+
+      await this.prisma.orderDetail.deleteMany({ where: { orderId: order.id } });
+      await Promise.all(orderSap.DocumentLines.map(async (item) => {
+        const customer = await this.customerService.findOne({ id: order.customerId });
+        const data = {
+          orderId: order.id,
+          itemCode: item.ItemCode,
+          description: item.ItemDescription,
+          discount: item.DiscountPercent || 0,
+          amount: item.Quantity,
+          value: item.UnitPrice,
+          wareHouseCode: item.WarehouseCode,
+          arTaxCode: item.TaxCode || '',
+          vat: item.TaxTotal,
+          project: customer.project,
+          aditionalInfo: '',
+          lineNumber: item.LineNum
+        };
+        await this.prisma.orderDetail.create({
+          data: { ...data }
+        });
+        // console.log({data})
+      }));
+    }
 
   }
-  
+
   async getOrdersAndCreditNotes(startDate: string, endDate: string, salesPersonCode: string) {
-    const result = await this.clientProxi.send('order/findordersandcreditnotes', {startDate, endDate, salesPersonCode});    
-    return await firstValueFrom(result);    
+    const result = await this.clientProxi.send('order/findordersandcreditnotes', { startDate, endDate, salesPersonCode });
+    return await firstValueFrom(result);
   }
 
   async getOpenOrders(startDate: string, endDate: string, salesPersonCode: string) {
-    const result = await this.clientProxi.send('order/findopenorders', {startDate, endDate, salesPersonCode});    
+    const result = await this.clientProxi.send('order/findopenorders', { startDate, endDate, salesPersonCode });
     return await firstValueFrom(result);
   }
 
@@ -201,7 +202,7 @@ export class OrderService {
           settingDetail: true
         }
       });
-  
+
       const taxes = await this.prisma.setting.findUnique({
         where: {
           name: 'TAX'
@@ -213,18 +214,18 @@ export class OrderService {
       const detail = order.orderDetails.map((d) => {
         const project = projects.settingDetail.find((p) => p.code == d.project);
         const tax = taxes.settingDetail.find((p) => p.code == d.arTaxCode);
-        return {...d, taxObj: tax, projectObj: project};
+        return { ...d, taxObj: tax, projectObj: project };
       });
 
-      let setting = await this.prisma.settingDetail.findFirst({where: {setting: {name: 'SalesPersonCode',}, code: order.salesPersonCode}});
+      let setting = await this.prisma.settingDetail.findFirst({ where: { setting: { name: 'SalesPersonCode', }, code: order.salesPersonCode } });
       let city: string = (setting?.extendedData as any)?.cities[0]
       let store = await this.prisma.stores.findFirst({
-        where: {name: {contains: city.toLowerCase(), mode: 'insensitive'}}
-      }); console.log({store})
-      const {orderDetails, ...orderObj} = order;
-      return await createPdf(join(__dirname, "./templates/order.ejs"), {...orderObj, store, orderDetails: detail, salesPerson: setting});
+        where: { name: { contains: city.toLowerCase(), mode: 'insensitive' } }
+      }); console.log({ store })
+      const { orderDetails, ...orderObj } = order;
+      return await createPdf(join(__dirname, "./templates/order.ejs"), { ...orderObj, store, orderDetails: detail, salesPerson: setting });
     } catch (error) {
-      console.log({error});
+      console.log({ error });
       throw error;
     }
   }
@@ -232,7 +233,7 @@ export class OrderService {
   async findCustomerByOrder(userWhereUniqueInput: Prisma.OrderWhereUniqueInput): Promise<any> {
     const order = await this.prisma.order.findUnique({
       where: userWhereUniqueInput,
-      select: {id: true, customer: true},
+      select: { id: true, customer: true },
       // include: {
       //   customer: true
       // }
@@ -243,7 +244,7 @@ export class OrderService {
   async findDetailByOrder(userWhereUniqueInput: Prisma.OrderWhereUniqueInput): Promise<any> {
     const order = await this.prisma.order.findUnique({
       where: userWhereUniqueInput,
-      select: {id: true, orderDetails: true}
+      select: { id: true, orderDetails: true }
     });
     return order.orderDetails;
   }
