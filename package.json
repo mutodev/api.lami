@@ -49,6 +49,7 @@
     "ejs": "^3.1.9",
     "html-pdf": "^3.0.1",
     "ioredis": "^5.2.4",
+    "morgan": "^1.10.0",
     "nest-csv-parser": "^2.0.4",
     "nestjs-easyconfig": "^2.6.1",
     "passport": "^0.6.0",
@@ -56,6 +57,7 @@
     "passport-local": "^1.0.0",
     "reflect-metadata": "^0.1.13",
     "rimraf": "^3.0.2",
+    "rotating-file-stream": "^3.1.0",
     "rxjs": "^7.2.0"
   },
   "devDependencies": {

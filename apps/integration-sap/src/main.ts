@@ -13,7 +13,7 @@ async function bootstrap() {
 
   const app = await NestFactory.create(IntegrationSapModule);
 
-  app.enableCors();
+  app.enableCors({allowedHeaders: '*', origin: '*'});
 
   app.setGlobalPrefix('/api');
 

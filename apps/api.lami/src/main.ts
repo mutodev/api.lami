@@ -4,6 +4,8 @@ import { MicroserviceOptions, Transport } from '@nestjs/microservices';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { AppModule } from './app.module';
 import { ErrorsInterceptor, ResponseInterceptor } from './commons/interceptors';
+import { HTTPLoggingInterceptor } from './commons/interceptors/http-logging.interceptor';
+import { LoggerApplication } from './commons/loggers/rotate.log';
 
 const logger = new Logger('Api lami');
 
@@ -15,6 +17,10 @@ async function bootstrap() {
 
   app.setGlobalPrefix('/api');
 
+  app.use(
+    LoggerApplication()
+  );
+
   const config = new DocumentBuilder()
     .setTitle("Lami api")
     .setDescription('')
@@ -25,7 +31,7 @@ async function bootstrap() {
 
   SwaggerModule.setup('docs', app, document);
 
-  app.useGlobalInterceptors(new ErrorsInterceptor(), new ResponseInterceptor());
+  app.useGlobalInterceptors(new ErrorsInterceptor(), new ResponseInterceptor(), new HTTPLoggingInterceptor());
 
   app.useGlobalPipes(
     new ValidationPipe({

@@ -1,5 +1,5 @@
 import { CommonsModule } from './commons/commons.module';
-import { Module } from '@nestjs/common';
+import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { UserModule } from './user/user.module';
@@ -16,6 +16,7 @@ import { StoreModule } from './store/store.module';
 import { PricesModule } from './prices/prices.module';
 import { NeighborhoodModule } from './neighborhood/neighborhood.module';
 import { QuoteModule } from './quote/quote.module';
+import { AppLoggerMiddleware } from './commons/middleware/logger.midleware';
 
 @Module({
   imports: [
@@ -46,4 +47,8 @@ import { QuoteModule } from './quote/quote.module';
   providers: [AppService],
   exports: []
 })
-export class AppModule { }
+export class AppModule  implements NestModule { 
+  configure(consumer: MiddlewareConsumer): void {
+    consumer.apply(AppLoggerMiddleware).forRoutes('*');
+  }
+}
