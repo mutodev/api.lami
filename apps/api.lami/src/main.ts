@@ -1,6 +1,7 @@
 import { INestMicroservice, Logger, ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { MicroserviceOptions, Transport } from '@nestjs/microservices';
+import { IoAdapter } from '@nestjs/platform-socket.io';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { AppModule } from './app.module';
 import { ErrorsInterceptor, ResponseInterceptor } from './commons/interceptors';
@@ -13,7 +14,12 @@ async function bootstrap() {
   
   const app = await NestFactory.create(AppModule);
 
-  app.enableCors();
+  app.enableCors({
+    origin: '*',
+    allowedHeaders: '*'
+  });
+
+  // app.useWebSocketAdapter(new IoAdapter());
 
   app.setGlobalPrefix('/api');
 
@@ -26,6 +32,7 @@ async function bootstrap() {
     .setDescription('')
     .setVersion('1.0')
     .addTag('Servicios')
+    .addBearerAuth()
     .build();
   const document = SwaggerModule.createDocument(app, config);
 

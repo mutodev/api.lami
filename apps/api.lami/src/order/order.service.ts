@@ -130,6 +130,7 @@ export class OrderService {
     
     const result = await this.clientProxi.send('order/findone', {orderCode: order.integrationId});    
     const orderSap = await firstValueFrom(result);
+    // if ('bost_Open')
     // console.log({orderSap})
     let data = {
       date: new Date(orderSap.DocDate),

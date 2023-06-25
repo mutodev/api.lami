@@ -157,7 +157,7 @@ export class OrderService {
       while (hasItems) {
         try {
           if (!result) {
-            result = await this.apiHttp.get<any>(`/$crossjoin(Orders,Orders/DocumentLines)?$expand=Orders($select=DocEntry,DocNum,DocDate,CardCode,CardName,DocTotal,VatSum,Cancelled,DocumentStatus,Series,SalesPersonCode),Orders/DocumentLines($select=ItemCode,ItemDescription,LineNum,Quantity)&$filter=Orders/DocEntry eq Orders/DocumentLines/DocEntry and Orders/SalesPersonCode eq ${salesPersonCode} and Orders/DocumentStatus eq 'bost_Open'and (Orders/DocDate ge '${startDate}') and (Orders/DocDate le '${endDate}')`);
+            result = await this.apiHttp.get<any>(`/$crossjoin(Orders,Orders/DocumentLines)?$expand=Orders($select=DocEntry,DocNum,DocDate,CardCode,CardName,DocTotal,VatSum,Cancelled,DocumentStatus,Series,SalesPersonCode),Orders/DocumentLines($select=ItemCode,ItemDescription,LineNum,Quantity)&$filter=Orders/DocEntry eq Orders/DocumentLines/DocEntry and Orders/SalesPersonCode eq ${salesPersonCode} and Orders/DocumentStatus eq 'bost_Open' and (Orders/DocDate ge '${startDate}') and (Orders/DocDate le '${endDate}')`);
           } else {
             if (result.data["odata.nextLink"]) {
               result = await this.apiHttp.get<any>(`/${result.data["odata.nextLink"]}`);

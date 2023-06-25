@@ -10,20 +10,23 @@ import { EnumOrderStatus } from '../commons/enums/enum-order-status';
 import { Public } from '../commons/decorators';
 import { ClientProxy, Ctx, EventPattern, MessagePattern, Payload, RedisContext } from '@nestjs/microservices';
 import { seeEventOrderCreatedStream, seeEventOrderStream, seeEventOrderUpdatedStream } from '../commons/streams/actions-order';
-import { filter, Observable } from 'rxjs';
+import { filter, from, map, Observable } from 'rxjs';
 import { CustomerService } from '../customer/customer.service';
 import { SearchOrderDto } from './dto/search-order.dto';
-import { EnumCustomerType } from '../commons/enums/enum-customer-type';
+import { OrderGateway } from './order.gateway';
 
 @ApiTags('ORDER')
 @ApiBearerAuth()
 @UseGuards(JwtAuthGuard)
 @Controller('order')
 export class OrderController {
+
   constructor(private readonly orderService: OrderService,
     private readonly itemsService: ItemsService,
     @Inject('CLIENT_SERVICE') private clientProxi: ClientProxy,
-    private readonly customerService: CustomerService) { }
+    private readonly customerService: CustomerService,
+    private readonly orderGateway: OrderGateway) { 
+    }
 
   @Post()
   async create(@Req() req, @Body() createOrderDto: CreateOrderDto) {
@@ -135,7 +138,8 @@ export class OrderController {
     try {
       console.log('order/change-status-sap', {payload})
       const order = await this.orderService.findOne({ id: payload.orderId });
-      seeEventOrderStream.next({ data: {...order} });
+      // seeEventOrderStream.next({ data: {...order} });
+      this.orderGateway.changeStatus(order, order.userId);
       return order;
     } catch (error) {
       console.log({error});
@@ -168,8 +172,9 @@ export class OrderController {
   @MessagePattern('order/get-order-created')
   async getOrderCreated(@Payload() payload: { order: any }, @Ctx() context: RedisContext): Promise<any> {
     try {
-      console.log('getOrderCreated', {payload})
-      seeEventOrderCreatedStream.next({ data: payload.order });
+      console.log('getOrderCreated', {payload});
+      this.orderGateway.createOrder(payload.order, payload.order.userId);
+      // seeEventOrderCreatedStream.next({ data: payload.order });
       return payload.order;
     } catch (error) {
       throw error;
@@ -190,7 +195,8 @@ export class OrderController {
   async getOrderUpdated(@Payload() payload: { order: any }, @Ctx() context: RedisContext): Promise<any> {
     try {
       console.log('getOrderUpdated', {payload});
-      seeEventOrderUpdatedStream.next({ data: payload.order });
+      this.orderGateway.updateOrder(payload.order, payload.order.userId);
+      // seeEventOrderUpdatedStream.next({ data: payload.order });
       return null;
     } catch (error) {
       throw error;
@@ -232,6 +238,13 @@ export class OrderController {
   async findDetailByOrder(@Req() req, @Param('id') id) {
     const result = await this.orderService.findDetailByOrder({ id });
     return successResponse('', result);
+  }
+
+  // @Public()
+  @Post('socket/socket')
+  async dddd(@Req() req, @Body() data) {
+    this.orderGateway.changeStatus({id: '223uytu37738'}, req.user.id);
+    return successResponse('ya', '');
   }
 
 }
