@@ -23,21 +23,16 @@ export class OrderGateway implements OnModuleInit {
   }
 
   changeStatus(data: any, userId: string) {
-    this.server.emit(`changeStatusOrder${userId}`, {
-      data
-    });
+    console.log(`changeStatusOrder${userId}`)
+    this.server.emit(`changeStatusOrder${userId}`, data);
   }
 
   createOrder(data: any, userId: string) {
-    this.server.emit(`createOrder${userId}`, {
-      data
-    });
+    this.server.emit(`createOrder${userId}`, data);
   }
 
   updateOrder(data: any, userId: string) {
-    this.server.emit(`updateOrder${userId}`, {
-      data
-    });
+    this.server.emit(`updateOrder${userId}`, data);
   }
 
 }

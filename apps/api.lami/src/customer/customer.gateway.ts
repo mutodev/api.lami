@@ -16,9 +16,7 @@ export class CustomerGateway implements OnModuleInit {
   }
 
   changeStatus(data: any, userId: string) {
-    this.server.emit(`changeStatusCustomer${userId}`, {
-      data
-    });
+    this.server.emit(`changeStatusCustomer${userId}`, data);
   }
 
   // createOrder(data: any, userId: string) {
