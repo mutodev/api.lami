@@ -6,7 +6,6 @@ import { Public } from '../commons/decorators';
 import { seeEventCustomerStream } from '../commons/streams/actions-order';
 import { successResponse } from './../commons/functions';
 import { JwtAuthGuard } from './../commons/guards';
-import { CustomerGateway } from './customer.gateway';
 import { CustomerService } from './customer.service';
 import { CreateCustomerDto } from './dto/create-customer.dto';
 import { UpdateCustomerDto } from './dto/update-customer.dto';
@@ -16,8 +15,7 @@ import { UpdateCustomerDto } from './dto/update-customer.dto';
 @UseGuards(JwtAuthGuard)
 @Controller('customer')
 export class CustomerController {
-  constructor(private readonly customerService: CustomerService,
-    private readonly customerGateway: CustomerGateway) {}
+  constructor(private readonly customerService: CustomerService) {}
 
   @Post()
   async create(@Req() req, @Body() createCustomerDto: CreateCustomerDto) {
@@ -79,7 +77,7 @@ export class CustomerController {
       console.log({payload});
       const customer = await this.customerService.findOne({id: payload.customerId});
       // seeEventCustomerStream.next({ data: customer });
-      this.customerGateway.changeStatus({...customer}, customer.userUpdateId);
+      // this.customerGateway.changeStatus({...customer}, customer.userUpdateId);
       return customer;
     } catch (error) {
       throw error;

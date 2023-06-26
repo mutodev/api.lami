@@ -8,6 +8,7 @@ import { ApiHttp } from '../../commons/api-http.service';
 import { EnumApis } from '../../commons/enum-apis';
 import { EnumCustomerType } from '../../commons/enum-customer-type';
 import { PrismaService } from '../../commons/prisma.service';
+import { CustomerGateway } from '../customer.gateway';
 import { CustomerService } from '../customer.service';
 
 var isRunning = false;
@@ -22,6 +23,7 @@ export class TaskCustomerService {
         private customerService: CustomerService,
         private authService: AuthService,
         private _env: EasyconfigService,
+        private readonly customerGateway: CustomerGateway,
         @Inject('CLIENT_SERVICE') private clientProxi: ClientProxy) { }
 
     @Cron(CronExpression.EVERY_10_SECONDS)
@@ -211,17 +213,20 @@ export class TaskCustomerService {
                             console.log({ body })
                             if (result.status === 204) {
                                 customer.sendToSap = true;
-                                await this.prismaService.customer.update({ where: { id: customer.id }, data: { sendToSap: true } });
-                                this.clientProxi.send('customer/change-status-sap', {customerId: customer.id}).subscribe();
+                                const  customerUpdate = await this.prismaService.customer.update({ where: { id: customer.id }, data: { sendToSap: true } });
+                                // this.clientProxi.send('customer/change-status-sap', {customerId: customer.id}).subscribe();
+                                this.customerGateway.changeStatus({...customerUpdate}, customer.userUpdateId);
                             }
                         } else {
-                            await this.prismaService.customer.update({ where: { id: customer.id }, data: { sendToSap: false, messageError: customerSap.message } });
+                            const customerUpdate = await this.prismaService.customer.update({ where: { id: customer.id }, data: { sendToSap: false, messageError: customerSap.message } });
+                            this.customerGateway.changeStatus({...customerUpdate}, customer.userUpdateId);
                         }
 
                     } catch (error) {
                         const message = (error?.response?.message && JSON.stringify(error?.response?.message)) || error?.message || error?.response?.statusText || error?.toString();
-                        await this.prismaService.customer.update({ where: { id: customer.id }, data: { sendToSap: false, messageError: message } });
+                        const customerUpdate = await this.prismaService.customer.update({ where: { id: customer.id }, data: { sendToSap: false, messageError: message } });
                         console.log('cron crear cliente', { error })
+                        this.customerGateway.changeStatus({...customerUpdate}, customer.userUpdateId);
                     }
 
                 }));

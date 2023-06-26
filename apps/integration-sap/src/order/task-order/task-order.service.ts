@@ -8,6 +8,7 @@ import { EnumCustomerType } from '../../commons/enum-customer-type';
 import { PrismaService } from '../../commons/prisma.service';
 import { CustomerService } from '../../customer/customer.service';
 import { ProductService } from '../../product/product.service';
+import { OrderGateway } from '../order.gateway';
 import { OrderService } from '../order.service';
 
 var isRunning = false;
@@ -23,6 +24,7 @@ export class TaskOrderService {
         private authService: AuthService,
         private customerService: CustomerService,
         private _env: EasyconfigService,
+        private readonly orderGateway: OrderGateway,
         @Inject('CLIENT_SERVICE') private clientProxi: ClientProxy) { }
 
     @Cron(CronExpression.EVERY_10_SECONDS)
@@ -110,15 +112,19 @@ export class TaskOrderService {
                             console.log('respuesta crear order', { result })
                             if (result.status === 201) {
                                 const orderUpdate = await this.prismaService.order.update({ where: { id: order.id }, data: { sendToSap: true, docNumber: result.data.DocNum, integrationId: result.data.DocEntry } });
-                                this.clientProxi.send('order/change-status-sap', {orderId: order.id}).subscribe();
-                                this.clientProxi.send('order/get-order-created', {order: orderUpdate}).subscribe();
+                                this.orderGateway.changeStatus({...orderUpdate}, orderUpdate.userUpdateId);
+                                this.orderGateway.createOrder({...orderUpdate}, order.userUpdateId);
+                                // this.clientProxi.send('order/change-status-sap', {orderId: order.id}).subscribe();
+                                // this.clientProxi.send('order/get-order-created', {order: orderUpdate}).subscribe();
                             } else {
-                                await this.prismaService.order.update({ where: { id: order.id }, data: { sendToSap: false, messageError: result.message } });
+                                const orderUpdate = await this.prismaService.order.update({ where: { id: order.id }, data: { sendToSap: false, messageError: result.message } });
+                                this.orderGateway.changeStatus({...orderUpdate}, order.userUpdateId);
                             }
 
                         } catch (error) {
                             const message = (error?.response?.message && JSON.stringify(error?.response?.message)) || error?.message || error?.response?.statusText || error?.toString();
-                            await this.prismaService.order.update({ where: { id: order.id }, data: { sendToSap: false, messageError: message } });
+                            const orderUpdate = await this.prismaService.order.update({ where: { id: order.id }, data: { sendToSap: false, messageError: message } });
+                            this.orderGateway.changeStatus({...orderUpdate}, orderUpdate.userUpdateId);
                             console.log('cron crear order', { error })
                         }
                     } else {
@@ -174,16 +180,20 @@ export class TaskOrderService {
                             if (result.status === 204) {
                                 order.sendToSap = true;
                                 const orderUpdate = await this.prismaService.order.update({ where: { id: order.id }, data: { sendToSap: true } });
-                                console.log('jsdjkhsdkjlfh entroi')
-                                this.clientProxi.send('order/change-status-sap', { orderId: order.id }).subscribe();
-                                this.clientProxi.send('order/get-order-updated', { order: orderUpdate }).subscribe();
+                                
+                                this.orderGateway.changeStatus({...orderUpdate}, orderUpdate.userUpdateId);
+                                this.orderGateway.updateOrder({...orderUpdate}, order.userUpdateId);
+                                // this.clientProxi.send('order/change-status-sap', { orderId: order.id }).subscribe();
+                                // this.clientProxi.send('order/get-order-updated', { order: orderUpdate }).subscribe();
                             } else {
-                                await this.prismaService.order.update({ where: { id: order.id }, data: { sendToSap: false, messageError: result.message } });
+                                const orderUpdate = await this.prismaService.order.update({ where: { id: order.id }, data: { sendToSap: false, messageError: result.message } });
+                                this.orderGateway.changeStatus({...orderUpdate}, orderUpdate.userUpdateId);
                             }
 
                         } catch (error) {
                             const message = (error?.response?.message && JSON.stringify(error?.response?.message)) || error?.message || error?.response?.statusText || error?.toString();
-                            await this.prismaService.order.update({ where: { id: order.id }, data: { sendToSap: false, messageError: message } });
+                            const orderUpdate = await this.prismaService.order.update({ where: { id: order.id }, data: { sendToSap: false, messageError: message } });
+                            this.orderGateway.changeStatus({...orderUpdate}, orderUpdate.userUpdateId);
                             console.log('cron crear order', { error })
                         }
                     }

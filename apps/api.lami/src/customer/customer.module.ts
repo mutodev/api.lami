@@ -3,7 +3,6 @@ import { CustomerService } from './customer.service';
 import { CustomerController } from './customer.controller';
 import { CommonsModule } from './../commons/commons.module';
 import { ClientsModule, Transport } from '@nestjs/microservices';
-import { CustomerGateway } from './customer.gateway';
 
 @Global()
 @Module({
@@ -23,7 +22,7 @@ import { CustomerGateway } from './customer.gateway';
     ])
   ],
   controllers: [CustomerController],
-  providers: [CustomerService, CustomerGateway],
+  providers: [CustomerService],
   exports: [CustomerService]
 })
 export class CustomerModule {}

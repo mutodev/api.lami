@@ -1,7 +1,7 @@
 import { OnModuleInit } from '@nestjs/common';
 import { MessageBody, SubscribeMessage, WebSocketGateway, WebSocketServer, WsResponse } from '@nestjs/websockets';
 import { from, map, Observable } from 'rxjs';
-import { Server } from 'socket.io';
+import { Server, Socket } from 'socket.io';
 
 @WebSocketGateway({
   cors: {
@@ -13,7 +13,20 @@ import { Server } from 'socket.io';
 export class OrderGateway implements OnModuleInit {
 
   @WebSocketServer()
-  server: Server
+  server: Server;
+
+  connectedClients: Socket[] = [];
+
+  handleConnection(client: Socket) {
+    this.connectedClients.push(client);
+    // Handle new WebSocket connection
+  }
+
+  handleDisconnect(client: Socket) {
+    this.connectedClients = this.connectedClients.filter(c => c !== client);
+    // Handle WebSocket disconnection
+  }
+
 
   onModuleInit() {
     this.server.on('connection', (socket) => {
@@ -23,12 +36,15 @@ export class OrderGateway implements OnModuleInit {
   }
 
   changeStatus(data: any, userId: string) {
-    console.log(`changeStatusOrder${userId}`)
+    console.log(`changeStatusOrder${userId}`);
+    // this.connectedClients.forEach(client => {
+    //   client.emit(`changeStatusOrder${userId}`, data);
+    // });
     this.server.emit(`changeStatusOrder${userId}`, data);
   }
 
   createOrder(data: any, userId: string) {
-    this.server.emit(`createOrder${userId}`, data);
+    this.server.to(userId).emit(`createOrder${userId}`, data);
   }
 
   updateOrder(data: any, userId: string) {

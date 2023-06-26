@@ -22,7 +22,7 @@ import { OrderGateway } from './order.gateway';
     ])
   ],
   controllers: [OrderController],
-  providers: [OrderService, OrderGateway],
+  providers: [OrderService],
   exports: [OrderService]
 })
 export class OrderModule {}

@@ -13,7 +13,6 @@ import { seeEventOrderCreatedStream, seeEventOrderStream, seeEventOrderUpdatedSt
 import { filter, from, map, Observable } from 'rxjs';
 import { CustomerService } from '../customer/customer.service';
 import { SearchOrderDto } from './dto/search-order.dto';
-import { OrderGateway } from './order.gateway';
 
 @ApiTags('ORDER')
 @ApiBearerAuth()
@@ -25,7 +24,9 @@ export class OrderController {
     private readonly itemsService: ItemsService,
     @Inject('CLIENT_SERVICE') private clientProxi: ClientProxy,
     private readonly customerService: CustomerService,
-    private readonly orderGateway: OrderGateway) { 
+    // private readonly orderGateway: OrderGateway
+    ) { 
+     
     }
 
   @Post()
@@ -141,9 +142,12 @@ export class OrderController {
     try {
       console.log('', {payload})
       const order = await this.orderService.findOne({ id: payload.orderId });
-      // seeEventOrderStream.next({ data: {...order} });
+      // seeEventOrderStream.next({ data: {...order} }); 
       // this.orderGateway.changeStatus({...order}, order.userUpdateId);
-      this.orderGateway.changeStatus({id: order.id}, order.userUpdateId);
+      // setInterval(() => {
+      //   console.log('entro')
+      //   this.orderGateway.changeStatus({id: 'iuyiuoiojjb87878'}, order.userUpdateId);
+      // }, 1000)
       return order;
     } catch (error) {
       console.log({error});
@@ -177,7 +181,7 @@ export class OrderController {
   async getOrderCreated(@Payload() payload: { order: any }, @Ctx() context: RedisContext): Promise<any> {
     try {
       console.log('getOrderCreated', {payload});
-      this.orderGateway.createOrder({...payload.order}, payload.order.userUpdateId);
+      // this.orderGateway.createOrder({...payload.order}, payload.order.userUpdateId);
       // seeEventOrderCreatedStream.next({ data: payload.order });
       return payload.order;
     } catch (error) {
@@ -199,7 +203,7 @@ export class OrderController {
   async getOrderUpdated(@Payload() payload: { order: any }, @Ctx() context: RedisContext): Promise<any> {
     try {
       console.log('getOrderUpdated', {payload});
-      this.orderGateway.updateOrder({...payload.order}, payload.order.userUpdateId);
+      // this.orderGateway.updateOrder({...payload.order}, payload.order.userUpdateId);
       // seeEventOrderUpdatedStream.next({ data: payload.order });
       return null;
     } catch (error) {
@@ -247,7 +251,7 @@ export class OrderController {
   // @Public()
   @Post('socket/socket')
   async dddd(@Req() req, @Body() data) {
-    this.orderGateway.changeStatus({id: '223uytu37738'}, req.user.id);
+    // this.orderGateway.changeStatus({id: '223uytu37738'}, req.user.id);
     return successResponse('ya', '');
   }
 

@@ -6,6 +6,7 @@ import { HttpModule } from '@nestjs/axios';
 import { AuthModule } from '../auth/auth.module';
 import { CommonsModule } from '../commons/commons.module';
 import { ClientsModule, Transport } from '@nestjs/microservices';
+import { CustomerGateway } from './customer.gateway';
 
 @Module({
   imports: [
@@ -25,7 +26,7 @@ import { ClientsModule, Transport } from '@nestjs/microservices';
     ])
   ],
   controllers: [CustomerController],
-  providers: [CustomerService, TaskCustomerService],
+  providers: [CustomerService, TaskCustomerService, CustomerGateway],
   exports: [CustomerService]
 })
 export class CustomerModule {}

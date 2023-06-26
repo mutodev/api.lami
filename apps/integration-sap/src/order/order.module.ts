@@ -6,6 +6,7 @@ import { CommonsModule } from '../commons/commons.module';
 import { AuthModule } from '../auth/auth.module';
 import { ClientsModule, Transport } from '@nestjs/microservices';
 import { CustomerModule } from '../customer/customer.module';
+import { OrderGateway } from './order.gateway';
 
 @Module({
   imports: [
@@ -26,6 +27,6 @@ import { CustomerModule } from '../customer/customer.module';
     ])
   ],
   controllers: [OrderController],
-  providers: [OrderService, TaskOrderService]
+  providers: [OrderService, TaskOrderService, OrderGateway]
 })
 export class OrderModule {}
