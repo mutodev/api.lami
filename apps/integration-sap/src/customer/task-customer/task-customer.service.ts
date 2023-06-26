@@ -53,7 +53,7 @@ export class TaskCustomerService {
     async createCustomer() {
         try {
 
-            const customers = await this.prismaService.customer.findMany({ where: { OR: [{ sendToSap: false }, { sendToSap: null }] }, include: { type: true, identificationType: true } });
+            const customers = await this.prismaService.customer.findMany({ where: { sendToSap: null }, include: { type: true, identificationType: true } });
 
             if (customers.length > 0) {
                 await Promise.all(customers.map(async (customer) => {

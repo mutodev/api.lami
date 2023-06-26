@@ -136,7 +136,7 @@ export class OrderController {
   @MessagePattern('order/change-status-sap')
   async changeStatusSap(@Payload() payload: { orderId: string }, @Ctx() context: RedisContext): Promise<any> {
     try {
-      console.log('order/change-status-sap', {payload})
+      console.log('', {payload})
       const order = await this.orderService.findOne({ id: payload.orderId });
       // seeEventOrderStream.next({ data: {...order} });
       this.orderGateway.changeStatus(order, order.userId);

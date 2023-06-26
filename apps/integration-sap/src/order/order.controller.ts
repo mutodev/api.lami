@@ -91,8 +91,8 @@ export class OrderController {
           }
         });
 
-        this.clientProxi.send('order/change-status-sap', {orderId: order.id});
-        this.clientProxi.send('order/get-order-created', {order: orderUpdate});
+        this.clientProxi.send('order/change-status-sap', {orderId: order.id}).subscribe();
+        this.clientProxi.send('order/get-order-created', {order: orderUpdate}).subscribe();
       } else {
         await this.prismaService.order.update({ where: { id: order.id }, data: { sendToSap: false, messageError: result.message } });
       }

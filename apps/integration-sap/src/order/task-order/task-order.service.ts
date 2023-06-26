@@ -54,7 +54,7 @@ export class TaskOrderService {
     async createOrder() {
         try {
 
-            const orders = await this.prismaService.order.findMany({ where: { OR: [{ sendToSap: false }, { sendToSap: null }] }, include: { customer: true, orderDetails: true } });
+            const orders = await this.prismaService.order.findMany({ where: { sendToSap: null }, include: { customer: true, orderDetails: true } });
 
             if (orders.length > 0) {
                 const settingDetail = await this.prismaService.settingDetail.findMany({ where: { setting: { name: 'Project' } } });
