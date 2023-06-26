@@ -142,7 +142,8 @@ export class OrderController {
       console.log('', {payload})
       const order = await this.orderService.findOne({ id: payload.orderId });
       // seeEventOrderStream.next({ data: {...order} });
-      this.orderGateway.changeStatus({...order}, order.userUpdateId);
+      // this.orderGateway.changeStatus({...order}, order.userUpdateId);
+      this.orderGateway.changeStatus({id: order.id}, order.userUpdateId);
       return order;
     } catch (error) {
       console.log({error});
