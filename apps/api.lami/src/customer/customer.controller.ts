@@ -79,7 +79,7 @@ export class CustomerController {
       console.log({payload});
       const customer = await this.customerService.findOne({id: payload.customerId});
       // seeEventCustomerStream.next({ data: customer });
-      this.customerGateway.changeStatus(customer, customer.userUpdateId);
+      this.customerGateway.changeStatus({...customer}, customer.userUpdateId);
       return customer;
     } catch (error) {
       throw error;
