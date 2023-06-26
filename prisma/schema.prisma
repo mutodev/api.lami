@@ -62,8 +62,10 @@ model User {
   sellerTypeId    String?
   sellerType      SettingDetail? @relation(name: "sellertypesetting", fields: [sellerTypeId], references: [id])
   customers       Customer[] @relation(name: "usercustomer")
+  customersUpdate Customer[] @relation(name: "userupdatecustomer")
   orders          Order[] @relation(name: "userorder")
   quotes          Quote[] @relation(name: "userquote")
+  ordersUpdate    Order[] @relation(name: "userupdateorder")
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
 }
@@ -143,6 +145,8 @@ model Customer {
   orders              Order[] @relation(name: "ordercustomer")
   pqrs                PQR[] @relation(name: "pqrcustomer")
   quotes              Quote[] @relation(name: "quotecustomer")
+  userUpdateId        String?
+  userUpdate          User? @relation(name: "userupdatecustomer", fields: [userUpdateId], references: [id])
   createdAt           DateTime @default(now())
   updatedAt           DateTime @updatedAt
 }
@@ -175,6 +179,8 @@ model Order {
   userId              String?
   user                User? @relation(name: "userorder", fields: [userId], references: [id])
   estimatedDate       DateTime? @db.Date
+  userUpdateId        String?
+  userUpdate          User? @relation(name: "userupdateorder", fields: [userUpdateId], references: [id])
   createdAt           DateTime @default(now())
   updatedAt           DateTime @updatedAt
   orderDetails        OrderDetail[] @relation(name: "orderdetailorder")

@@ -16,7 +16,7 @@ export class OrderService {
     @Inject('CLIENT_SERVICE') private clientProxi: ClientProxy) { }
 
   async create(data: Prisma.OrderUncheckedCreateInput): Promise<Model> {
-    console.log({ data: JSON.stringify(data) })
+    // console.log({ data: JSON.stringify(data) })
     return this.prisma.order.create({
       data: {
         ...data,

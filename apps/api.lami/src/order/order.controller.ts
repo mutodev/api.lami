@@ -38,7 +38,10 @@ export class OrderController {
         return { ...detail, arTaxCode: item.arTaxCode, project: customer.project || '0022', lineNumber: i };
       }));
       const result = await this.orderService.create({
-        ...order, customerId: createOrderDto.customerId, userId: req.user.id, statusId: EnumOrderStatus.PorCobrar, orderDetails: {
+        ...order, customerId: createOrderDto.customerId, userId: req.user.id, 
+        statusId: EnumOrderStatus.PorCobrar, 
+        userUpdateId: req.user.id,
+        orderDetails: {
           create: [
             ...(details as any[])
           ]
@@ -112,7 +115,7 @@ export class OrderController {
     const result = await this.orderService.update({
       where: { id }, data: {
         ...order,
-        userId: req.user.id,
+        userUpdateId: req.user.id,
         orderDetails: {
           create: [
             ...(details as any[])
@@ -139,7 +142,7 @@ export class OrderController {
       console.log('', {payload})
       const order = await this.orderService.findOne({ id: payload.orderId });
       // seeEventOrderStream.next({ data: {...order} });
-      this.orderGateway.changeStatus(order, order.userId);
+      this.orderGateway.changeStatus(order, order.userUpdateId);
       return order;
     } catch (error) {
       console.log({error});
@@ -173,7 +176,7 @@ export class OrderController {
   async getOrderCreated(@Payload() payload: { order: any }, @Ctx() context: RedisContext): Promise<any> {
     try {
       console.log('getOrderCreated', {payload});
-      this.orderGateway.createOrder(payload.order, payload.order.userId);
+      this.orderGateway.createOrder(payload.order, payload.order.userUpdateId);
       // seeEventOrderCreatedStream.next({ data: payload.order });
       return payload.order;
     } catch (error) {
@@ -195,7 +198,7 @@ export class OrderController {
   async getOrderUpdated(@Payload() payload: { order: any }, @Ctx() context: RedisContext): Promise<any> {
     try {
       console.log('getOrderUpdated', {payload});
-      this.orderGateway.updateOrder(payload.order, payload.order.userId);
+      this.orderGateway.updateOrder(payload.order, payload.order.userUpdateId);
       // seeEventOrderUpdatedStream.next({ data: payload.order });
       return null;
     } catch (error) {

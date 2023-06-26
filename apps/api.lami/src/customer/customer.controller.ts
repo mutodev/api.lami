@@ -21,7 +21,11 @@ export class CustomerController {
 
   @Post()
   async create(@Req() req, @Body() createCustomerDto: CreateCustomerDto) {
-    const result = await this.customerService.create({...createCustomerDto, userId: req.user.id});
+    const result = await this.customerService.create({
+      ...createCustomerDto, 
+      userId: req.user.id,
+      userUpdateId: req.user.id
+    });
     return successResponse('Registro guardado satisfactoriamente.', {...result});
   }
 
@@ -52,7 +56,7 @@ export class CustomerController {
 
   @Patch(':id')
   async update(@Req() req, @Param('id') id: string, @Body() updateCustomerDto: UpdateCustomerDto) {
-    const result = await this.customerService.update({where: {id}, data: {...updateCustomerDto, userId: req.user.id}});
+    const result = await this.customerService.update({where: {id}, data: {...updateCustomerDto, userUpdateId: req.user.id}});
     return successResponse('Registro actualizado satisfactoriamente.', result);
   }
 
@@ -75,7 +79,7 @@ export class CustomerController {
       console.log({payload});
       const customer = await this.customerService.findOne({id: payload.customerId});
       // seeEventCustomerStream.next({ data: customer });
-      this.customerGateway.changeStatus(customer, customer.userId);
+      this.customerGateway.changeStatus(customer, customer.userUpdateId);
       return customer;
     } catch (error) {
       throw error;
