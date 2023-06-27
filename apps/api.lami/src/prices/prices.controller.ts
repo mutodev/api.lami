@@ -25,7 +25,10 @@ export class PricesController {
     const result = await this.pricesService.findAll({
       page: req['query'].page, 
       perPage: req['query'].perPage,
-      where: {name: {contains: req['query'].search || '', mode: 'insensitive'}}});
+      where: {OR: [
+        {code: {contains: req['query'].search || '', mode: 'insensitive'}},
+        {name: {contains: req['query'].search || '', mode: 'insensitive'}}
+      ]}});
     return successResponse('', result);
   }
 

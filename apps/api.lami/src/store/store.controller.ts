@@ -25,7 +25,10 @@ export class StoreController {
     const result = await this.storeService.findAll({
       page: req['query'].page, 
       perPage: req['query'].perPage,
-      where: {name: {contains: req['query'].search || '', mode: 'insensitive'}}});
+      where: {OR: [
+        {name: {contains: req['query'].search || '', mode: 'insensitive'}},
+        {code: {contains: req['query'].search || '', mode: 'insensitive'}}
+      ]}});
     return successResponse('', result);
   }
 
