@@ -3,7 +3,6 @@ import { OrderService } from './order.service';
 import { OrderController } from './order.controller';
 import { CommonsModule } from '../commons/commons.module';
 import { ClientsModule, Transport } from '@nestjs/microservices';
-import { OrderGateway } from './order.gateway';
 
 @Module({
   imports: [
