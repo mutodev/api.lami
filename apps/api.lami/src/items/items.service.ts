@@ -5,12 +5,15 @@ import { PrismaService } from '../commons/services/prisma.service';
 import { calculateEstimateDate } from '../commons/functions';
 import { ClientProxy } from '@nestjs/microservices';
 import { firstValueFrom } from 'rxjs';
+import { ApiHttp } from '../commons/services/api-http.service';
+import { EnumApis } from '../commons/enums/enum-apis';
 
 @Injectable()
 export class ItemsService {
 
   constructor(public prisma: PrismaService,
     @Inject('CLIENT_SERVICE') private clientProxi: ClientProxy,
+    private apiHttp: ApiHttp,
     private paginationService: PaginationService) { }
 
   async create(data: Prisma.ItemsUncheckedCreateInput): Promise<Model> {
@@ -153,8 +156,11 @@ export class ItemsService {
 
   async findAllStockFromSap(search: string, stop: number) {
     try {
-      const result = this.clientProxi.send('product/find-from-sap', { search, stop });
-      const data = await firstValueFrom(result);
+      // const result = this.clientProxi.send('product/find-from-sap', { search, stop });
+      // const data = await firstValueFrom(result);
+      await this.apiHttp.login();
+      const result = await this.apiHttp.get<any>(`${EnumApis.ITEM}?$select=ItemCode,ItemName,ArTaxCode,QuantityOnStock,ItemPrices,QuantityOrderedFromVendors,QuantityOrderedByCustomers,ItemWarehouseInfoCollection&$orderby=ItemName&$filter=contains(ItemName,'${search}') and Valid eq 'tYES'&$top=${stop}`);     
+      const data = result.data.value;
       return data.map((item) => {
         let price = item.ItemPrices.find((a) => a.PriceList == 1);
         return {
