@@ -115,8 +115,11 @@ export class ItemsService {
 
   async findAllFromSap(search: string, stop: number) {
     try {
-      const result = this.clientProxi.send('product/find-from-sap', { search, stop });
-      const data = await firstValueFrom(result);
+      // const result = this.clientProxi.send('product/find-from-sap', { search, stop });
+      // const data = await firstValueFrom(result);
+      await this.apiHttp.login();
+      const result = await this.apiHttp.get<any>(`${EnumApis.ITEM}?$select=ItemCode,ItemName,ArTaxCode,QuantityOnStock,ItemPrices,QuantityOrderedFromVendors,QuantityOrderedByCustomers,ItemWarehouseInfoCollection&$orderby=ItemName&$filter=contains(ItemName,'${search}') and Valid eq 'tYES'&$top=${stop}`);     
+      const data = result.data.value;
       return data.map((item) => {
         let price = item.ItemPrices.find((a) => a.PriceList == 1);
         let today = new Date();
@@ -156,11 +159,8 @@ export class ItemsService {
 
   async findAllStockFromSap(search: string, stop: number) {
     try {
-      // const result = this.clientProxi.send('product/find-from-sap', { search, stop });
-      // const data = await firstValueFrom(result);
-      await this.apiHttp.login();
-      const result = await this.apiHttp.get<any>(`${EnumApis.ITEM}?$select=ItemCode,ItemName,ArTaxCode,QuantityOnStock,ItemPrices,QuantityOrderedFromVendors,QuantityOrderedByCustomers,ItemWarehouseInfoCollection&$orderby=ItemName&$filter=contains(ItemName,'${search}') and Valid eq 'tYES'&$top=${stop}`);     
-      const data = result.data.value;
+      const result = this.clientProxi.send('product/find-from-sap', { search, stop });
+      const data = await firstValueFrom(result);    
       return data.map((item) => {
         let price = item.ItemPrices.find((a) => a.PriceList == 1);
         return {
