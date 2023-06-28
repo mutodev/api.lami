@@ -211,10 +211,14 @@ export class OrderService {
           settingDetail: true
         }
       });
+      let totalDiscount = 0;
       const detail = order.orderDetails.map((d) => {
         const project = projects.settingDetail.find((p) => p.code == d.project);
         const tax = taxes.settingDetail.find((p) => p.code == d.arTaxCode);
-        return { ...d, taxObj: tax, projectObj: project };
+        let subTotal = d.amount * d.value;
+        let discountValue = d.discount > 0 ? subTotal * (d.discount / 100) : 0;
+        totalDiscount = totalDiscount + discountValue;        
+        return { ...d, taxObj: tax, projectObj: project, discountValue, subTotal };
       });
 
       let setting = await this.prisma.settingDetail.findFirst({ where: { setting: { name: 'SalesPersonCode', }, code: order.salesPersonCode } });
@@ -223,7 +227,7 @@ export class OrderService {
         where: { name: { contains: city.toLowerCase(), mode: 'insensitive' } }
       }); console.log({ store })
       const { orderDetails, ...orderObj } = order;
-      return await createPdf(join(__dirname, "./templates/order.ejs"), { ...orderObj, store, orderDetails: detail, salesPerson: setting });
+      return await createPdf(join(__dirname, "./templates/order.ejs"), { ...orderObj, store, orderDetails: detail, salesPerson: setting, totalDiscount });
     } catch (error) {
       console.log({ error });
       throw error;

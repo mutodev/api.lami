@@ -193,9 +193,9 @@
           $<%=new Intl.NumberFormat().format(item.value)%>
         </td>
         <% if (item.taxObj && item.taxObj.value) { %>
-        <td>$<%=new Intl.NumberFormat().format(item.value * item.amount + ((item.value * item.amount) * (+item.taxObj.value / 100))) %></td>
+        <td>$<%=new Intl.NumberFormat().format(item.subTotal + (item.subTotal * (+item.taxObj.value / 100))) %></td>
         <%} else { %> 
-          <td>$<%=new Intl.NumberFormat().format(item.value * item.amount) %></td>
+          <td>$<%=new Intl.NumberFormat().format(item.subTotal - item.discountValue) %></td>
         <%}%>
       </tr>
         <%});%>
@@ -204,8 +204,12 @@
 
     <div class="totales">
       <p>SUBTOTAL $<%=new Intl.NumberFormat().format(data.subTotal)%></p>
+      <% if (data.totalDiscount > 0) {%>
+      <p>DESCUENTO $<%=new Intl.NumberFormat().format(data.totalDiscount)%></p>
+      <%}%>
       <p>IMPUESTOS $<%=new Intl.NumberFormat().format(data.vatTotal)%></p>
       <hr>
+      discount
       <p style="
     font-weight: 500!important;
 ">TOTAL $<%=new Intl.NumberFormat().format(data.total)%></p>
