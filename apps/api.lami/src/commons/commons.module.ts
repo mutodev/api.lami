@@ -8,6 +8,7 @@ import { EasyconfigModule } from 'nestjs-easyconfig';
 import { PaginationService } from './services/pagination/pagination.service';
 import { PrismaService } from './services/prisma.service';
 import * as https from 'https';
+import { ApiHttp } from './services/api-http.service';
 
 @Module({
     imports: [
@@ -23,8 +24,8 @@ import * as https from 'https';
        
     ],
     controllers: [],
-    providers: [PrismaService, PaginationService],
+    providers: [PrismaService, PaginationService, ApiHttp],
     // providers: [PrismaService],
-    exports: [PrismaService, PaginationService],
+    exports: [PrismaService, PaginationService, ApiHttp],
 })
 export class CommonsModule {}
