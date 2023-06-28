@@ -185,15 +185,19 @@
         <td><%=item.amount%></td>
         <td><%=item.projectObj.name%></td>
         <% if (item.taxObj) { %>
-        <td><%=item.taxObj.value%></td>
+        <td><%=item.taxObj.value%>%</td>
         <%} else {%>
           <td></td>
         <%}%>
         <td>
           $<%=new Intl.NumberFormat().format(item.value)%>
         </td>
-        <td>$<%=new Intl.NumberFormat().format(item.value * item.amount) %></td>
-        </tr>
+        <% if (taxObj && taxObj.value) { %>
+        <td>$<%=new Intl.NumberFormat().format(item.value * item.amount + ((item.value * item.amount) * (+taxObj.value / 100))) %></td>
+        <%} else { %> 
+          <td>$<%=new Intl.NumberFormat().format(item.value * item.amount) %></td>
+        <%}%>
+      </tr>
         <%});%>
       </tbody>
     </table>
