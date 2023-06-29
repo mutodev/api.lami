@@ -25,9 +25,9 @@ export class OrderController {
     @Inject('CLIENT_SERVICE') private clientProxi: ClientProxy,
     private readonly customerService: CustomerService,
     // private readonly orderGateway: OrderGateway
-    ) { 
-     
-    }
+  ) {
+
+  }
 
   @Post()
   async create(@Req() req, @Body() createOrderDto: CreateOrderDto) {
@@ -39,8 +39,8 @@ export class OrderController {
         return { ...detail, arTaxCode: item.arTaxCode, project: customer.project || '0022', lineNumber: i };
       }));
       const result = await this.orderService.create({
-        ...order, customerId: createOrderDto.customerId, userId: req.user.id, 
-        statusId: EnumOrderStatus.PorCobrar, 
+        ...order, customerId: createOrderDto.customerId, userId: req.user.id,
+        statusId: EnumOrderStatus.PorCobrar,
         userUpdateId: req.user.id,
         orderDetails: {
           create: [
@@ -68,24 +68,37 @@ export class OrderController {
       condition.push({ docNumber: +search })
     }
 
-    let conditionVendedor = null;
     if (user.role.code == 'VENDEDOR') {
-      conditionVendedor = { useId: user.id };
+      where = {
+        AND: [
+          {
+            OR: [
+              ...condition,
+              { customer: { identification: { contains: search, mode: 'insensitive' } } },
+              { customer: { firstName: { contains: search, mode: 'insensitive' } } },
+              { customer: { lastName: { contains: search, mode: 'insensitive' } } }
+            ]
+          },
+          { useId: user.id }
+        ]
+      }
+    } else {
+      where = {
+        OR: [
+          ...condition,
+          { customer: { identification: { contains: search, mode: 'insensitive' } } },
+          { customer: { firstName: { contains: search, mode: 'insensitive' } } },
+          { customer: { lastName: { contains: search, mode: 'insensitive' } } }
+        ]
+      };
+
     }
 
     const result = await this.orderService.findAll({
       page: req['query'].page,
       perPage: req['query'].perPage,
       orderBy: { createdAt: 'desc' },
-      where: {
-        OR: [
-          ...condition,
-          { customer: { identification: { contains: search, mode: 'insensitive' } } },
-          { customer: { firstName: { contains: search, mode: 'insensitive' } } },
-          { customer: { lastName: { contains: search, mode: 'insensitive' } } }
-        ],
-        ...conditionVendedor
-      }
+
     });
     return successResponse('', result);
   }
@@ -104,7 +117,7 @@ export class OrderController {
   @Patch(':id')
   async update(@Req() req, @Param('id') id: string, @Body() updateOrderDto: UpdateOrderDto) {
 
-    const orderResult = await this.orderService.findOne({id});
+    const orderResult = await this.orderService.findOne({ id });
 
     if (orderResult.statusId == EnumOrderStatus.Pagado) {
       throw 'No puede editar el pedido porque ya se encuentra cerrado.';
@@ -147,7 +160,7 @@ export class OrderController {
   @MessagePattern('order/change-status-sap')
   async changeStatusSap(@Payload() payload: { orderId: string }, @Ctx() context: RedisContext): Promise<any> {
     try {
-      console.log('', {payload})
+      console.log('', { payload })
       const order = await this.orderService.findOne({ id: payload.orderId });
       // seeEventOrderStream.next({ data: {...order} }); 
       // this.orderGateway.changeStatus({...order}, order.userUpdateId);
@@ -157,7 +170,7 @@ export class OrderController {
       // }, 1000)
       return order;
     } catch (error) {
-      console.log({error});
+      console.log({ error });
       throw error;
     }
   }
@@ -187,7 +200,7 @@ export class OrderController {
   @MessagePattern('order/get-order-created')
   async getOrderCreated(@Payload() payload: { order: any }, @Ctx() context: RedisContext): Promise<any> {
     try {
-      console.log('getOrderCreated', {payload});
+      console.log('getOrderCreated', { payload });
       // this.orderGateway.createOrder({...payload.order}, payload.order.userUpdateId);
       // seeEventOrderCreatedStream.next({ data: payload.order });
       return payload.order;
@@ -209,7 +222,7 @@ export class OrderController {
   @MessagePattern('order/get-order-updated')
   async getOrderUpdated(@Payload() payload: { order: any }, @Ctx() context: RedisContext): Promise<any> {
     try {
-      console.log('getOrderUpdated', {payload});
+      console.log('getOrderUpdated', { payload });
       // this.orderGateway.updateOrder({...payload.order}, payload.order.userUpdateId);
       // seeEventOrderUpdatedStream.next({ data: payload.order });
       return null;
