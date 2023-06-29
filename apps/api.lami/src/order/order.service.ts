@@ -3,6 +3,7 @@ import { ClientProxy } from '@nestjs/microservices';
 import { Order as Model, Prisma } from '@prisma/client';
 import { join } from 'path';
 import { firstValueFrom } from 'rxjs';
+import { EnumOrderStatus } from '../commons/enums/enum-order-status';
 import { createPdf } from '../commons/functions';
 import { CustomerService } from '../customer/customer.service';
 import { PaginationService } from './../commons/services/pagination/pagination.service';
@@ -171,6 +172,8 @@ export class OrderService {
         });
         // console.log({data})
       }));
+    } else {
+      await this.prisma.order.update({where: {id: order.id}, data: {statusId: EnumOrderStatus.Pagado}});
     }
 
   }

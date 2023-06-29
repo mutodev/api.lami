@@ -103,6 +103,13 @@ export class OrderController {
 
   @Patch(':id')
   async update(@Req() req, @Param('id') id: string, @Body() updateOrderDto: UpdateOrderDto) {
+
+    const orderResult = await this.orderService.findOne({id});
+
+    if (orderResult.statusId == EnumOrderStatus.Pagado) {
+      throw 'No puede editar el pedido porque ya se encuentra cerrado.';
+    }
+
     const { orderDetails, ...order } = updateOrderDto;
     // const details = await Promise.all(orderDetails.map(async (detail, i) => {
     //   const item = await this.itemsService.findByCode(detail.itemCode);
@@ -111,7 +118,7 @@ export class OrderController {
     const customer = await this.customerService.findOne({ id: updateOrderDto.customerId });
     const details = await Promise.all(orderDetails.map(async (detail, i) => {
       const item = await this.itemsService.findByCode(detail.itemCode);
-      return { ...detail, arTaxCode: item.arTaxCode, project: customer.project || '0022', lineNumber: i };
+      return { ...detail, arTaxCode: detail.arTaxCode, project: customer.project || '0022', lineNumber: i };
     }));
     const result = await this.orderService.update({
       where: { id }, data: {
