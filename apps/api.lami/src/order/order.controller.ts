@@ -117,7 +117,7 @@ export class OrderController {
     // }));
     const customer = await this.customerService.findOne({ id: updateOrderDto.customerId });
     const details = await Promise.all(orderDetails.map(async (detail, i) => {
-      const item = await this.itemsService.findByCode(detail.itemCode);
+      // const item = await this.itemsService.findByCode(detail.itemCode);
       return { ...detail, arTaxCode: detail.arTaxCode, project: customer.project || '0022', lineNumber: i };
     }));
     const result = await this.orderService.update({
