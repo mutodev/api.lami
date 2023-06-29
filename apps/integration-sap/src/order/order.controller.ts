@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Inject } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Inject, Req } from '@nestjs/common';
 import { OrderService } from './order.service';
 import { CreateOrderDto } from './dto/create-order.dto';
 import { UpdateOrderDto } from './dto/update-order.dto';
@@ -9,6 +9,7 @@ import { PrismaService } from '../commons/prisma.service';
 import { EnumCustomerType } from '../commons/enum-customer-type';
 import { ProductService } from '../product/product.service';
 import { CustomerService } from '../customer/customer.service';
+import { OrderGateway } from './order.gateway';
 
 @Controller('order')
 export class OrderController {
@@ -17,6 +18,7 @@ export class OrderController {
     private productService: ProductService,
     private customerService: CustomerService,
     @Inject('CLIENT_SERVICE') private clientProxi: ClientProxy,
+    private readonly orderGateway: OrderGateway,
     private authService: AuthService) { }
 
   @MessagePattern('order/create')
@@ -224,6 +226,12 @@ export class OrderController {
     await this.authService.login();
     const result = await this.orderService.getOrdersAndCreditNotes(payload.startDate, payload.endDate, payload.salesPersonCode);
     return result;
+  }
+
+  @Post('socket/socket')
+  async dddd(@Req() req, @Body() data) {
+    this.orderGateway.changeStatus({id: '223uytu37738'}, 'db87b1f4-5daa-4a51-95b8-173385a90491');
+    return 'ok';
   }
 
 }
