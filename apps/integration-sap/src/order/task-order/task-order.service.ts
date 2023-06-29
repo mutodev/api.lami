@@ -113,7 +113,7 @@ export class TaskOrderService {
                             if (result.status === 201) {
                                 const orderUpdate = await this.prismaService.order.update({ where: { id: order.id }, data: { sendToSap: true, docNumber: result.data.DocNum, integrationId: result.data.DocEntry } });
                                 this.orderGateway.changeStatus({...orderUpdate}, orderUpdate.userUpdateId);
-                                this.orderGateway.createOrder({...orderUpdate}, order.userUpdateId);
+                                this.orderGateway.createOrder({...orderUpdate}, orderUpdate.userUpdateId);
                                 // this.clientProxi.send('order/change-status-sap', {orderId: order.id}).subscribe();
                                 // this.clientProxi.send('order/get-order-created', {order: orderUpdate}).subscribe();
                             } else {
@@ -182,7 +182,7 @@ export class TaskOrderService {
                                 const orderUpdate = await this.prismaService.order.update({ where: { id: order.id }, data: { sendToSap: true } });
                                 
                                 this.orderGateway.changeStatus({...orderUpdate}, orderUpdate.userUpdateId);
-                                this.orderGateway.updateOrder({...orderUpdate}, order.userUpdateId);
+                                this.orderGateway.updateOrder({...orderUpdate}, orderUpdate.userUpdateId);
                                 // this.clientProxi.send('order/change-status-sap', { orderId: order.id }).subscribe();
                                 // this.clientProxi.send('order/get-order-updated', { order: orderUpdate }).subscribe();
                             } else {
