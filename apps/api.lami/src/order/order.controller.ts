@@ -93,7 +93,7 @@ export class OrderController {
       };
 
     }
-console.log({where: JSON.stringify(where)})
+// console.log({where: JSON.stringify(where)})
     const result = await this.orderService.findAll({
       page: req['query'].page,
       perPage: req['query'].perPage,
