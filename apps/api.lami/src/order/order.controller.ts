@@ -93,12 +93,12 @@ export class OrderController {
       };
 
     }
-
+console.log({where: JSON.stringify(where)})
     const result = await this.orderService.findAll({
       page: req['query'].page,
       perPage: req['query'].perPage,
       orderBy: { createdAt: 'desc' },
-
+      where
     });
     return successResponse('', result);
   }
