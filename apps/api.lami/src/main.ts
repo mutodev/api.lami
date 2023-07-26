@@ -23,9 +23,9 @@ async function bootstrap() {
 
   app.setGlobalPrefix('/api');
 
-  app.use(
-    LoggerApplication()
-  );
+  // app.use(
+  //   LoggerApplication()
+  // );
 
   const config = new DocumentBuilder()
     .setTitle("Lami api")
