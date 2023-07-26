@@ -79,7 +79,7 @@ export class OrderController {
               { customer: { lastName: { contains: search, mode: 'insensitive' } } }
             ]
           },
-          { useId: user.id }
+          { userId: user.id }
         ]
       }
     } else {
