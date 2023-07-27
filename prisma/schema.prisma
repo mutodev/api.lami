@@ -169,7 +169,7 @@ model Order {
   discount            Float?
   sendToSap           Boolean?
   integrationId       Int?
-  docNumber           Int?
+  docNumber           String?
   comments            String? @db.Text
   serie               String?
   salesPersonCode     String?

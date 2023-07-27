@@ -76,7 +76,7 @@ export class OrderController {
 
       if (result.status === 201) {
         order.sendToSap = true;
-        const orderUpdate = await this.prismaService.order.update({ where: { id: order.id }, data: { sendToSap: true, docNumber: result.data.DocNum, integrationId: result.data.DocEntry } });
+        const orderUpdate = await this.prismaService.order.update({ where: { id: order.id }, data: { sendToSap: true, docNumber: ''+result.data.DocNum, integrationId: result.data.DocEntry } });
 
         order.orderDetails.map(async (detail) => {
           try {

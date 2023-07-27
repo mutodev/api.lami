@@ -61,19 +61,19 @@ export class OrderController {
   async findAll(@Request() req) {
     const user = req.user;
     const search = req['query'].search || '';
-    const isNum = !isNaN(search.trim());
+    // const isNum = !isNaN(search.trim());
     let where: any = {};
-    let condition = [];
-    if (isNum) {
-      condition.push({ docNumber: +search })
-    }
+    // let condition = [];
+    // if (isNum) {
+    //   condition.push({ docNumber: +search })
+    // }
 
     if (user.role.code == 'VENDEDOR') {
       where = {
         AND: [
           {
             OR: [
-              ...condition,
+              { docNumber: { contains: search }},
               { customer: { identification: { contains: search, mode: 'insensitive' } } },
               { customer: { firstName: { contains: search, mode: 'insensitive' } } },
               { customer: { lastName: { contains: search, mode: 'insensitive' } } }
@@ -85,7 +85,7 @@ export class OrderController {
     } else {
       where = {
         OR: [
-          ...condition,
+          { docNumber: { contains: search }},
           { customer: { identification: { contains: search, mode: 'insensitive' } } },
           { customer: { firstName: { contains: search, mode: 'insensitive' } } },
           { customer: { lastName: { contains: search, mode: 'insensitive' } } }
@@ -93,6 +93,7 @@ export class OrderController {
       };
 
     }
+    
 // console.log({where: JSON.stringify(where)})
     const result = await this.orderService.findAll({
       page: req['query'].page,
