@@ -35,7 +35,11 @@ export class CustomerController {
     if (req['query'].source) {
       where = {AND: [{OR: [{identification: {contains: req['query'].search || '', mode: 'insensitive'}}, {name: {contains: req['query'].search || '', mode: 'insensitive'}}]}, {source: req['query'].source}]};
     } else {
-      where = {OR: [{identification: {contains: req['query'].search || '', mode: 'insensitive'}}, {name: {contains: req['query'].search || '', mode: 'insensitive'}}]}
+      if (req['query'].sendToSap) {
+        where = {AND: [{OR: [{identification: {contains: req['query'].search || '', mode: 'insensitive'}}, {name: {contains: req['query'].search || '', mode: 'insensitive'}}]}, {sendToSap: true}]}
+      } else {
+        where = {OR: [{identification: {contains: req['query'].search || '', mode: 'insensitive'}}, {name: {contains: req['query'].search || '', mode: 'insensitive'}}]}
+      }
     }
     const result = await this.customerService.findAll({
       page: req['query'].page, 
